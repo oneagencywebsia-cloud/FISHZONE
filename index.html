@@ -26,6 +26,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="image" href="logotipo.png" fetchpriority="high" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" /></noscript>
@@ -1920,7 +1923,7 @@
   <span class="tide-bubble"></span>
   <span class="tide-bubble"></span>
   <span class="tide-bubble"></span>
-  <img class="tide-logo" src="logotipo.png" alt="" loading="lazy" decoding="async"/>
+  <img class="tide-logo" src="logotipo.png" alt="" width="200" height="200" loading="lazy" decoding="async"/>
   <div class="tide-text">FISHZONE</div>
 </div>
 
@@ -2010,7 +2013,7 @@
 <nav>
   <div class="container">
     <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;cursor:none">
-      <img src="logotipo.png" alt="FishZone Logo" class="nav-logo-real-img" style="width:46px;height:46px;object-fit:contain;mix-blend-mode:screen;"/>
+      <img src="logotipo.png" alt="FishZone Logo" class="nav-logo-real-img" width="46" height="46" fetchpriority="high" decoding="async" style="width:46px;height:46px;object-fit:contain;mix-blend-mode:screen;"/>
       Fish<span>Zone</span>
     </div>
     <ul class="nav-categories">
@@ -3784,7 +3787,7 @@
   <div class="container">
         <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem">
       <div style="position:relative;display:inline-block"><div class="footer-logo-glow"></div>
-        <img src="logotipo.png" alt="FishZone Logo" class="footer-real-logo" style="width:140px;height:140px;object-fit:contain;position:relative;z-index:1;"/>
+        <img src="logotipo.png" alt="FishZone Logo" class="footer-real-logo" width="140" height="140" loading="lazy" decoding="async" style="width:140px;height:140px;object-fit:contain;position:relative;z-index:1;"/>
         
       </div>
       <div class="footer-logo" style="font-family:'Bebas Neue',sans-serif;letter-spacing:0;font-size:2rem">Fish<span>Zone</span></div>
