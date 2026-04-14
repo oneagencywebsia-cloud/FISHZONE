@@ -197,11 +197,11 @@
         rgba(255,255,255,.6) 50%, rgba(100,160,220,.4) 55%,
         rgba(201,168,76,.5) 70%, rgba(100,160,220,.3) 85%, transparent 100%);
       animation: surfaceShimmer 4s ease-in-out infinite;
-      filter: blur(0.5px);
+      will-change: opacity;
     }
     @keyframes surfaceShimmer {
-      0%, 100% { opacity: .6; transform: scaleX(1); filter: blur(.5px); }
-      50% { opacity: 1; transform: scaleX(1.01); filter: blur(0); }
+      0%, 100% { opacity: .6; }
+      50% { opacity: 1; }
     }
 
     /* Water shimmer background for intro */
@@ -301,22 +301,21 @@
       border-radius: 50%;
       opacity: 0;
       animation: introLogoReveal 1.2s cubic-bezier(.34,1.56,.64,1) 1.8s forwards;
-      filter: drop-shadow(0 0 40px rgba(201,168,76,.5)) drop-shadow(0 0 80px rgba(201,168,76,.2));
+      will-change: transform, opacity;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
       border: 3px solid rgba(201,168,76,.4);
       box-shadow:
         0 0 0 6px rgba(201,168,76,.08),
-        0 0 0 14px rgba(201,168,76,.04),
-        0 24px 80px rgba(0,0,0,.7),
-        inset 0 1px 0 rgba(255,255,255,.15);
+        0 0 40px rgba(201,168,76,.5),
+        0 24px 80px rgba(0,0,0,.7);
     }
     @keyframes introLogoReveal {
-      0% { opacity: 0; transform: scale(0.3) rotate(-20deg); filter: drop-shadow(0 0 0 transparent) blur(20px); }
-      50% { filter: drop-shadow(0 0 60px rgba(201,168,76,.8)) blur(0); }
+      0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+      50% { opacity: 1; }
       70% { transform: scale(1.08) rotate(3deg); }
       85% { transform: scale(0.97) rotate(-1deg); }
-      100% { opacity: 1; transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 40px rgba(201,168,76,.5)); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
 
     .intro-tagline {
@@ -668,25 +667,52 @@
       gap: 5px;
       cursor: pointer;
       padding: .5rem;
+      position: relative;
+      z-index: 101;
     }
     .nav-hamburger span {
       display: block; width: 24px; height: 2px;
-      background: var(--white); border-radius: 2px; transition: .3s;
+      background: var(--white); border-radius: 2px;
+      transition: transform .4s cubic-bezier(.22,.61,.36,1), opacity .3s ease, background .3s ease;
+      transform-origin: center;
     }
+    .nav-hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--gold); }
+    .nav-hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--gold); }
     .mobile-menu {
-      display: none;
+      display: flex;
       position: fixed;
       top: var(--nav-h); left: 0; right: 0; bottom: 0;
       background: rgba(10,15,30,.97);
       backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       padding: 1.5rem;
       z-index: 99;
       flex-direction: column;
       gap: .5rem;
       overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-12px);
+      transition: opacity .35s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1), visibility 0s linear .45s;
+      pointer-events: none;
     }
-    .mobile-menu.open { display: flex; }
+    .mobile-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+      transition: opacity .35s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s;
+    }
+    .mobile-cat-group { opacity: 0; transform: translateY(10px); transition: opacity .4s ease, transform .4s cubic-bezier(.22,.61,.36,1); }
+    .mobile-menu.open .mobile-cat-group { opacity: 1; transform: translateY(0); }
+    .mobile-menu.open .mobile-cat-group:nth-child(1) { transition-delay: .08s; }
+    .mobile-menu.open .mobile-cat-group:nth-child(2) { transition-delay: .14s; }
+    .mobile-menu.open .mobile-cat-group:nth-child(3) { transition-delay: .2s; }
+    .mobile-menu.open .mobile-cat-group:nth-child(4) { transition-delay: .26s; }
+    .mobile-menu.open .mobile-cat-group:nth-child(5) { transition-delay: .32s; }
+    .mobile-menu.open .mobile-cat-group:nth-child(6) { transition-delay: .38s; }
     .mobile-cat-group { margin-bottom: 1rem; }
     .mobile-cat-title {
       font-size: .65rem; font-weight: 700; letter-spacing: .15em;
@@ -1999,34 +2025,34 @@
 <div class="mobile-menu" id="mobileMenu">
   <div class="mobile-cat-group">
     <div class="mobile-cat-title">Especies y Aguas</div>
-    <a href="#dulce" onclick="toggleMenu()">Agua Dulce</a>
-    <a href="#salada" onclick="toggleMenu()">Agua Salada</a>
+    <a href="#dulce">Agua Dulce</a>
+    <a href="#salada">Agua Salada</a>
   </div>
   <div class="mobile-cat-group">
     <div class="mobile-cat-title">Técnica y Material</div>
-    <a href="#tecnicas" onclick="toggleMenu()">Técnicas de Pesca</a>
-    <a href="#cebos" onclick="toggleMenu()">Cebos y Marcas de Cebos</a>
-    <a href="#senluelos" onclick="toggleMenu()">Señuelos por Especie</a>
-    <a href="#montajes" onclick="toggleMenu()">Montajes</a>
-    <a href="#galeria" onclick="toggleMenu()">Equipamiento</a>
-    <a href="#aparejos" onclick="toggleMenu()">Aparejos</a>
+    <a href="#tecnicas">Técnicas de Pesca</a>
+    <a href="#cebos">Cebos y Marcas de Cebos</a>
+    <a href="#senluelos">Señuelos por Especie</a>
+    <a href="#montajes">Montajes</a>
+    <a href="#galeria">Equipamiento</a>
+    <a href="#aparejos">Aparejos</a>
   </div>
   <div class="mobile-cat-group">
     <div class="mobile-cat-title">Zonas de Pesca</div>
-    <a href="#zona" onclick="toggleMenu()">Zona Andaluza</a>
-    <a href="#embalses" onclick="toggleMenu()">Embalses</a>
-    <a href="#rios" onclick="toggleMenu()">Ríos</a>
+    <a href="#zona">Zona Andaluza</a>
+    <a href="#embalses">Embalses</a>
+    <a href="#rios">Ríos</a>
   </div>
   <div class="mobile-cat-group">
     <div class="mobile-cat-title">Especialidades</div>
-    <a href="#submarina" onclick="toggleMenu()">Pesca Submarina</a>
-    <a href="#flotabilidad" onclick="toggleMenu()">Flotabilidad</a>
-    <a href="#progresion" onclick="toggleMenu()">Guía 0→100</a>
+    <a href="#submarina">Pesca Submarina</a>
+    <a href="#flotabilidad">Flotabilidad</a>
+    <a href="#progresion">Guía 0→100</a>
   </div>
   <div class="mobile-cat-group">
     <div class="mobile-cat-title">Compras y Equipo</div>
-    <a href="#marcas" onclick="toggleMenu()">Marcas y Tiendas</a>
-    <a href="#acampada" onclick="toggleMenu()">Acampada</a>
+    <a href="#marcas">Marcas y Tiendas</a>
+    <a href="#acampada">Acampada</a>
   </div>
 </div>
 
@@ -3775,8 +3801,26 @@
 <script>
   // Mobile menu
   function toggleMenu() {
-    document.getElementById('mobileMenu').classList.toggle('open');
+    var mm = document.getElementById('mobileMenu');
+    var hb = document.querySelector('.nav-hamburger');
+    var willOpen = !mm.classList.contains('open');
+    mm.classList.toggle('open', willOpen);
+    if (hb) hb.classList.toggle('active', willOpen);
+    document.body.style.overflow = willOpen ? 'hidden' : '';
   }
+  function closeMenu() {
+    var mm = document.getElementById('mobileMenu');
+    if (!mm || !mm.classList.contains('open')) return;
+    mm.classList.remove('open');
+    var hb = document.querySelector('.nav-hamburger');
+    if (hb) hb.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  // Auto-close on link click (captures before tide transition)
+  document.addEventListener('click', function(e) {
+    var a = e.target.closest && e.target.closest('.mobile-menu a');
+    if (a) closeMenu();
+  }, true);
 
   // ─── TIDE PAGE TRANSITION ──────────────────────────────
   (function() {
@@ -3804,8 +3848,7 @@
     }
     function run(href, rx, ry) {
       busy = true;
-      var mm = document.getElementById('mobileMenu');
-      if (mm && mm.classList.contains('open')) mm.classList.remove('open');
+      if (typeof closeMenu === 'function') closeMenu();
       tide.style.setProperty('--rx', rx + 'px');
       tide.style.setProperty('--ry', ry + 'px');
       tide.classList.remove('leave');
