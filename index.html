@@ -115,21 +115,30 @@
     /* ─── CUSTOM CURSOR ────────────────────────────────────── */
     #cursor-dot {
       position: fixed; top: 0; left: 0; z-index: 99999;
-      width: 25px; height: 25px; margin: -12.5px 0 0 -12.5px;
+      width: 10px; height: 10px; margin: -5px 0 0 -5px;
       border-radius: 50%;
       background: var(--gold);
       pointer-events: none;
       will-change: transform;
-      transition: opacity .2s;
+      transition: opacity .2s, background-color .2s;
+      box-shadow: 0 0 10px rgba(201,168,76,.6);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-transform: translate3d(0,0,0);
     }
     #cursor-ring {
       position: fixed; top: 0; left: 0; z-index: 99998;
       width: 36px; height: 36px; margin: -18px 0 0 -18px;
       border-radius: 50%;
-      border: 1.5px solid rgba(201,168,76,.6);
+      border: 2px solid rgba(201,168,76,.7);
+      background: transparent;
       pointer-events: none;
       will-change: transform;
-      transition: border-color .2s;
+      transition: border-color .25s ease, width .25s ease, height .25s ease;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-transform: translate3d(0,0,0);
+      box-sizing: border-box;
     }
     #cursor-ring.hover { border-color: var(--gold); }
     ::selection { background: var(--gold); color: var(--bg); }
@@ -1911,7 +1920,7 @@
   <span class="tide-bubble"></span>
   <span class="tide-bubble"></span>
   <span class="tide-bubble"></span>
-  <img class="tide-logo" src="logotipo.png" alt=""/>
+  <img class="tide-logo" src="logotipo.png" alt="" loading="lazy" decoding="async"/>
   <div class="tide-text">FISHZONE</div>
 </div>
 
@@ -3938,8 +3947,8 @@
       let current = '';
       for (const s of sections) { if (y >= s.offsetTop - 100) current = s.id; }
       navCats.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-      if (fishL) fishL.style.transform = `translateY(${y * 0.15}px)`;
-      if (fishR) fishR.style.transform = `translateY(${y * 0.1}px) scaleX(-1)`;
+      if (fishL) fishL.style.transform = `translate3d(0,${y * 0.15}px,0)`;
+      if (fishR) fishR.style.transform = `translate3d(0,${y * 0.1}px,0) scaleX(-1)`;
       _tick = false;
     });
   }, { passive: true });
