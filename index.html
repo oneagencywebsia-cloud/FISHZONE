@@ -134,7 +134,8 @@
     #cursor-ring.hover { border-color: var(--gold); }
     ::selection { background: var(--gold); color: var(--bg); }
     a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
+    img { display: block; max-width: 100%; content-visibility: auto; }
+    section { contain: layout style; }
 
 
     /* ─── INTRO SCREEN SPECTACULAR ────────────────────────── */
@@ -1391,6 +1392,11 @@
       footer .container { text-align: center; }
       table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
       pre, code { white-space: pre-wrap; word-break: break-word; }
+      /* Perf: lighter backdrop + disable decorative loops */
+      nav, .mobile-menu { backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; }
+      .fish-swim, .hero-fish-left, .hero-fish-right, .bobber-float, .hook-drop, .line-cast, .ripple { display: none !important; }
+      .water-wave { animation-duration: 14s !important; opacity: .03 !important; }
+      * { -webkit-tap-highlight-color: transparent; }
     }
     @media (max-width: 480px) {
       section { padding: 3rem 0; }
