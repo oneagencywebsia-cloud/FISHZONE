@@ -180,6 +180,8 @@
         rgba(26,60,110,.5) 40%,
         transparent 100%);
       animation: waterGlowPulse 5s ease-in-out infinite;
+      will-change: opacity, transform;
+      transform-origin: bottom;
     }
     @keyframes waterGlowPulse {
       0%, 100% { opacity: .85; transform: scaleY(1); }
@@ -209,25 +211,28 @@
       position: absolute; inset: 0;
       background: radial-gradient(ellipse 100% 60% at 50% 100%, rgba(45,74,122,.6) 0%, transparent 70%);
       animation: introWaterPulse 4s ease-in-out infinite;
+      will-change: opacity;
     }
     @keyframes introWaterPulse {
-      0%, 100% { opacity: .8; transform: scaleY(1); }
-      50% { opacity: 1; transform: scaleY(1.05); }
+      0%, 100% { opacity: .8; }
+      50% { opacity: 1; }
     }
 
-    /* Ripple circles on intro */
+    /* Ripple circles on intro (GPU scale, not width/height) */
     .intro-ripple {
       position: absolute;
+      width: 40px; height: 40px;
       border-radius: 50%;
       border: 1px solid rgba(201,168,76,.2);
       animation: introRipple 5s ease-out infinite;
+      will-change: transform, opacity;
     }
     .intro-ripple:nth-child(1) { animation-delay: 0s; }
     .intro-ripple:nth-child(2) { animation-delay: 1.6s; }
     .intro-ripple:nth-child(3) { animation-delay: 3.2s; }
     @keyframes introRipple {
-      0% { width: 40px; height: 40px; opacity: .5; transform: translate(-50%, -50%); }
-      100% { width: 600px; height: 600px; opacity: 0; transform: translate(-50%, -50%); }
+      0% { opacity: .5; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(15); }
     }
 
     /* THE FISHING ROD CAST ANIMATION */
@@ -248,7 +253,9 @@
     #rod-group {
       transform-origin: 50px 220px;
       animation: rodSwing 1.8s cubic-bezier(.25,.46,.45,.94) forwards;
+      will-change: transform;
     }
+    #bobber-group { will-change: transform, opacity; }
     @keyframes rodSwing {
       0%   { transform: rotate(-75deg); }
       40%  { transform: rotate(20deg); }
@@ -3777,7 +3784,7 @@
     <p>Santaella · Córdoba · Andalucía</p>
     <p style="margin-top:.25rem">El conocimiento que todo pescador merece</p>
     <div class="footer-divider"></div>
-    <p style="font-size:.75rem;color:#4a5568">© 2025 FishZone — Guía de pesca profesional. Todo el contenido tiene fines educativos.<br>Respeta siempre la normativa vigente de pesca en tu comunidad autónoma.</p>
+    <p style="font-size:.75rem;color:#4a5568">© 2026 FishZone — Guía de pesca profesional. Todo el contenido tiene fines educativos.<br>Respeta siempre la normativa vigente de pesca en tu comunidad autónoma.</p>
     <div class="footer-links" style="flex-wrap:wrap;gap:1rem 2rem">
       <a href="#dulce">Agua Dulce</a>
       <a href="#salada">Agua Salada</a>
