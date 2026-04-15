@@ -4030,8 +4030,6 @@
     window.addEventListener('load', recalc);
     window.addEventListener('resize', recalc, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(recalc);
-    // ResizeObserver on body catches any late layout shifts (images, dynamic content)
-    if ('ResizeObserver' in window) new ResizeObserver(recalc).observe(document.body);
     function onScroll() {
       if (tick) return;
       tick = true;
