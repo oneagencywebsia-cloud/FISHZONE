@@ -66,8 +66,9 @@
     }
     /* Pause animations when element not in viewport (set by JS) */
     .anim-paused, .anim-paused * { animation-play-state: paused !important; }
-    /* Offscreen render skipping for heavy sections (huge perf win on mobile) */
-    section { content-visibility: auto; contain-intrinsic-size: 1px 1200px; }
+    /* content-visibility removed: it broke scrollIntoView/anchor targets
+       because placeholder intrinsic-size made offsets incorrect until expand */
+    section[id] { scroll-margin-top: calc(var(--nav-h) + 16px); }
     /* Force animated layers onto GPU compositor to avoid main-thread paints */
     .fish-swim, .hero-fish-left, .hero-fish-right, .bobber-float,
     .water-wave, .hook-drop, .line-cast, .ripple,
