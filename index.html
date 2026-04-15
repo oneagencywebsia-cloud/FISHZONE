@@ -2029,14 +2029,9 @@
       tide.classList.remove('leave');
       void tide.offsetWidth;
       tide.classList.add('active');
-      // Scroll twice: once when cortina fully covers (320ms), again right
-      // before it lifts (480ms) to correct any residual layout shift.
-      timers.push(setTimeout(function() { go(href); }, 320));
-      timers.push(setTimeout(function() { go(href); }, 480));
-      timers.push(setTimeout(function() {
-        tide.classList.remove('active');
-        tide.classList.add('leave');
-      }, 500));
+      // Scroll INSTANTLY (cortina is translucent, can't hide a delayed jump).
+      // Doing it synchronously at click-time eliminates the "amago" entirely.
+      go(href);
       timers.push(setTimeout(function() {
         tide.classList.remove('leave');
         busy = false;
