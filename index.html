@@ -2057,15 +2057,16 @@
       tide.style.setProperty('--rx', rx + 'px');
       tide.style.setProperty('--ry', ry + 'px');
       tide.classList.remove('leave');
-      void tide.offsetWidth;
-      // 1) Let the click animation paint UNCOVERED for ~280ms (iconPunch +
-      //    quickPulse + ripple are most visible in their first 0–300ms).
-      // 2) THEN raise the tide overlay and scroll. The user sees the click
-      //    react before the transition takes over.
-      timers.push(setTimeout(function() {
-        tide.classList.add('active');
-        go(href);
-      }, 280));
+      tide.classList.add('active');
+      // Scroll on the NEXT frame — gives the click animation (.clicked) one
+      // paint cycle to start rendering BEFORE the card scrolls out. The tide
+      // overlay starts fading in simultaneously, masking the scroll.
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { go(href); });
+      });
+      // Short busy lock: just enough to dedupe rapid double-clicks (300ms),
+      // not so long that the user feels stuck. After that, every click
+      // animates again because the click handler runs spawnRipple fresh.
       timers.push(setTimeout(function() {
         tide.classList.remove('leave');
         busy = false;
@@ -2074,7 +2075,7 @@
           var p = pending; pending = null;
           run(p.href, p.rx, p.ry);
         }
-      }, 1100));
+      }, 600));
     }
     function spawnRipple(host, e) {
       if (!host) return;
@@ -2115,8 +2116,9 @@
       var target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
-      // Spawn click animation BEFORE scrolling so it renders on the visible
-      // (still-fixed) nav button. quick-cards in the body get it too.
+      // ALWAYS spawn the click animation, even on busy/pending clicks. The
+      // animation lives on the card itself and is independent of the nav
+      // transition — the user must always see feedback on what they clicked.
       if (a.classList.contains('nav-cat') || a.classList.contains('quick-card')) {
         spawnRipple(a, e);
       }
