@@ -2006,36 +2006,38 @@
       busy = false;
       pending = null;
     }
+    var lockRAF = 0, lockUntil = 0;
     function go(hash) {
       var el = document.querySelector(hash);
       if (!el) return;
-      // 1. Force every fade-in to visible BEFORE measuring — fade-in elements
-      //    start with translateY(24px) which is fine for layout, but a few
-      //    have margin/height tied to .visible state. Lock everything.
+      // Lock fade-ins visible + eager-load lazy imgs to remove layout-shift sources.
       var fades = document.querySelectorAll('.fade-in:not(.visible)');
       for (var f = 0; f < fades.length; f++) fades[f].classList.add('visible');
-      // 2. Eager-load any lazy image so they cannot grow layout under us.
       var imgs = document.querySelectorAll('img[loading="lazy"]');
       for (var i = 0; i < imgs.length; i++) imgs[i].loading = 'eager';
       var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
-      function scrollNow() {
-        var top = el.getBoundingClientRect().top + window.scrollY - navH - 16;
-        window.scrollTo(0, Math.max(0, top));
+      function targetY() {
+        return Math.max(0, el.getBoundingClientRect().top + window.scrollY - navH - 16);
       }
-      scrollNow();
-      // Re-anchor across multiple frames + a final timeout so any late
-      // image decode / font swap cannot leave the user mid-section.
-      requestAnimationFrame(function() {
-        scrollNow();
-        requestAnimationFrame(function() {
-          scrollNow();
-          setTimeout(scrollNow, 60);
-          setTimeout(scrollNow, 180);
-          setTimeout(scrollNow, 380);
-        });
-      });
-      if (history.replaceState) history.replaceState(null, '', hash);
+      // Initial jump.
+      window.scrollTo(0, targetY());
+      if (history.replaceState) try { history.replaceState(null, '', hash); } catch (_) {}
+      // Lock to the element for 700ms — every animation frame, recompute
+      // target offset (it tracks #zona itself, not a stale Y) and clamp.
+      // Any layout shift gets cancelled the very next frame.
+      cancelAnimationFrame(lockRAF);
+      lockUntil = performance.now() + 700;
+      function tick() {
+        var y = targetY();
+        if (Math.abs(window.scrollY - y) > 0.5) window.scrollTo(0, y);
+        if (performance.now() < lockUntil) lockRAF = requestAnimationFrame(tick);
+      }
+      lockRAF = requestAnimationFrame(tick);
     }
+    // If the user scrolls with wheel/touch during the lock, release it.
+    ['wheel','touchstart','keydown'].forEach(function(ev) {
+      window.addEventListener(ev, function() { lockUntil = 0; }, { passive: true });
+    });
     function run(href, rx, ry) {
       busy = true;
       if (typeof closeMenu === 'function') closeMenu();
