@@ -2079,16 +2079,13 @@
     }
     function spawnRipple(host, e) {
       if (!host) return;
-      try { console.log('[FZ] spawnRipple', host.className, 'WAAPI:', !!host.animate); } catch(_) {}
-      // Visual heartbeat — proves spawnRipple ran, independent of WAAPI/CSS.
-      host.style.setProperty('outline', '4px solid #c9a84c', 'important');
-      host.style.setProperty('outline-offset', '4px', 'important');
-      setTimeout(function() {
-        host.style.removeProperty('outline');
-        host.style.removeProperty('outline-offset');
-      }, 700);
       // Unfreeze any anim-paused state from the IO observer up the tree.
       host.classList.remove('anim-paused');
+      // CRITICAL: kill the conflicting CSS animations (cardSlideUp + quickCardGlow
+      // infinite from .visible) and the :hover transform, so JS animations are
+      // the only thing affecting transform/box-shadow during the click.
+      host.style.setProperty('animation', 'none', 'important');
+      host.style.setProperty('pointer-events', 'auto');
       var pp = host.parentElement;
       while (pp && pp !== document.body) { pp.classList.remove('anim-paused'); pp = pp.parentElement; }
       var rect = host.getBoundingClientRect();
@@ -2121,37 +2118,65 @@
       } else {
         setTimeout(function() { if (rip.parentNode) rip.remove(); }, 800);
       }
-      // ── 2) HOST pulse (card or nav-cat) — Web Animations API ───────────
-      if (host.animate) {
-        var baseY = isCard ? -6 : -1;
-        var baseS = isCard ? 1.02 : 1;
-        host.animate(
-          [
-            { transform: 'translateY(' + baseY + 'px) scale(' + baseS + ')', boxShadow: '0 0 0 0 rgba(201,168,76,0)', offset: 0 },
-            { transform: 'translateY(' + (baseY - 4) + 'px) scale(' + (baseS + 0.05) + ')', boxShadow: '0 0 0 3px rgba(201,168,76,.7), 0 22px 60px rgba(201,168,76,.45), 0 0 80px rgba(201,168,76,.35)', offset: 0.35 },
-            { transform: 'translateY(' + (baseY + 1) + 'px) scale(' + (baseS - 0.04) + ')', boxShadow: '0 0 0 2px rgba(201,168,76,.5), 0 14px 40px rgba(201,168,76,.3)', offset: 0.65 },
-            { transform: 'translateY(' + baseY + 'px) scale(' + baseS + ')', boxShadow: '0 0 0 0 rgba(201,168,76,0)', offset: 1 }
-          ],
-          { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', composite: 'replace' }
-        );
-      }
-      // ── 3) ICON punch (only for quick-cards) ───────────────────────────
+      // ── 2+3) HOST pulse + ICON punch — INLINE rAF loop with !important ──
+      // We bypass the WAAPI/CSS cascade entirely. Inline styles with
+      // !important always win over :hover and any CSS animation.
       var icon = host.querySelector('.quick-icon');
-      if (icon && icon.animate) {
-        icon.animate(
-          [
-            { transform: 'scale(1) rotate(0deg)', filter: 'drop-shadow(0 0 0 rgba(201,168,76,0))' },
-            { transform: 'scale(1.4) rotate(-16deg)', filter: 'drop-shadow(0 0 14px rgba(255,235,180,1))', offset: 0.3 },
-            { transform: 'scale(.9) rotate(8deg)', filter: 'drop-shadow(0 0 8px rgba(255,235,180,.7))', offset: 0.6 },
-            { transform: 'scale(1.15) rotate(-3deg)', filter: 'drop-shadow(0 0 4px rgba(255,235,180,.4))' }
-          ],
-          { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' }
+      var start = performance.now();
+      var dur = 650;
+      function easeOutBack(t) { var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t-1,3) + c1 * Math.pow(t-1,2); }
+      function tickAnim(now) {
+        var t = (now - start) / dur;
+        if (t > 1) t = 1;
+        // Phase shape: 0→0.35 build-up, 0.35→0.65 overshoot, 0.65→1 settle.
+        var pulse, iconScale, iconRot;
+        if (t < 0.35) {
+          var p = t / 0.35;
+          pulse = p;
+          iconScale = 1 + 0.4 * easeOutBack(p);
+          iconRot = -16 * p;
+        } else if (t < 0.65) {
+          var p2 = (t - 0.35) / 0.30;
+          pulse = 1 - 0.5 * p2;
+          iconScale = 1.4 - 0.5 * p2;
+          iconRot = -16 + 24 * p2;
+        } else {
+          var p3 = (t - 0.65) / 0.35;
+          pulse = 0.5 * (1 - p3);
+          iconScale = 0.9 + 0.25 * p3 - 0.15 * p3 * p3;
+          iconRot = 8 - 11 * p3;
+        }
+        var hostScale = 1 + 0.05 * pulse;
+        var hostY = -6 - 4 * pulse;
+        host.style.setProperty('transform', 'translateY(' + hostY + 'px) scale(' + hostScale + ')', 'important');
+        host.style.setProperty('box-shadow',
+          '0 0 0 ' + (3 * pulse) + 'px rgba(201,168,76,' + (0.7 * pulse) + '),' +
+          '0 ' + (22 * pulse) + 'px ' + (60 * pulse) + 'px rgba(201,168,76,' + (0.45 * pulse) + '),' +
+          '0 0 ' + (80 * pulse) + 'px rgba(201,168,76,' + (0.35 * pulse) + ')',
+          'important'
         );
-        // Reset to natural state after animation so :hover still works later.
-        setTimeout(function() {
-          if (icon.getAnimations) icon.getAnimations().forEach(function(a){ a.cancel(); });
-        }, 900);
+        host.style.setProperty('border-color', 'rgba(201,168,76,' + (0.4 + 0.6 * pulse) + ')', 'important');
+        if (icon) {
+          icon.style.setProperty('transform', 'scale(' + iconScale + ') rotate(' + iconRot + 'deg)', 'important');
+          icon.style.setProperty('filter', 'drop-shadow(0 0 ' + (14 * pulse) + 'px rgba(255,235,180,' + Math.min(1, pulse + 0.3) + '))', 'important');
+          icon.style.setProperty('box-shadow', '0 0 ' + (28 * pulse) + 'px rgba(201,168,76,' + (0.7 * pulse) + ')', 'important');
+        }
+        if (t < 1) {
+          requestAnimationFrame(tickAnim);
+        } else {
+          // Restore CSS control completely.
+          host.style.removeProperty('transform');
+          host.style.removeProperty('box-shadow');
+          host.style.removeProperty('border-color');
+          host.style.removeProperty('animation');
+          if (icon) {
+            icon.style.removeProperty('transform');
+            icon.style.removeProperty('filter');
+            icon.style.removeProperty('box-shadow');
+          }
+        }
       }
+      requestAnimationFrame(tickAnim);
     }
     document.addEventListener('click', function(e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
