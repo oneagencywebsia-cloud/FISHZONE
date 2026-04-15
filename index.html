@@ -2052,6 +2052,18 @@
         }
       }, 840));
     }
+    function spawnRipple(host, e) {
+      if (!host) return;
+      var rect = host.getBoundingClientRect();
+      var isCard = host.classList.contains('quick-card');
+      var rip = document.createElement(isCard ? 'div' : 'span');
+      rip.className = 'ripple-click';
+      var size = Math.max(rect.width, rect.height) * (isCard ? 2.2 : 2.4);
+      rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (e.clientX - rect.left - size/2) + 'px;top:' + (e.clientY - rect.top - size/2) + 'px';
+      host.appendChild(rip);
+      host.classList.add('clicked');
+      setTimeout(function() { host.classList.remove('clicked'); rip.remove(); }, 720);
+    }
     document.addEventListener('click', function(e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       var a = e.target.closest && e.target.closest('a[href^="#"]');
@@ -2061,6 +2073,11 @@
       var target = document.querySelector(href);
       if (!target) return;
       e.preventDefault();
+      // Spawn click animation BEFORE scrolling so it renders on the visible
+      // (still-fixed) nav button. quick-cards in the body get it too.
+      if (a.classList.contains('nav-cat') || a.classList.contains('quick-card')) {
+        spawnRipple(a, e);
+      }
       var rx = (e.clientX || window.innerWidth / 2);
       var ry = (e.clientY || window.innerHeight / 2);
       if (busy) { pending = { href: href, rx: rx, ry: ry }; return; }
@@ -2220,22 +2237,7 @@
     ).forEach(function(el) { io.observe(el); });
   })();
 
-  // ─── NAV-CAT CLICK RIPPLE + SMOOTH NAVIGATE ─────
-  document.querySelectorAll('.nav-cat').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      var href = btn.getAttribute('href');
-      var rect = btn.getBoundingClientRect();
-      var rip = document.createElement('span');
-      rip.className = 'ripple-click';
-      var size = Math.max(rect.width, rect.height) * 2.4;
-      rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (e.clientX - rect.left - size/2) + 'px;top:' + (e.clientY - rect.top - size/2) + 'px';
-      btn.appendChild(rip);
-      btn.classList.add('clicked');
-      // Scroll handled centrally by tide-transition click handler — do NOT
-      // call scrollIntoView here or two scrollers fight and land on the wrong section.
-      setTimeout(function() { btn.classList.remove('clicked'); rip.remove(); }, 700);
-    });
-  });
+  // nav-cat ripple now spawned by central tide click handler (spawnRipple).
 
   // Auto-scroll nav-categories to keep .active item visible (rAF batched)
   (function() {
@@ -2261,22 +2263,9 @@
     });
   })();
 
-  // ─── QUICK CARD CLICK RIPPLE + SMOOTH NAVIGATE ─────
+  // quick-card click ripple now spawned by central tide handler (spawnRipple).
+  // Hover cast animation kept here.
   document.querySelectorAll('.quick-card').forEach(function(card) {
-    card.addEventListener('click', function(e) {
-      var href = card.getAttribute('href');
-      var rect = card.getBoundingClientRect();
-      var rip = document.createElement('div');
-      rip.className = 'ripple-click';
-      var size = Math.max(rect.width, rect.height) * 2.2;
-      rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (e.clientX - rect.left - size/2) + 'px;top:' + (e.clientY - rect.top - size/2) + 'px';
-      card.appendChild(rip);
-      card.classList.add('clicked');
-      // Scroll handled centrally by tide-transition click handler — do NOT
-      // call scrollIntoView here or two scrollers fight and land on the wrong section.
-      setTimeout(function() { card.classList.remove('clicked'); rip.remove(); }, 750);
-    });
-    // Cast line animation on hover
     card.addEventListener('mouseenter', function() {
       var icon = card.querySelector('.quick-icon');
       if (icon) icon.style.animation = 'castPop .4s cubic-bezier(.34,1.56,.64,1) forwards';
