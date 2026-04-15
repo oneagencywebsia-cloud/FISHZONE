@@ -2009,6 +2009,13 @@
     function go(hash) {
       var el = document.querySelector(hash);
       if (!el) return;
+      // Force-load any lazy images BEFORE the target so layout stops shifting.
+      var imgs = document.querySelectorAll('img[loading="lazy"]');
+      for (var i = 0; i < imgs.length; i++) {
+        if (imgs[i].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
+          imgs[i].loading = 'eager';
+        }
+      }
       var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
       var top = el.getBoundingClientRect().top + window.scrollY - navH - 16;
       window.scrollTo(0, Math.max(0, top));
@@ -2022,7 +2029,10 @@
       tide.classList.remove('leave');
       void tide.offsetWidth;
       tide.classList.add('active');
-      timers.push(setTimeout(function() { go(href); }, 280));
+      // Scroll twice: once when cortina fully covers (320ms), again right
+      // before it lifts (480ms) to correct any residual layout shift.
+      timers.push(setTimeout(function() { go(href); }, 320));
+      timers.push(setTimeout(function() { go(href); }, 480));
       timers.push(setTimeout(function() {
         tide.classList.remove('active');
         tide.classList.add('leave');
