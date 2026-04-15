@@ -4078,12 +4078,9 @@
       if (href && href.charAt(0) === '#') {
         e.preventDefault();
         var target = document.querySelector(href);
-        setTimeout(function() {
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          btn.classList.remove('clicked');
-        }, 360);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      setTimeout(function() { rip.remove(); }, 700);
+      setTimeout(function() { btn.classList.remove('clicked'); rip.remove(); }, 700);
     });
   });
 
@@ -4122,16 +4119,14 @@
       rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (e.clientX - rect.left - size/2) + 'px;top:' + (e.clientY - rect.top - size/2) + 'px';
       card.appendChild(rip);
       card.classList.add('clicked');
-      // Delay navigation so ripple + pulse are visible
+      // Navigate immediately — delayed scroll drifted because lazy images
+      // below the fold shifted layout mid-animation and target offset changed.
       if (href && href.charAt(0) === '#') {
         e.preventDefault();
         var target = document.querySelector(href);
-        setTimeout(function() {
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          card.classList.remove('clicked');
-        }, 380);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      setTimeout(function() { rip.remove(); }, 750);
+      setTimeout(function() { card.classList.remove('clicked'); rip.remove(); }, 750);
     });
     // Cast line animation on hover
     card.addEventListener('mouseenter', function() {
