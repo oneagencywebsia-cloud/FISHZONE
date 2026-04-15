@@ -2063,7 +2063,7 @@
       timers.push(setTimeout(function() {
         tide.classList.add('active');
         go(href);
-      }, 160));
+      }, 350));
       timers.push(setTimeout(function() {
         tide.classList.remove('leave');
         busy = false;
@@ -2077,24 +2077,34 @@
     function spawnRipple(host, e) {
       if (!host) return;
       var icon = host.querySelector('.quick-icon');
-      // Web Animations API: composite 'replace' con prioridad de animación,
-      // ignora completamente la cascada CSS (hover, visible, glow, etc.).
+      // FLASH overlay: creamos un div hijo con position:absolute que cubre
+      // toda la card con un destello dorado. Esto es 100% independiente de
+      // cualquier animación CSS, hover, transform, o cascada.
       try {
-        if (host.__clickAnim) host.__clickAnim.cancel();
-        host.__clickAnim = host.animate([
-          { transform: 'translateY(0) scale(1)', boxShadow: '0 0 0 0 rgba(201,168,76,0), 0 0 0 0 rgba(0,0,0,0)', borderColor: 'rgba(201,168,76,1)' },
-          { transform: 'translateY(-16px) scale(1.12)', boxShadow: '0 0 0 4px rgba(201,168,76,.95), 0 28px 70px rgba(201,168,76,.6), 0 0 100px rgba(201,168,76,.5)', borderColor: 'rgba(255,220,120,1)', offset: 0.35 },
-          { transform: 'translateY(-6px) scale(1.04)', boxShadow: '0 0 0 2px rgba(201,168,76,.6), 0 16px 40px rgba(201,168,76,.35), 0 0 60px rgba(201,168,76,.3)', borderColor: 'rgba(201,168,76,.9)', offset: 0.7 },
-          { transform: 'translateY(0) scale(1)', boxShadow: '0 0 0 0 rgba(201,168,76,0)', borderColor: 'rgba(201,168,76,.5)' }
-        ], { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', composite: 'replace', iterations: 1, fill: 'none' });
+        var flash = document.createElement('div');
+        flash.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at center,rgba(255,220,120,.95) 0%,rgba(201,168,76,.85) 30%,rgba(201,168,76,.5) 60%,rgba(201,168,76,0) 100%);pointer-events:none;z-index:99;mix-blend-mode:screen;opacity:0;transform:scale(.4);transition:none;will-change:opacity,transform';
+        host.appendChild(flash);
+        // Force reflow then animate via WAAPI (más fiable que transition).
+        void flash.offsetWidth;
+        var a1 = flash.animate([
+          { opacity: 0, transform: 'scale(.4)' },
+          { opacity: 1, transform: 'scale(1.05)', offset: 0.25 },
+          { opacity: .85, transform: 'scale(1.2)', offset: 0.5 },
+          { opacity: 0, transform: 'scale(1.6)' }
+        ], { duration: 700, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+        a1.onfinish = function() { if (flash.parentNode) flash.parentNode.removeChild(flash); };
+        // Y además anima la card y el icono — por si funciona.
+        host.animate([
+          { transform: 'translateY(0) scale(1)' },
+          { transform: 'translateY(-16px) scale(1.12)', offset: 0.35 },
+          { transform: 'translateY(0) scale(1)' }
+        ], { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'none' });
         if (icon) {
-          if (icon.__clickAnim) icon.__clickAnim.cancel();
-          icon.__clickAnim = icon.animate([
+          icon.animate([
             { transform: 'scale(1) rotate(0deg)', filter: 'drop-shadow(0 0 0 rgba(255,235,180,0))' },
             { transform: 'scale(1.55) rotate(-20deg)', filter: 'drop-shadow(0 0 18px rgba(255,235,180,1))', offset: 0.4 },
-            { transform: 'scale(1.15) rotate(-6deg)', filter: 'drop-shadow(0 0 10px rgba(255,235,180,.6))', offset: 0.7 },
             { transform: 'scale(1) rotate(0deg)', filter: 'drop-shadow(0 0 0 rgba(255,235,180,0))' }
-          ], { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', composite: 'replace', iterations: 1, fill: 'none' });
+          ], { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'none' });
         }
       } catch (err) {}
     }
