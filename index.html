@@ -2059,9 +2059,11 @@
       tide.classList.remove('leave');
       void tide.offsetWidth;
       tide.classList.add('active');
-      // Scroll INSTANTLY (cortina is translucent, can't hide a delayed jump).
-      // Doing it synchronously at click-time eliminates the "amago" entirely.
-      go(href);
+      // Defer scroll ~180ms so the click animation (iconPunch + quickPulse +
+      // ripple) has time to PAINT before the card scrolls out of viewport
+      // and gets frozen by the anim-paused IntersectionObserver. The tide
+      // overlay covers the visual gap during this delay.
+      timers.push(setTimeout(function() { go(href); }, 180));
       timers.push(setTimeout(function() {
         tide.classList.remove('leave');
         busy = false;
@@ -2070,7 +2072,7 @@
           var p = pending; pending = null;
           run(p.href, p.rx, p.ry);
         }
-      }, 840));
+      }, 1000));
     }
     function spawnRipple(host, e) {
       if (!host) return;
@@ -2087,10 +2089,12 @@
       var cy = (e.clientY || (rect.top + rect.height / 2));
       rip.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (cx - rect.left - size/2) + 'px;top:' + (cy - rect.top - size/2) + 'px';
       host.appendChild(rip);
-      // Force reflow BEFORE adding .clicked so both the ripple element
-      // and the .clicked animations restart cleanly on every click.
-      void rip.offsetWidth;
+      // Force reflow on the host AFTER ripple insert + class removal so when
+      // we add .clicked the browser sees a clean state and restarts animations.
+      void host.offsetWidth;
       host.classList.add('clicked');
+      // Second reflow to ensure ripple element animation also kicks in.
+      void rip.offsetWidth;
       // 900ms covers iconPunch + quickPulse + ripple expansion comfortably.
       setTimeout(function() {
         host.classList.remove('clicked');
