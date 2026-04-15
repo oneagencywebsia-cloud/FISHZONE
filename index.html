@@ -2079,7 +2079,10 @@
     function spawnRipple(host, e) {
       if (!host) return;
       // Re-click safety: kill any leftover state from a previous click on this host.
-      host.classList.remove('clicked');
+      host.classList.remove('clicked', 'anim-paused');
+      // Also unfreeze ancestors that may carry anim-paused from the IO observer.
+      var p = host.parentElement;
+      while (p && p !== document.body) { p.classList.remove('anim-paused'); p = p.parentElement; }
       var oldRips = host.querySelectorAll('.ripple-click');
       for (var k = 0; k < oldRips.length; k++) oldRips[k].remove();
       var rect = host.getBoundingClientRect();
@@ -2272,7 +2275,7 @@
       });
     }, { rootMargin: '200px 0px' });
     document.querySelectorAll(
-      'section, .fish-swim, .hero-fish-left, .hero-fish-right, .water-wave, .bobber-float, .hook-drop, .line-cast, .ripple'
+      'section:not(#quick-nav), .fish-swim, .hero-fish-left, .hero-fish-right, .water-wave, .bobber-float, .hook-drop, .line-cast, .ripple'
     ).forEach(function(el) { io.observe(el); });
   })();
 
