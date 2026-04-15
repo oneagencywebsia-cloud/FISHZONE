@@ -2009,7 +2009,8 @@
     function go(hash) {
       var el = document.querySelector(hash);
       if (!el) return;
-      // Force-load any lazy images BEFORE the target so layout stops shifting.
+      // Eager-load any lazy image BEFORE the target so layout cannot grow
+      // beneath us and shift the target downward after the scroll.
       var imgs = document.querySelectorAll('img[loading="lazy"]');
       for (var i = 0; i < imgs.length; i++) {
         if (imgs[i].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
@@ -2017,8 +2018,17 @@
         }
       }
       var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
-      var top = el.getBoundingClientRect().top + window.scrollY - navH - 16;
-      window.scrollTo(0, Math.max(0, top));
+      function scrollNow() {
+        var top = el.getBoundingClientRect().top + window.scrollY - navH - 16;
+        window.scrollTo(0, Math.max(0, top));
+      }
+      scrollNow();
+      // Re-anchor on the next two frames in case anything (font swap, image
+      // decode, fade-in) shifted layout between scroll and paint.
+      requestAnimationFrame(function() {
+        scrollNow();
+        requestAnimationFrame(scrollNow);
+      });
       if (history.replaceState) history.replaceState(null, '', hash);
     }
     function run(href, rx, ry) {
