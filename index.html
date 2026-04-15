@@ -2079,6 +2079,14 @@
     }
     function spawnRipple(host, e) {
       if (!host) return;
+      try { console.log('[FZ] spawnRipple', host.className, 'WAAPI:', !!host.animate); } catch(_) {}
+      // Visual heartbeat — proves spawnRipple ran, independent of WAAPI/CSS.
+      host.style.setProperty('outline', '4px solid #c9a84c', 'important');
+      host.style.setProperty('outline-offset', '4px', 'important');
+      setTimeout(function() {
+        host.style.removeProperty('outline');
+        host.style.removeProperty('outline-offset');
+      }, 700);
       // Unfreeze any anim-paused state from the IO observer up the tree.
       host.classList.remove('anim-paused');
       var pp = host.parentElement;
