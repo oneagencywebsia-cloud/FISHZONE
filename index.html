@@ -112,9 +112,9 @@
 .hero-content{position:relative;z-index:2}
 @media (max-width:768px){.hero-fish-swim.f2,.hero-fish-swim.f4,.hero-fish-swim.f5,.hero-fish-swim.f7{display:none}.hero-bubbles b:nth-child(n+8){display:none}.hero-particles i:nth-child(n+5){display:none}.hero-caustics{animation-duration:30s}}
 @media (prefers-reduced-motion:reduce){.hero-bg-scene::before,.hero-bg-scene::after,.hero-caustics,.hero-wave-path,.hero-fish-swim,.hero-fish-swim .body,.hero-fish-swim .tail,.hero-bubbles b,.hero-particles i,.hero-rays{animation:none}}
-/* ═════ FISH IMG - fondo marino con bordes difuminados ═════ */
-.fish-img{object-fit:contain !important;background:radial-gradient(ellipse 110% 90% at 50% 40%,#1d4372 0%,#0e2649 45%,#051024 100%) !important;padding:10px;filter:saturate(1.15) contrast(1.05);border:none !important;-webkit-mask:radial-gradient(ellipse 110% 110% at 50% 50%,#000 60%,rgba(0,0,0,.85) 78%,rgba(0,0,0,.4) 92%,transparent 100%);mask:radial-gradient(ellipse 110% 110% at 50% 50%,#000 60%,rgba(0,0,0,.85) 78%,rgba(0,0,0,.4) 92%,transparent 100%);box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 40px rgba(26,155,138,.08) !important}
-.trio-img{height:130px !important;padding:6px;background:radial-gradient(ellipse 110% 95% at 50% 40%,#1a3a65 0%,#0c2040 45%,#050f1f 100%) !important}
+/* ═════ FISH IMG - cuadrado solido con glow exterior difuminado ═════ */
+.fish-img{object-fit:contain !important;background:radial-gradient(ellipse 110% 90% at 50% 40%,#1d4372 0%,#0e2649 45%,#051024 100%) !important;padding:8px;filter:saturate(1.15) contrast(1.05);border:1px solid rgba(201,168,76,.2) !important;border-radius:var(--radius) !important;box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 1px rgba(26,155,138,.08),0 0 40px 8px rgba(29,67,114,.35),0 0 80px 12px rgba(26,155,138,.12) !important}
+.trio-img{height:130px !important;padding:4px;background:radial-gradient(ellipse 110% 95% at 50% 40%,#1a3a65 0%,#0c2040 45%,#050f1f 100%) !important;box-shadow:0 4px 20px rgba(0,0,0,.35),0 0 24px 4px rgba(29,67,114,.3) !important}
 @media (max-width:640px){.trio-img{height:90px !important}}
 /* Card contenedor con glow y efectos cinematográficos */
 .card{position:relative}
