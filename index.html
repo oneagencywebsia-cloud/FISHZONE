@@ -2057,13 +2057,13 @@
       tide.style.setProperty('--rx', rx + 'px');
       tide.style.setProperty('--ry', ry + 'px');
       tide.classList.remove('leave');
-      // Pequeño delay para que se vea el primer frame de la animación de click
-      // antes de que la marea cubra la card. La animación sigue corriendo bajo
-      // la marea (550ms total) — solo necesitamos mostrar el "punch" inicial.
+      void tide.offsetWidth;
+      tide.classList.add('active');
+      timers.push(setTimeout(function() { go(href); }, 280));
       timers.push(setTimeout(function() {
-        tide.classList.add('active');
-        go(href);
-      }, 350));
+        tide.classList.remove('active');
+        tide.classList.add('leave');
+      }, 500));
       timers.push(setTimeout(function() {
         tide.classList.remove('leave');
         busy = false;
@@ -2072,41 +2072,10 @@
           var p = pending; pending = null;
           run(p.href, p.rx, p.ry);
         }
-      }, 900));
+      }, 840));
     }
     function spawnRipple(host, e) {
-      if (!host) return;
-      var icon = host.querySelector('.quick-icon');
-      // FLASH overlay: creamos un div hijo con position:absolute que cubre
-      // toda la card con un destello dorado. Esto es 100% independiente de
-      // cualquier animación CSS, hover, transform, o cascada.
-      try {
-        var flash = document.createElement('div');
-        flash.style.cssText = 'position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at center,rgba(255,220,120,.95) 0%,rgba(201,168,76,.85) 30%,rgba(201,168,76,.5) 60%,rgba(201,168,76,0) 100%);pointer-events:none;z-index:99;mix-blend-mode:screen;opacity:0;transform:scale(.4);transition:none;will-change:opacity,transform';
-        host.appendChild(flash);
-        // Force reflow then animate via WAAPI (más fiable que transition).
-        void flash.offsetWidth;
-        var a1 = flash.animate([
-          { opacity: 0, transform: 'scale(.4)' },
-          { opacity: 1, transform: 'scale(1.05)', offset: 0.25 },
-          { opacity: .85, transform: 'scale(1.2)', offset: 0.5 },
-          { opacity: 0, transform: 'scale(1.6)' }
-        ], { duration: 700, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
-        a1.onfinish = function() { if (flash.parentNode) flash.parentNode.removeChild(flash); };
-        // Y además anima la card y el icono — por si funciona.
-        host.animate([
-          { transform: 'translateY(0) scale(1)' },
-          { transform: 'translateY(-16px) scale(1.12)', offset: 0.35 },
-          { transform: 'translateY(0) scale(1)' }
-        ], { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'none' });
-        if (icon) {
-          icon.animate([
-            { transform: 'scale(1) rotate(0deg)', filter: 'drop-shadow(0 0 0 rgba(255,235,180,0))' },
-            { transform: 'scale(1.55) rotate(-20deg)', filter: 'drop-shadow(0 0 18px rgba(255,235,180,1))', offset: 0.4 },
-            { transform: 'scale(1) rotate(0deg)', filter: 'drop-shadow(0 0 0 rgba(255,235,180,0))' }
-          ], { duration: 650, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'none' });
-        }
-      } catch (err) {}
+      // No-op: la animación de transición es el tide sweep (raya azul/dorada).
     }
     document.addEventListener('click', function(e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
