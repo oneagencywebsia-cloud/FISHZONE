@@ -111,7 +111,13 @@
 @keyframes raysDrift{0%{transform:translateX(-5%) skewX(-2deg);opacity:.4}100%{transform:translateX(5%) skewX(2deg);opacity:.7}}
 .hero-content{position:relative;z-index:2}
 @media (max-width:768px){.hero-fish-swim.f2,.hero-fish-swim.f4,.hero-fish-swim.f5,.hero-fish-swim.f7{display:none}.hero-bubbles b:nth-child(n+8){display:none}.hero-particles i:nth-child(n+5){display:none}.hero-caustics{animation-duration:30s}}
-@media (prefers-reduced-motion:reduce){.hero-bg-scene::before,.hero-bg-scene::after,.hero-caustics,.hero-wave-path,.hero-fish-swim,.hero-fish-swim .body,.hero-fish-swim .tail,.hero-bubbles b,.hero-particles i,.hero-rays{animation:none}}</style>
+@media (prefers-reduced-motion:reduce){.hero-bg-scene::before,.hero-bg-scene::after,.hero-caustics,.hero-wave-path,.hero-fish-swim,.hero-fish-swim .body,.hero-fish-swim .tail,.hero-bubbles b,.hero-particles i,.hero-rays{animation:none}}
+/* Trío tenca/perca/brema: object-fit:contain con fondo para NO cortar peces */
+.trio-img{height:130px !important;object-fit:contain !important;background:radial-gradient(ellipse at center,#0e2844 0%,#061020 100%) !important;padding:4px}
+@media (max-width:640px){.trio-img{height:90px !important}}
+/* Todas las fish-img: contain con fondo marino - jamás cortar peces */
+.fish-img{object-fit:contain !important;background:radial-gradient(ellipse 100% 80% at 50% 40%,#143355 0%,#0a1e3a 55%,#050f1f 100%) !important;padding:6px}
+.fish-img[alt="Tenca"],.fish-img[alt="Perca"],.fish-img[alt="Brema"]{padding:4px}</style>
 </head>
 <body>
 
@@ -576,10 +582,10 @@
 
       <!-- TENCA / PERCA / BREMA -->
       <div class="card">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem">
-          <img class="fish-img" src="img/tenca.webp" srcset="img/tenca-m.webp 165w, img/tenca.webp 330w" sizes="(max-width: 640px) 165px, 330px" alt="Tenca" width="330" height="200" loading="lazy" decoding="async"/>
-          <img class="fish-img" src="img/perca.webp" srcset="img/perca-m.webp 165w, img/perca.webp 330w" sizes="(max-width: 640px) 165px, 330px" alt="Perca" width="330" height="200" loading="lazy" decoding="async"/>
-          <img class="fish-img" src="img/brema.webp" srcset="img/brema-m.webp 165w, img/brema.webp 330w" sizes="(max-width: 640px) 165px, 330px" alt="Brema" width="330" height="200" loading="lazy" decoding="async"/>
+        <div class="trio-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem">
+          <img class="fish-img trio-img" src="img/tenca.webp" srcset="img/tenca-m.webp 165w, img/tenca.webp 330w" sizes="(max-width: 640px) 110px, 165px" alt="Tenca" width="330" height="200" loading="lazy" decoding="async"/>
+          <img class="fish-img trio-img" src="img/perca.webp" srcset="img/perca-m.webp 165w, img/perca.webp 330w" sizes="(max-width: 640px) 110px, 165px" alt="Perca" width="330" height="200" loading="lazy" decoding="async"/>
+          <img class="fish-img trio-img" src="img/brema.webp" srcset="img/brema-m.webp 165w, img/brema.webp 330w" sizes="(max-width: 640px) 110px, 165px" alt="Brema" width="330" height="200" loading="lazy" decoding="async"/>
         </div>
         <div style="display:grid;gap:1rem">
           <div>
