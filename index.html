@@ -200,9 +200,12 @@
 @keyframes orbitS3{0%{transform:rotate(0deg) translateX(28%) rotate(0deg)}100%{transform:rotate(360deg) translateX(28%) rotate(-360deg)}}
 @media (max-width:768px){.hero-orb{opacity:.35;width:min(480px,90vw);height:min(480px,90vw)}.hero-orb-ring.r4{display:none}}
 @media (prefers-reduced-motion:reduce){.hero-orb-core,.hero-orb-ring,.hero-orb-satellite{animation:none}}
-#intro-screen,.intro-rod-wrapper,.intro-logo-img,#rod-group,#bobber-group,#fishing-line,#splash-rings,.intro-tagline,.intro-sub,.intro-water-glow,.intro-water-surface,.intro-ripple,.intro-stars{transform:translate3d(0,0,0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.rod-svg,.intro-rod-wrapper svg{shape-rendering:geometricPrecision;will-change:transform}
-#rod-group,#bobber-group{transform-box:fill-box}</style>
+#intro-screen,.intro-rod-wrapper,.intro-logo-img,#rod-group,#bobber-group,#fishing-line,#splash-rings,.intro-tagline,.intro-sub,.intro-water-glow,.intro-water-surface,.intro-ripple,.intro-stars{backface-visibility:hidden;-webkit-backface-visibility:hidden;-webkit-transform:translateZ(0)}
+.rod-svg,.intro-rod-wrapper svg{shape-rendering:geometricPrecision;will-change:transform;-webkit-transform:translateZ(0);transform:translateZ(0)}
+#rod-group,#bobber-group{transform-box:fill-box;will-change:transform,opacity}
+#intro-screen{isolation:isolate;contain:layout style;-webkit-perspective:1000;perspective:1000}
+.intro-tagline,.intro-sub,.intro-skip,.intro-bar-track{will-change:opacity,transform;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.intro-stars,.intro-water-glow,.intro-water-surface,.intro-ripple{will-change:opacity,transform;-webkit-transform:translateZ(0);transform:translateZ(0)}</style>
 </head>
 <body>
 
