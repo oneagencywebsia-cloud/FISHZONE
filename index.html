@@ -290,14 +290,12 @@ body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsi
     </svg>
   </div>
 
-  <!-- Logo image - responsive: móvil 512, desktop 1024 -->
+  <!-- Logo image - maximum quality (2048 fijo, no tocar) -->
   <div class="intro-logo-glow" aria-hidden="true"></div>
   <picture>
-    <source type="image/webp" media="(max-width:640px)" srcset="logotipo-512.webp" />
-    <source type="image/png" media="(max-width:640px)" srcset="logotipo-512.png" />
-    <source type="image/webp" srcset="logotipo-1024.webp" />
-    <source type="image/png" srcset="logotipo-1024.png" />
-    <img src="logotipo-1024.webp" alt="FishZone" class="intro-logo-img" width="1024" height="1024" fetchpriority="high" decoding="async" /></picture>
+    <source type="image/webp" srcset="logotipo-2048.webp" />
+    <source type="image/png" srcset="logotipo-2048.png" />
+    <img src="logotipo-2048.webp" alt="FishZone" class="intro-logo-img" width="2048" height="2048" fetchpriority="high" decoding="async" /></picture>
 
   <div class="intro-tagline">Fish<span>Zone</span></div>
   <div class="intro-sub">El conocimiento que todo pescador merece</div>
