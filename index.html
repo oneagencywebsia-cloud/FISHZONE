@@ -23,18 +23,12 @@
   <meta name="twitter:title" content="FishZone — El conocimiento que todo pescador merece" />
   <meta name="twitter:description" content="Guía experta de pesca en agua dulce y salada. Técnicas, especies y zonas de Andalucía." />
   <meta name="twitter:image" content="https://fishzone.es/og-image.jpg" />
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="logotipo-1024.webp" type="image/webp" fetchpriority="high" />
-  <link rel="preload" as="image" href="logotipo.webp" type="image/webp" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <meta name="color-scheme" content="dark" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -203,16 +197,7 @@
 @keyframes orbitS2{0%{transform:rotate(0deg) translateX(34%) rotate(0deg)}100%{transform:rotate(-360deg) translateX(34%) rotate(360deg)}}
 @keyframes orbitS3{0%{transform:rotate(0deg) translateX(28%) rotate(0deg)}100%{transform:rotate(360deg) translateX(28%) rotate(-360deg)}}
 @media (max-width:768px){.hero-orb{opacity:.35;width:min(480px,90vw);height:min(480px,90vw)}.hero-orb-ring.r4{display:none}}
-@media (prefers-reduced-motion:reduce){.hero-orb-core,.hero-orb-ring,.hero-orb-satellite,.hero-fish-swim,.hero-bubbles b,.hero-particles i,.hero-waves path,.hero-caustics,.hero-rays{animation:none!important}}
-*{-webkit-tap-highlight-color:transparent}
-html{text-rendering:optimizeSpeed;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-img,picture,video,svg{max-width:100%;height:auto}
-img{image-rendering:auto}
-section,article,.card,.section-block,footer{content-visibility:auto;contain-intrinsic-size:1px 800px}
-#hero,nav,header{content-visibility:visible}
-.fish-img,.trio-img{contain:layout paint style;will-change:auto;transform:translateZ(0);backface-visibility:hidden}
-.hero-bg-scene,.hero-fish-swim,.hero-orb,.hero-bubbles,.hero-particles,.hero-waves,.hero-caustics,.hero-rays{will-change:transform,opacity;transform:translateZ(0);backface-visibility:hidden;pointer-events:none}
-.hero-bg-scene.paused *,.hero-bg-scene.paused{animation-play-state:paused!important}</style>
+@media (prefers-reduced-motion:reduce){.hero-orb-core,.hero-orb-ring,.hero-orb-satellite{animation:none}}</style>
 </head>
 <body>
 
@@ -2507,14 +2492,6 @@ section,article,.card,.section-block,footer{content-visibility:auto;contain-intr
     });
     // Prevent scroll during intro
     document.body.style.overflow = 'hidden';
-  })();
-
-  // Perf: passive touch listeners globally (reduces scroll jank on mobile)
-  (function(){
-    var opts = { passive: true, capture: false };
-    ['touchstart','touchmove','wheel'].forEach(function(ev){
-      window.addEventListener(ev, function(){}, opts);
-    });
   })();
 
 </script>
