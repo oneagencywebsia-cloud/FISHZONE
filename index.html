@@ -207,9 +207,11 @@
 #rod-group,#bobber-group{transform-box:fill-box;will-change:transform,opacity}
 #intro-screen{isolation:isolate;contain:layout style;-webkit-perspective:1000;perspective:1000}
 .intro-tagline,.intro-sub,.intro-skip,.intro-bar-track{will-change:opacity,transform;-webkit-transform:translateZ(0);transform:translateZ(0)}
-.intro-stars,.intro-water-glow,.intro-water-surface,.intro-water,.intro-ripple{will-change:opacity;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style paint}</style>
+.intro-stars,.intro-water-glow,.intro-water-surface,.intro-water,.intro-ripple{will-change:opacity;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style paint}
+body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsic-size:1px 1000px}</style>
 </head>
-<body>
+<body class="intro-active">
+<script>document.documentElement.classList.add('intro-active')</script>
 
 <div id="tide-transition" aria-hidden="true">
   <div class="tide-bg"></div>
@@ -2472,6 +2474,7 @@
     // Dismiss after 3.3 seconds (rod swing + line + bobber drop + splash complete)
     setTimeout(function() {
       intro.classList.add('fade-out');
+      document.body.classList.remove('intro-active');
       setTimeout(function() {
         intro.remove();
         document.body.style.overflow = '';
@@ -2481,6 +2484,7 @@
     // Also allow click/tap to skip
     intro.addEventListener('click', function() {
       intro.classList.add('fade-out');
+      document.body.classList.remove('intro-active');
       setTimeout(function() { intro.remove(); document.body.style.overflow = ''; window.dispatchEvent(new Event('resize')); }, 700);
     });
     // Prevent scroll during intro
