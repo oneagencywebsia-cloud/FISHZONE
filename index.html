@@ -208,7 +208,7 @@
 #intro-screen{isolation:isolate;contain:layout style;-webkit-perspective:1000;perspective:1000}
 .intro-tagline,.intro-sub,.intro-skip,.intro-bar-track{will-change:opacity,transform;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .intro-stars,.intro-water-glow,.intro-water-surface,.intro-water,.intro-ripple{will-change:opacity;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style paint}
-body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsic-size:1px 1000px}</style>
+body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::before,body.intro-active>:not(#intro-screen)::after{animation-play-state:paused !important;transition:none !important}</style>
 </head>
 <body class="intro-active">
 <script>document.documentElement.classList.add('intro-active')</script>
@@ -2121,7 +2121,7 @@ body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsi
   <div class="container">
         <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem">
       <div style="position:relative;display:inline-block"><div class="footer-logo-glow"></div>
-        <img src="logotipo-2048.webp" alt="FishZone Logo" class="footer-real-logo" width="2048" height="2048" loading="lazy" decoding="async" style="width:140px;height:140px;object-fit:contain;position:relative;z-index:1;"/>
+        <img src="logotipo-1024.webp" alt="FishZone Logo" class="footer-real-logo" width="1024" height="1024" loading="lazy" decoding="async" style="width:140px;height:140px;object-fit:contain;position:relative;z-index:1;"/>
         
       </div>
       <div class="footer-logo" style="font-family:'Bebas Neue',sans-serif;letter-spacing:0;font-size:2rem">Fish<span>Zone</span></div>
