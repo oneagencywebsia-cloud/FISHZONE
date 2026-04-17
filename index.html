@@ -288,12 +288,14 @@
     </svg>
   </div>
 
-  <!-- Logo image - maximum quality (1024px source → crisp at any DPR) -->
+  <!-- Logo image - responsive (móvil usa 1024px, desktop 2048px) -->
   <div class="intro-logo-glow" aria-hidden="true"></div>
   <picture>
+    <source type="image/webp" media="(max-width:640px)" srcset="logotipo-1024.webp" />
+    <source type="image/png" media="(max-width:640px)" srcset="logotipo-1024.png" />
     <source type="image/webp" srcset="logotipo-2048.webp" />
     <source type="image/png" srcset="logotipo-2048.png" />
-    <img src="logotipo-2048.webp" alt="FishZone" class="intro-logo-img" width="2048" height="2048" fetchpriority="high" decoding="sync" /></picture>
+    <img src="logotipo-1024.webp" alt="FishZone" class="intro-logo-img" width="1024" height="1024" fetchpriority="high" decoding="async" /></picture>
 
   <div class="intro-tagline">Fish<span>Zone</span></div>
   <div class="intro-sub">El conocimiento que todo pescador merece</div>
