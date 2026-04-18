@@ -2409,30 +2409,79 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
   const fishL = document.querySelector('.hero-fish-left');
   const fishR = document.querySelector('.hero-fish-right');
   let _tick = false;
-  let _sectionTops = [];
-  function _cacheSectionTops() {
-    const arr = [];
-    for (const s of sections) arr.push({ id: s.id, top: s.offsetTop - 100 });
-    _sectionTops = arr;
+  // ─── ACTIVE NAV STATE via IntersectionObserver ──────────────
+  // rootMargin '-20% 0px -60% 0px' = zona activa = banda horizontal
+  // entre 20%-40% de altura del viewport. Solo cuando la sección ocupa
+  // ese tercio superior-central se marca activa. Evita que dos secciones
+  // adyacentes coincidan y el activo "parpadee" entre ellas.
+  const _activeMap = new Map();
+  let _forcedActive = null;     // id forzado por click (tiene prioridad durante scroll animado)
+  let _forcedUntil = 0;
+  function _applyActive() {
+    let current = _forcedActive;
+    if (!current || performance.now() > _forcedUntil) {
+      current = null;
+      // Entre todas las secciones intersectando la banda activa, elegir la
+      // más cercana al top del viewport (orden DOM garantiza coherencia).
+      let bestTop = Infinity;
+      _activeMap.forEach((rect, id) => {
+        if (rect && rect.top >= 0 && rect.top < bestTop) { bestTop = rect.top; current = id; }
+      });
+      // Fallback: si ninguna está intersecting pero hay scroll, elegir la
+      // última cuyo top < viewport/2.
+      if (!current) {
+        const mid = window.innerHeight / 2;
+        for (const s of sections) {
+          const r = s.getBoundingClientRect();
+          if (r.top < mid) current = s.id;
+        }
+      }
+    }
+    navCats.forEach(a => {
+      // Remove-all-then-set: garantiza exclusividad del estado activo.
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
   }
-  const _idle = window.requestIdleCallback || function(cb){ return setTimeout(cb, 1); };
-  _idle(_cacheSectionTops);
-  let _rz;
-  window.addEventListener('resize', () => { clearTimeout(_rz); _rz = setTimeout(_cacheSectionTops, 150); }, { passive: true });
+  if ('IntersectionObserver' in window) {
+    const activeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          _activeMap.set(entry.target.id, entry.boundingClientRect);
+        } else {
+          _activeMap.delete(entry.target.id);
+        }
+      });
+      _applyActive();
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+    sections.forEach(s => activeObserver.observe(s));
+  }
+  // Force-active on click: la clase .active se aplica al instante sin
+  // esperar a que el smooth-scroll cruce los umbrales del observer.
+  document.addEventListener('click', function(e) {
+    const a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#') return;
+    _forcedActive = href.slice(1);
+    _forcedUntil = performance.now() + 900;   // ventana del smooth-scroll
+    navCats.forEach(x => {
+      x.classList.remove('active');
+      if (x.getAttribute('href') === href) x.classList.add('active');
+    });
+  }, true);
   var _parallaxActive = true;
   if ('IntersectionObserver' in window && (fishL || fishR)) {
     var _pio = new IntersectionObserver(function(es){ _parallaxActive = es.some(function(e){return e.isIntersecting;}); }, { rootMargin: '100px 0px' });
     if (fishL) _pio.observe(fishL);
     if (fishR) _pio.observe(fishR);
   }
+  // Parallax scroll (active-state ahora lo maneja el IntersectionObserver).
   window.addEventListener('scroll', () => {
     if (_tick) return;
     _tick = true;
     requestAnimationFrame(() => {
       const y = window.scrollY;
-      let current = '';
-      for (const s of _sectionTops) { if (y >= s.top) current = s.id; }
-      navCats.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
       if (_parallaxActive) {
         if (fishL) fishL.style.transform = `translate3d(0,${y * 0.15}px,0)`;
         if (fishR) fishR.style.transform = `translate3d(0,${y * 0.1}px,0) scaleX(-1)`;
