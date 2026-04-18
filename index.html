@@ -2176,11 +2176,9 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
     if (hb) hb.classList.remove('active');
     document.body.style.overflow = '';
   }
-  // Auto-close on link click (captures before tide transition)
-  document.addEventListener('click', function(e) {
-    var a = e.target.closest && e.target.closest('.mobile-menu a');
-    if (a) closeMenu();
-  }, true);
+  // Auto-close is handled INSIDE the tide-transition listener now to guarantee
+  // single-pass body.overflow reset before getBoundingClientRect. Keeping a
+  // second capture listener here caused double layout shift during nav.
 
   // ─── TIDE PAGE TRANSITION ──────────────────────────────
   (function() {
@@ -2200,8 +2198,9 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       pending = null;
     }
     var lockRAF = 0, lockUntil = 0;
-    function go(hash) {
-      var el = document.querySelector(hash);
+    function go(hash, preEl) {
+      // Prefer the element captured at click-time; fall back to fresh query.
+      var el = preEl && preEl.isConnected ? preEl : document.querySelector(hash);
       if (!el) return;
       // Close mobile menu FIRST so body.overflow reset happens before any
       // getBoundingClientRect measurement. Otherwise unlocking the scroll
@@ -2279,7 +2278,16 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       tide.classList.remove('leave');
       void tide.offsetWidth;
       tide.classList.add('active');
-      timers.push(setTimeout(function() { go(href); }, 280));
+      // Pre-resolve target NOW (at click-time), not inside setTimeout — DOM may
+      // mutate during the 280ms (fade-in observer, lazy inserts) and change
+      // geometry. Capture the element reference, then re-measure inside go().
+      var preEl = null;
+      try {
+        var preId = href.slice(1);
+        var preSel = '#' + (window.CSS && CSS.escape ? CSS.escape(preId) : preId);
+        preEl = document.querySelector(preSel) || document.getElementById(preId);
+      } catch (_) { preEl = null; }
+      timers.push(setTimeout(function() { go(href, preEl); }, 280));
       timers.push(setTimeout(function() {
         tide.classList.remove('active');
         tide.classList.add('leave');
