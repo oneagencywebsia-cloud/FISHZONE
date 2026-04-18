@@ -2203,6 +2203,10 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
     function go(hash) {
       var el = document.querySelector(hash);
       if (!el) return;
+      // Close mobile menu FIRST so body.overflow reset happens before any
+      // getBoundingClientRect measurement. Otherwise unlocking the scroll
+      // after measure causes viewport to shift, landing on wrong section.
+      if (typeof closeMenu === 'function') closeMenu();
       // Lock fade-ins visible + eager-load lazy imgs to remove layout-shift sources.
       var fades = document.querySelectorAll('.fade-in:not(.visible)');
       for (var f = 0; f < fades.length; f++) fades[f].classList.add('visible');
@@ -2249,10 +2253,17 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       }
       lockRAF = requestAnimationFrame(tick);
     }
-    // If the user scrolls with wheel/touch during the lock, release it.
-    ['wheel','touchstart','keydown'].forEach(function(ev) {
-      window.addEventListener(ev, function() { lockUntil = 0; }, { passive: true });
-    });
+    // Release the lock only on genuine user-initiated scroll intent, NOT on
+    // every incidental touchstart (which fires on taps, card hover, etc. and
+    // was killing the lock before it could re-anchor after layout shift).
+    // wheel: always intentional. keydown: only scroll keys.
+    window.addEventListener('wheel', function() { lockUntil = 0; }, { passive: true });
+    window.addEventListener('keydown', function(e) {
+      // PageUp/Down, Home/End, Space, Arrows — actual scroll intent keys
+      if ([32,33,34,35,36,38,40].indexOf(e.keyCode) !== -1) lockUntil = 0;
+    }, { passive: true });
+    // touchmove (not touchstart) signals real scroll intent on mobile
+    window.addEventListener('touchmove', function() { lockUntil = 0; }, { passive: true });
     function run(href, rx, ry) {
       busy = true;
       if (typeof closeMenu === 'function') closeMenu();
@@ -2296,7 +2307,13 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       }
       var rx = (e.clientX || window.innerWidth / 2);
       var ry = (e.clientY || window.innerHeight / 2);
-      if (busy) { pending = { href: href, rx: rx, ry: ry }; return; }
+      if (busy) {
+        // Don't queue stale navigation from a prior click; the latest click
+        // wins AND we force-reset the current transition so the user lands
+        // on the intended section without waiting 840ms for the queue.
+        pending = null;
+        reset();
+      }
       run(href, rx, ry);
     }, true);
     window.addEventListener('pagehide', reset);
