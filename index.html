@@ -30,6 +30,9 @@
   <meta name="twitter:image" content="https://fishzone.es/og-image.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <meta name="color-scheme" content="dark" />
   <link rel="preload" as="image" href="logotipo-512-v3.webp" imagesrcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" type="image/webp" fetchpriority="high" media="(max-width:768px)" />
   <link rel="preload" as="image" href="logotipo-512-v3-pc.webp" imagesrcset="logotipo-512-v3-pc.webp 1x, logotipo-1024-v3-pc.webp 2x" type="image/webp" fetchpriority="high" media="(min-width:769px)" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" />
@@ -214,7 +217,24 @@
 #intro-screen{isolation:isolate;contain:layout style;-webkit-perspective:1000;perspective:1000}
 .intro-tagline,.intro-sub,.intro-skip,.intro-bar-track{will-change:opacity,transform;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .intro-stars,.intro-water-glow,.intro-water-surface,.intro-water,.intro-ripple{will-change:opacity;-webkit-transform:translateZ(0);transform:translateZ(0);contain:layout style paint}
-body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::before,body.intro-active>:not(#intro-screen)::after{animation-play-state:paused !important;transition:none !important}</style>
+body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::before,body.intro-active>:not(#intro-screen)::after{animation-play-state:paused !important;transition:none !important}
+/* ─── OPTIMIZACIONES DE RENDIMIENTO ADICIONALES (SAFE, NO BREAKING) ─── */
+/* Evita scroll-chaining del body cuando el mobile menu está abierto (ahorra repaint) */
+html,body{overscroll-behavior-y:none}
+.mobile-menu{overscroll-behavior:contain}
+/* Hit-test skip: decorativos no responden a eventos (libera CPU del raycaster) */
+.hero-fish-left,.hero-fish-right,.fish-swim,.hero-orb,.hero-orb-ring,.hero-caustics,.water-wave,.ripple,.intro-stars,.intro-water,.intro-water-glow,.intro-water-surface,.intro-ripple,.hook-drop,.line-cast,.bobber-float,#scroll-progress,#tide-transition,.bar-fill{pointer-events:none}
+/* text-size-adjust: evita re-layouts en rotación de pantalla iOS */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+/* img-rendering: fuerza pipeline GPU rápido en lugar de smooth CPU en móviles */
+@media (max-width:768px){
+  .fish-img,.tech-card img,.location-card img,.bait-card img,.gear-card img,.rig-card img{image-rendering:auto;transform:translateZ(0)}
+  /* Desactiva transiciones costosas de hover en táctiles (no se usan, liberan compositor) */
+  .card:hover,.tech-card:hover,.bait-card:hover,.gear-card:hover,.location-card:hover,.rig-card:hover{transform:none !important}
+}
+/* Reduce paint de elementos fuera del viewport aunque no tengan content-visibility */
+.fade-in:not(.visible){contain:layout paint style}
+</style>
 </head>
 <body class="intro-active">
 <script>document.documentElement.classList.add('intro-active')</script>
