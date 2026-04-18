@@ -2236,7 +2236,14 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       var htmlEl = document.documentElement;
       var prevBehavior = htmlEl.style.scrollBehavior;
       htmlEl.style.scrollBehavior = 'auto';
-      window.scrollTo(0, targetY());
+      var initialY = targetY();
+      try {
+        window.scrollTo(0, initialY);
+      } catch (_) {
+        // Fallback: older Safari may throw on scrollTo(0, N) under some
+        // content-visibility states. scrollIntoView is guaranteed to work.
+        el.scrollIntoView({ block: 'start', behavior: 'auto' });
+      }
       if (history.replaceState) try { history.replaceState(null, '', hash); } catch (_) {}
       // Lock to the element for 1200ms — layout shift from lazy images and
       // content-visibility expansion can arrive up to ~1s after scroll starts.
@@ -2292,13 +2299,23 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
     }
     document.addEventListener('click', function(e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      // Resolve the real anchor regardless of which inner element was clicked
+      // (SVG path, span, icon). closest() walks up, so event.target losing
+      // reference to the <a> cannot break navigation.
+      var src = e.target;
+      if (!src || !src.closest) return;
+      var a = src.closest('a[href^="#"]');
       if (!a) return;
       var href = a.getAttribute('href');
       if (!href || href === '#' || href.length < 2) return;
-      var target = document.querySelector(href);
+      // CSS.escape guards against IDs starting with digits or containing
+      // special chars (querySelector would throw on "#1foo").
+      var id = href.slice(1);
+      var safeSel = '#' + (window.CSS && CSS.escape ? CSS.escape(id) : id);
+      var target = document.querySelector(safeSel) || document.getElementById(id);
       if (!target) return;
       e.preventDefault();
+      e.stopPropagation();
       // ALWAYS spawn the click animation, even on busy/pending clicks. The
       // animation lives on the card itself and is independent of the nav
       // transition — the user must always see feedback on what they clicked.
