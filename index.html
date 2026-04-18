@@ -25,7 +25,8 @@
   <meta name="twitter:image" content="https://fishzone.es/og-image.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="image" href="logotipo-512-v3.webp" imagesrcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" type="image/webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="logotipo-512-v3.webp" imagesrcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" type="image/webp" fetchpriority="high" media="(max-width:768px)" />
+  <link rel="preload" as="image" href="logotipo-512-v3-pc.webp" imagesrcset="logotipo-512-v3-pc.webp 1x, logotipo-1024-v3-pc.webp 2x" type="image/webp" fetchpriority="high" media="(min-width:769px)" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
@@ -236,7 +237,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
   <span class="tide-bubble"></span>
   <span class="tide-bubble"></span>
   <span class="tide-bubble"></span>
-  <img class="tide-logo" src="logotipo-512-v3.webp" srcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" alt="" width="200" height="200" loading="lazy" decoding="async"/>
+  <picture><source media="(min-width:769px)" type="image/webp" srcset="logotipo-512-v3-pc.webp 1x, logotipo-1024-v3-pc.webp 2x" /><img class="tide-logo" src="logotipo-512-v3.webp" srcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" alt="" width="200" height="200" loading="lazy" decoding="async"/></picture>
   <div class="tide-text">FISHZONE</div>
 </div>
 
@@ -292,6 +293,8 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
 
   <!-- Logo image - srcset para retina (1024 solo si DPR>=2) -->
   <picture>
+    <source media="(min-width:769px)" type="image/webp" srcset="logotipo-512-v3-pc.webp 1x, logotipo-1024-v3-pc.webp 2x" />
+    <source media="(min-width:769px)" type="image/png" srcset="logotipo-512-v3-pc.png 1x, logotipo-1024-v3-pc.png 2x" />
     <source type="image/webp" srcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" />
     <source type="image/png" srcset="logotipo-512-v3.png 1x, logotipo-1024-v3.png 2x" />
     <img src="logotipo-512-v3.webp" srcset="logotipo-512-v3.webp 1x, logotipo-1024-v3.webp 2x" alt="FishZone" class="intro-logo-img" width="512" height="512" fetchpriority="high" decoding="async" /></picture>
@@ -309,7 +312,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
 <nav>
   <div class="container">
     <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;cursor:none">
-      <img src="logotipo-512-v3.png" srcset="logotipo-512-v3.png 1x, logotipo-1024-v3.png 2x" alt="FishZone Logo" class="nav-logo-real-img" width="46" height="46" fetchpriority="high" decoding="async" style="width:46px;height:46px;object-fit:contain;"/>
+      <picture><source media="(min-width:769px)" type="image/webp" srcset="logotipo-v3-pc.webp 1x, logotipo-512-v3-pc.webp 2x" /><source media="(min-width:769px)" type="image/png" srcset="logotipo-v3-pc.png 1x, logotipo-512-v3-pc.png 2x" /><img src="logotipo-512-v3.png" srcset="logotipo-512-v3.png 1x, logotipo-1024-v3.png 2x" alt="FishZone Logo" class="nav-logo-real-img" width="46" height="46" fetchpriority="high" decoding="async" style="width:46px;height:46px;object-fit:contain;"/></picture>
       Fish<span>Zone</span>
     </div>
     <ul class="nav-categories">
@@ -2120,7 +2123,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
   <div class="container">
         <div style="display:flex;flex-direction:column;align-items:center;gap:.75rem">
       <div style="position:relative;display:inline-block"><div class="footer-logo-glow"></div>
-        <img src="logotipo-512-v3.png" srcset="logotipo-512-v3.png 1x, logotipo-1024-v3.png 2x" alt="FishZone Logo" class="footer-real-logo" width="140" height="140" loading="lazy" decoding="async" style="width:140px;height:140px;object-fit:contain;position:relative;z-index:1;background:transparent;"/>
+        <picture><source media="(min-width:769px)" type="image/webp" srcset="logotipo-512-v3-pc.webp 1x, logotipo-1024-v3-pc.webp 2x" /><source media="(min-width:769px)" type="image/png" srcset="logotipo-512-v3-pc.png 1x, logotipo-1024-v3-pc.png 2x" /><img src="logotipo-512-v3.png" srcset="logotipo-512-v3.png 1x, logotipo-1024-v3.png 2x" alt="FishZone Logo" class="footer-real-logo" width="140" height="140" loading="lazy" decoding="async" style="width:140px;height:140px;object-fit:contain;position:relative;z-index:1;background:transparent;"/></picture>
         
       </div>
       <div class="footer-logo" style="font-family:'Bebas Neue',sans-serif;letter-spacing:0;font-size:2rem">Fish<span>Zone</span></div>

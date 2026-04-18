@@ -17,6 +17,14 @@ COPY logotipo-1024-v3.webp /usr/share/nginx/html/logotipo-1024-v3.webp
 COPY logotipo-1024-v3.png /usr/share/nginx/html/logotipo-1024-v3.png
 COPY logotipo-2048-v3.webp /usr/share/nginx/html/logotipo-2048-v3.webp
 COPY logotipo-2048-v3.png /usr/share/nginx/html/logotipo-2048-v3.png
+COPY logotipo-v3-pc.webp /usr/share/nginx/html/logotipo-v3-pc.webp
+COPY logotipo-v3-pc.png /usr/share/nginx/html/logotipo-v3-pc.png
+COPY logotipo-512-v3-pc.webp /usr/share/nginx/html/logotipo-512-v3-pc.webp
+COPY logotipo-512-v3-pc.png /usr/share/nginx/html/logotipo-512-v3-pc.png
+COPY logotipo-1024-v3-pc.webp /usr/share/nginx/html/logotipo-1024-v3-pc.webp
+COPY logotipo-1024-v3-pc.png /usr/share/nginx/html/logotipo-1024-v3-pc.png
+COPY logotipo-2048-v3-pc.webp /usr/share/nginx/html/logotipo-2048-v3-pc.webp
+COPY logotipo-2048-v3-pc.png /usr/share/nginx/html/logotipo-2048-v3-pc.png
 COPY img/ /usr/share/nginx/html/img/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
