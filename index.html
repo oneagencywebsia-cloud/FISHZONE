@@ -2320,26 +2320,54 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       // special chars (querySelector would throw on "#1foo").
       var id = href.slice(1);
       var safeSel = '#' + (window.CSS && CSS.escape ? CSS.escape(id) : id);
-      var target = document.querySelector(safeSel) || document.getElementById(id);
-      if (!target) return;
+      var destino = document.querySelector(safeSel) || document.getElementById(id);
+      if (!destino) return;
       e.preventDefault();
       e.stopPropagation();
-      // ALWAYS spawn the click animation, even on busy/pending clicks. The
-      // animation lives on the card itself and is independent of the nav
-      // transition — the user must always see feedback on what they clicked.
-      if (a.classList.contains('nav-cat') || a.classList.contains('quick-card')) {
-        spawnRipple(a, e);
+      // ─── CUSTOM SMOOTH SCROLL (OVERRIDE matemático) ───────────────
+      // Forzar render de content-visibility hasta el target, eager-load de
+      // imgs y .fade-in visibles — PRIMERO, para que getBoundingClientRect
+      // mida geometría real post-expansión.
+      var fades = document.querySelectorAll('.fade-in:not(.visible)');
+      for (var f = 0; f < fades.length; f++) fades[f].classList.add('visible');
+      var imgs = document.querySelectorAll('img[loading="lazy"]');
+      for (var i = 0; i < imgs.length; i++) imgs[i].loading = 'eager';
+      var cvSections = document.querySelectorAll('section[id]');
+      for (var s = 0; s < cvSections.length; s++) {
+        cvSections[s].style.contentVisibility = 'visible';
+        if (cvSections[s] === destino) break;
       }
+      if (typeof closeMenu === 'function') closeMenu();
+      var intro = document.getElementById('intro-screen');
+      if (intro) { intro.remove(); document.body.style.overflow = ''; }
+      // Sync layout flush — clave: sin esto, el navegador no ha pintado la
+      // expansión de content-visibility y el rect mide sobre el placeholder.
+      void document.body.offsetHeight;
+      // Medición matemática EXACTA en este milisegundo.
+      var headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;
+      var offsetTop = destino.getBoundingClientRect().top + window.scrollY;
+      // Lanzar la animación visual (tide sweep) en paralelo al scroll —
+      // no bloquea el desplazamiento, solo aporta feedback visual.
       var rx = (e.clientX || window.innerWidth / 2);
       var ry = (e.clientY || window.innerHeight / 2);
-      if (busy) {
-        // Don't queue stale navigation from a prior click; the latest click
-        // wins AND we force-reset the current transition so the user lands
-        // on the intended section without waiting 840ms for the queue.
-        pending = null;
-        reset();
-      }
-      run(href, rx, ry);
+      tide.style.setProperty('--rx', rx + 'px');
+      tide.style.setProperty('--ry', ry + 'px');
+      tide.classList.remove('leave');
+      void tide.offsetWidth;
+      tide.classList.add('active');
+      clearTimers();
+      timers.push(setTimeout(function() {
+        tide.classList.remove('active'); tide.classList.add('leave');
+      }, 500));
+      timers.push(setTimeout(function() {
+        tide.classList.remove('leave'); busy = false; timers.length = 0;
+      }, 840));
+      // Scroll suave nativo con offset manual de -80 — el navegador respeta
+      // scroll-behavior:smooth del {top,behavior} inline aunque html tenga
+      // scroll-behavior:smooth global.
+      window.scrollTo({ top: Math.max(0, offsetTop - headerH), behavior: 'smooth' });
+      if (history.replaceState) try { history.replaceState(null, '', href); } catch (_) {}
+      busy = true;
     }, true);
     window.addEventListener('pagehide', reset);
     document.addEventListener('visibilitychange', function() {
