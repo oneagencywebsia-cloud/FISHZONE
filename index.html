@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()" />
   <title>FishZone — Guía experta de pesca en agua dulce y salada | Andalucía</title>
   <meta name="description" content="FishZone: guía experta de pesca deportiva en agua dulce y salada. Técnicas, especies, cebos, montajes, embalses y zonas de Andalucía y Santaella (Córdoba). Para todos los niveles, del principiante al experto." />
   <meta name="keywords" content="pesca, pesca deportiva, pesca Andalucía, pesca Santaella, Córdoba, agua dulce, agua salada, técnicas pesca, cebos, señuelos, embalses, black bass, carpa, lubina, FishZone" />
@@ -1224,27 +1229,27 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
     <div class="grid-3 stagger fade-in" style="margin-bottom:2rem">
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><div><h3>Santaella y Campiña</h3><span>Córdoba · Dulce</span></div></div>
-        <div class="location-body"><p>Zona de referencia en la campiña cordobesa. El embalse de Malpasillo y el río Genil a su paso por la zona ofrecen carpas de gran tamaño, barbos ibericos y black bass en abundancia.</p><div class="species-tags"><span class="species-tag">Carpa</span><span class="species-tag">Barbo Ibérico</span><span class="species-tag">Black Bass</span><span class="species-tag">Pez Gato</span></div><a href="https://www.google.com/maps/search/Embalse+de+Malpasillo+Santaella+C%C3%B3rdoba" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>Zona de referencia en la campiña cordobesa. El embalse de Malpasillo y el río Genil a su paso por la zona ofrecen carpas de gran tamaño, barbos ibericos y black bass en abundancia.</p><div class="species-tags"><span class="species-tag">Carpa</span><span class="species-tag">Barbo Ibérico</span><span class="species-tag">Black Bass</span><span class="species-tag">Pez Gato</span></div><a href="https://www.google.com/maps/search/Embalse+de+Malpasillo+Santaella+C%C3%B3rdoba" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><div><h3>Sierra Nevada</h3><span>Granada · Trucheros</span></div></div>
-        <div class="location-body"><p>Los ríos de alta montaña de Sierra Nevada albergan la trucha común autóctona en cotos bien conservados. Río Genil alto, Río Monachil y Río Dílar son los más destacados de la temporada.</p><div class="species-tags"><span class="species-tag">Trucha Común</span><span class="species-tag">Trucha Arcoíris</span></div><a href="https://www.google.com/maps/search/Rio+Genil+Sierra+Nevada+pesca+trucha" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>Los ríos de alta montaña de Sierra Nevada albergan la trucha común autóctona en cotos bien conservados. Río Genil alto, Río Monachil y Río Dílar son los más destacados de la temporada.</p><div class="species-tags"><span class="species-tag">Trucha Común</span><span class="species-tag">Trucha Arcoíris</span></div><a href="https://www.google.com/maps/search/Rio+Genil+Sierra+Nevada+pesca+trucha" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><div><h3>Costa de Huelva y Cádiz</h3><span>Atlántico · Surfcasting</span></div></div>
-        <div class="location-body"><p>Playas infinitas del Atlántico andaluz: El Rompido, Matalascañas, Conil, Barbate. Paraíso del surfcasting con doradas, lubinas, corvinas y lenguados todo el año.</p><div class="species-tags"><span class="species-tag">Dorada</span><span class="species-tag">Lubina</span><span class="species-tag">Lenguado</span><span class="species-tag">Corvina</span></div><a href="https://www.google.com/maps/search/El+Rompido+Huelva+pesca+surfcasting" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>Playas infinitas del Atlántico andaluz: El Rompido, Matalascañas, Conil, Barbate. Paraíso del surfcasting con doradas, lubinas, corvinas y lenguados todo el año.</p><div class="species-tags"><span class="species-tag">Dorada</span><span class="species-tag">Lubina</span><span class="species-tag">Lenguado</span><span class="species-tag">Corvina</span></div><a href="https://www.google.com/maps/search/El+Rompido+Huelva+pesca+surfcasting" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><div><h3>Doñana</h3><span>Huelva · Especial protección</span></div></div>
-        <div class="location-body"><p>Parque Nacional con zonas periféricas donde la pesca está permitida con licencia especial. Anguilas, carpas y múgiles en las marismas. Zona de excepcional valor natural.</p><div class="species-tags"><span class="species-tag">Anguila</span><span class="species-tag">Carpa</span><span class="species-tag">Múgil</span></div><a href="https://www.google.com/maps/search/Parque+Nacional+Doñana+zona+pesca+autorizada" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>Parque Nacional con zonas periféricas donde la pesca está permitida con licencia especial. Anguilas, carpas y múgiles en las marismas. Zona de excepcional valor natural.</p><div class="species-tags"><span class="species-tag">Anguila</span><span class="species-tag">Carpa</span><span class="species-tag">Múgil</span></div><a href="https://www.google.com/maps/search/Parque+Nacional+Doñana+zona+pesca+autorizada" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><div><h3>Costa del Sol</h3><span>Málaga · Mediterráneo</span></div></div>
-        <div class="location-body"><p>El Mediterráneo malagueño ofrece fondos rocosos excepcionales para sargo, pargo, mero y oblada. Playas como Nerja y Maro son referencia para la pesca submarina y el spinning desde roca.</p><div class="species-tags"><span class="species-tag">Sargo</span><span class="species-tag">Pargo</span><span class="species-tag">Mero</span><span class="species-tag">Oblada</span></div><a href="https://www.google.com/maps/search/Nerja+Maro+pesca+roca+Málaga" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>El Mediterráneo malagueño ofrece fondos rocosos excepcionales para sargo, pargo, mero y oblada. Playas como Nerja y Maro son referencia para la pesca submarina y el spinning desde roca.</p><div class="species-tags"><span class="species-tag">Sargo</span><span class="species-tag">Pargo</span><span class="species-tag">Mero</span><span class="species-tag">Oblada</span></div><a href="https://www.google.com/maps/search/Nerja+Maro+pesca+roca+Málaga" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><div><h3>Estrecho de Gibraltar</h3><span>Cádiz · Aguas convergentes</span></div></div>
-        <div class="location-body"><p>Punto donde se mezclan Atlántico y Mediterráneo. Aguas con corrientes intensas y gran riqueza ictiológica. Atún rojo, melva, serrucho y pez espada en temporada de paso.</p><div class="species-tags"><span class="species-tag">Atún Rojo</span><span class="species-tag">Melva</span><span class="species-tag">Pez Espada</span></div><a href="https://www.google.com/maps/search/Tarifa+Estrecho+Gibraltar+pesca" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>Punto donde se mezclan Atlántico y Mediterráneo. Aguas con corrientes intensas y gran riqueza ictiológica. Atún rojo, melva, serrucho y pez espada en temporada de paso.</p><div class="species-tags"><span class="species-tag">Atún Rojo</span><span class="species-tag">Melva</span><span class="species-tag">Pez Espada</span></div><a href="https://www.google.com/maps/search/Tarifa+Estrecho+Gibraltar+pesca" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
     </div>
 
@@ -1301,7 +1306,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
           <div class="embalse-section"><h4>Técnicas</h4><p style="font-size:.83rem;color:var(--muted)">Carpfishing en bahías noreste, spinning para bass en ramas sumergidas, feeder para barbo en entradas de río.</p></div>
           <div class="embalse-section"><h4>Puntos Clave</h4><ul class="detail-list"><li>Zona de la presa: agua profunda, carpas grandes invernales</li><li>Brazos norte: vegetación acuática, bass en primavera</li><li>Entrada río Genil: barbo muy activo en otoño</li></ul></div>
         
-          <a href="https://www.google.com/maps/search/Embalse+de+Malpasillo+Santaella+C%C3%B3rdoba" target="_blank" rel="noopener" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+          <a href="https://www.google.com/maps/search/Embalse+de+Malpasillo+Santaella+C%C3%B3rdoba" target="_blank" rel="noopener noreferrer" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="embalse-card fade-in">
         <div class="embalse-header" style="position:relative"><h3>Embalse de Iznájar</h3><div class="embalse-meta">Córdoba-Granada · 981 Hm³ · El mayor de Andalucía</div><div class="embalse-stat">⭐ Récord carpas España</div></div>
@@ -1310,7 +1315,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
           <div class="embalse-section"><h4>Técnicas</h4><p style="font-size:.83rem;color:var(--muted)">Carpfishing de gran calibre con boilies premium. Spinning intenso para bass y lucio. Siluros en noches de verano con muertos naturales.</p></div>
           <div class="embalse-section"><h4>Puntos Clave</h4><ul class="detail-list"><li>Bahía de Iznájar: pesca más accesible y poblada</li><li>Brazo del Genil: zona de siluros y carpas gigantes</li><li>Cala del Cortijo: aguas tranquilas, ideal carpfishing</li></ul></div>
         
-          <a href="https://www.google.com/maps/search/Embalse+de+Iznajar+C%C3%B3rdoba+Granada" target="_blank" rel="noopener" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+          <a href="https://www.google.com/maps/search/Embalse+de+Iznajar+C%C3%B3rdoba+Granada" target="_blank" rel="noopener noreferrer" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="embalse-card fade-in">
         <div class="embalse-header" style="position:relative"><h3>Embalse de Bembézar</h3><div class="embalse-meta">Córdoba · Río Bembézar · 372 Hm³</div><div class="embalse-stat">⭐ Bass y black bass excepcionales</div></div>
@@ -1319,7 +1324,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
           <div class="embalse-section"><h4>Técnicas</h4><p style="font-size:.83rem;color:var(--muted)">Destino de referencia para basseros andaluces. Spinning intenso con topwater en primavera. Texas Rig en fondos rocosos verano.</p></div>
           <div class="embalse-section"><h4>Puntos Clave</h4><ul class="detail-list"><li>Zona de ribera en el norte: bass en primavera</li><li>Fondos rocosos sur: black bass grandes en verano</li><li>Brazos secundarios: tenças y carpas todo el año</li></ul></div>
         
-          <a href="https://www.google.com/maps/search/Embalse+de+Bembezar+C%C3%B3rdoba" target="_blank" rel="noopener" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+          <a href="https://www.google.com/maps/search/Embalse+de+Bembezar+C%C3%B3rdoba" target="_blank" rel="noopener noreferrer" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="embalse-card fade-in">
         <div class="embalse-header" style="position:relative"><h3>Embalse de Encinarejo</h3><div class="embalse-meta">Córdoba · Río Jándula · 72 Hm³</div><div class="embalse-stat">⭐ Aguas cristalinas de sierra</div></div>
@@ -1328,7 +1333,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
           <div class="embalse-section"><h4>Técnicas</h4><p style="font-size:.83rem;color:var(--muted)">Aguas de alta calidad con trucha y bass de buen tamaño. Spinning ligero muy eficaz. Coto fluvial en el río Jándula superior.</p></div>
           <div class="embalse-section"><h4>Puntos Clave</h4><ul class="detail-list"><li>Cola del embalse: trucha en otoño e invierno</li><li>Aguas medias: bass y barbo conviven</li><li>Zona de presa: profundidades con carpas</li></ul></div>
         
-          <a href="https://www.google.com/maps/search/Embalse+Encinarejo+J%C3%A1ndula+C%C3%B3rdoba" target="_blank" rel="noopener" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+          <a href="https://www.google.com/maps/search/Embalse+Encinarejo+J%C3%A1ndula+C%C3%B3rdoba" target="_blank" rel="noopener noreferrer" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="embalse-card fade-in">
         <div class="embalse-header" style="position:relative"><h3>Embalse de Rules</h3><div class="embalse-meta">Granada · Río Guadalfeo · 120 Hm³</div><div class="embalse-stat">⭐ El más reciente de Granada</div></div>
@@ -1337,7 +1342,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
           <div class="embalse-section"><h4>Técnicas</h4><p style="font-size:.83rem;color:var(--muted)">Embalse joven con recursos en desarrollo. Carpa y bass creciendo en buenas condiciones. Carpfishing muy prometedor en zona norte.</p></div>
           <div class="embalse-section"><h4>Puntos Clave</h4><ul class="detail-list"><li>Zona norte: carpas activas todo el año</li><li>Entrada río Guadalfeo: barbo en corriente</li></ul></div>
         
-          <a href="https://www.google.com/maps/search/Embalse+de+Rules+Granada+Guadalfeo" target="_blank" rel="noopener" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+          <a href="https://www.google.com/maps/search/Embalse+de+Rules+Granada+Guadalfeo" target="_blank" rel="noopener noreferrer" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="embalse-card fade-in">
         <div class="embalse-header" style="position:relative"><h3>La Breña II</h3><div class="embalse-meta">Córdoba · Río Bembézar · 823 Hm³</div><div class="embalse-stat">⭐ Siluro de gran tamaño</div></div>
@@ -1347,7 +1352,7 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
           <div class="embalse-section"><h4>Puntos Clave</h4><ul class="detail-list"><li>Aguas profundas en zona de presa: siluros grandes</li><li>Fondos fangosos: carpas y pez gato</li></ul></div>
         </div>
       
-          <a href="https://www.google.com/maps/search/Embalse+La+Bre%C3%B1a+II+C%C3%B3rdoba" target="_blank" rel="noopener" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+          <a href="https://www.google.com/maps/search/Embalse+La+Bre%C3%B1a+II+C%C3%B3rdoba" target="_blank" rel="noopener noreferrer" class="maps-btn" style="margin-top:.75rem"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
     </div>
 
     <!-- TOP 10 PECES EMBALSES -->
@@ -1382,19 +1387,19 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
     <div class="grid-2 stagger fade-in" style="margin-bottom:2rem">
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M1.5 6.5C4 6.5 4 8 6.5 8S9 6.5 11.5 6.5 12 8 14.5 8s2.5-1.5 5-1.5S22 8 22 8v10s-2.5-1.5-5-1.5S14.5 18 12 18s-2.5-1.5-5-1.5S4 18 1.5 18z"/></svg><div><h3>Río Guadalquivir</h3><span>Córdoba-Sevilla · 657 km</span></div></div>
-        <div class="location-body"><p>El gran río de Andalucía. Tramos medios y bajos con barbo ibérico y pez espátula en zonas protegidas. Tramos de Montoro y Andújar son referencia para el barbo. Lubinas en tramos cercanos a la desembocadura.</p><div class="species-tags"><span class="species-tag">Barbo Ibérico</span><span class="species-tag">Carpa</span><span class="species-tag">Anguila</span><span class="species-tag">Tenca</span></div><a href="https://www.google.com/maps/search/Rio+Guadalquivir+pesca+Montoro+Córdoba" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>El gran río de Andalucía. Tramos medios y bajos con barbo ibérico y pez espátula en zonas protegidas. Tramos de Montoro y Andújar son referencia para el barbo. Lubinas en tramos cercanos a la desembocadura.</p><div class="species-tags"><span class="species-tag">Barbo Ibérico</span><span class="species-tag">Carpa</span><span class="species-tag">Anguila</span><span class="species-tag">Tenca</span></div><a href="https://www.google.com/maps/search/Rio+Guadalquivir+pesca+Montoro+Córdoba" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M1.5 6.5C4 6.5 4 8 6.5 8S9 6.5 11.5 6.5 12 8 14.5 8s2.5-1.5 5-1.5S22 8 22 8v10s-2.5-1.5-5-1.5S14.5 18 12 18s-2.5-1.5-5-1.5S4 18 1.5 18z"/></svg><div><h3>Río Genil</h3><span>Granada-Córdoba · 358 km</span></div></div>
-        <div class="location-body"><p>El gran afluente del Guadalquivir. En sus cabeceras de Sierra Nevada alberga los mejores cotos trucheros de Andalucía. En los tramos medios y bajos, barbo y carpa dominan. Su paso por Santaella es referencia local.</p><div class="species-tags"><span class="species-tag">Trucha</span><span class="species-tag">Barbo</span><span class="species-tag">Carpa</span><span class="species-tag">Black Bass</span></div><a href="https://www.google.com/maps/search/Rio+Genil+pesca+Santaella+Córdoba" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>El gran afluente del Guadalquivir. En sus cabeceras de Sierra Nevada alberga los mejores cotos trucheros de Andalucía. En los tramos medios y bajos, barbo y carpa dominan. Su paso por Santaella es referencia local.</p><div class="species-tags"><span class="species-tag">Trucha</span><span class="species-tag">Barbo</span><span class="species-tag">Carpa</span><span class="species-tag">Black Bass</span></div><a href="https://www.google.com/maps/search/Rio+Genil+pesca+Santaella+Córdoba" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M1.5 6.5C4 6.5 4 8 6.5 8S9 6.5 11.5 6.5 12 8 14.5 8s2.5-1.5 5-1.5S22 8 22 8v10s-2.5-1.5-5-1.5S14.5 18 12 18s-2.5-1.5-5-1.5S4 18 1.5 18z"/></svg><div><h3>Río Borosa</h3><span>Jaén · Sierras de Cazorla</span></div></div>
-        <div class="location-body"><p>Uno de los ríos más espectaculares de Andalucía, en el Parque Natural de Cazorla. Sus aguas cristalinas y frías son hábitat de la trucha común autóctona. Pesca solo en cotos específicos con permiso.</p><div class="species-tags"><span class="species-tag">Trucha Autóctona</span><span class="species-tag">Barbo</span></div><a href="https://www.google.com/maps/search/Rio+Borosa+Cazorla+pesca+trucha" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>Uno de los ríos más espectaculares de Andalucía, en el Parque Natural de Cazorla. Sus aguas cristalinas y frías son hábitat de la trucha común autóctona. Pesca solo en cotos específicos con permiso.</p><div class="species-tags"><span class="species-tag">Trucha Autóctona</span><span class="species-tag">Barbo</span></div><a href="https://www.google.com/maps/search/Rio+Borosa+Cazorla+pesca+trucha" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
       <div class="location-card fade-in">
         <div class="location-header"><svg viewBox="0 0 24 24"><path d="M1.5 6.5C4 6.5 4 8 6.5 8S9 6.5 11.5 6.5 12 8 14.5 8s2.5-1.5 5-1.5S22 8 22 8v10s-2.5-1.5-5-1.5S14.5 18 12 18s-2.5-1.5-5-1.5S4 18 1.5 18z"/></svg><div><h3>Río Guadalhorce</h3><span>Málaga · Embalse del Chorro</span></div></div>
-        <div class="location-body"><p>El sistema del Chorro (Ardales) ofrece aguas claras con barbo ibérico de gran talla y black bass. Los tajos rocosos crean pozas profundas con peces de gran calibre. Zona turística pero muy productiva.</p><div class="species-tags"><span class="species-tag">Barbo</span><span class="species-tag">Black Bass</span><span class="species-tag">Carpa</span></div><a href="https://www.google.com/maps/search/Rio+Guadalhorce+pesca+Málaga" target="_blank" rel="noopener" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
+        <div class="location-body"><p>El sistema del Chorro (Ardales) ofrece aguas claras con barbo ibérico de gran talla y black bass. Los tajos rocosos crean pozas profundas con peces de gran calibre. Zona turística pero muy productiva.</p><div class="species-tags"><span class="species-tag">Barbo</span><span class="species-tag">Black Bass</span><span class="species-tag">Carpa</span></div><a href="https://www.google.com/maps/search/Rio+Guadalhorce+pesca+Málaga" target="_blank" rel="noopener noreferrer" class="maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>Ver en Google Maps</a></div>
       </div>
     </div>
 
@@ -2203,9 +2208,20 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       for (var f = 0; f < fades.length; f++) fades[f].classList.add('visible');
       var imgs = document.querySelectorAll('img[loading="lazy"]');
       for (var i = 0; i < imgs.length; i++) imgs[i].loading = 'eager';
+      // Force content-visibility:auto sections above the target to render, so
+      // their contain-intrinsic-size placeholder (1px 900px) doesn't collapse
+      // mid-scroll and land us on the wrong section. Walk DOM until target.
+      var cvSections = document.querySelectorAll('section[id]');
+      for (var s = 0; s < cvSections.length; s++) {
+        cvSections[s].style.contentVisibility = 'visible';
+        if (cvSections[s] === el) break;
+      }
       // If intro is still on screen, dismiss it now so scroll can take effect.
       var intro = document.getElementById('intro-screen');
       if (intro) { intro.remove(); document.body.style.overflow = ''; }
+      // Force synchronous layout so getBoundingClientRect reflects the real
+      // post-expansion geometry (not the collapsed contain-intrinsic-size).
+      void document.body.offsetHeight;
       var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
       function targetY() {
         return Math.max(0, el.getBoundingClientRect().top + window.scrollY - navH - 16);
@@ -2218,11 +2234,10 @@ body.intro-active>:not(#intro-screen) *,body.intro-active>:not(#intro-screen)::b
       htmlEl.style.scrollBehavior = 'auto';
       window.scrollTo(0, targetY());
       if (history.replaceState) try { history.replaceState(null, '', hash); } catch (_) {}
-      // Lock to the element for 700ms — every animation frame, recompute
-      // target offset (it tracks the element itself, not a stale Y) and clamp.
-      // Any layout shift gets cancelled the very next frame.
+      // Lock to the element for 1200ms — layout shift from lazy images and
+      // content-visibility expansion can arrive up to ~1s after scroll starts.
       cancelAnimationFrame(lockRAF);
-      lockUntil = performance.now() + 700;
+      lockUntil = performance.now() + 1200;
       function tick() {
         var y = targetY();
         if (Math.abs(window.scrollY - y) > 0.5) window.scrollTo(0, y);
