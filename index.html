@@ -229,6 +229,11 @@ body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsi
 /* Evita scroll-chaining del body cuando el mobile menu está abierto (ahorra repaint) */
 html,body{overscroll-behavior-y:none}
 .mobile-menu{overscroll-behavior:contain}
+/* ─── HYDRO-REVEAL: coreografía post-aterrizaje ─── */
+.hydro-reveal{opacity:0;transform:translate3d(0,50px,0) scale(0.97);filter:blur(12px);will-change:opacity,transform,filter;transition:opacity .9s cubic-bezier(0.16,1,0.3,1),transform .9s cubic-bezier(0.16,1,0.3,1),filter .9s cubic-bezier(0.16,1,0.3,1)}
+.hydro-reveal.hydro-in{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+.hydro-reveal.hydro-in{will-change:auto}
+@media (prefers-reduced-motion:reduce){.hydro-reveal{transition:opacity .2s linear;transform:none;filter:none}.hydro-reveal.hydro-in{transform:none;filter:none}}
 /* Hit-test skip: decorativos no responden a eventos (libera CPU del raycaster) */
 .hero-fish-left,.hero-fish-right,.fish-swim,.hero-orb,.hero-orb-ring,.hero-caustics,.water-wave,.ripple,.intro-stars,.intro-water,.intro-water-glow,.intro-water-surface,.intro-ripple,.hook-drop,.line-cast,.bobber-float,#scroll-progress,#tide-transition,.bar-fill{pointer-events:none}
 /* text-size-adjust: evita re-layouts en rotación de pantalla iOS */
@@ -2248,7 +2253,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       }
       // If intro is still on screen, dismiss it now so scroll can take effect.
       var intro = document.getElementById('intro-screen');
-      if (intro) { intro.remove(); document.body.style.overflow = ''; }
+      if (intro) { intro.remove(); document.documentElement.classList.remove('intro-active'); document.body.classList.remove('intro-active'); document.body.style.overflow = ''; document.documentElement.style.overflow = ''; }
       // Force synchronous layout so getBoundingClientRect reflects the real
       // post-expansion geometry (not the collapsed contain-intrinsic-size).
       void document.body.offsetHeight;
@@ -2366,7 +2371,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       }
       if (typeof closeMenu === 'function') closeMenu();
       var intro = document.getElementById('intro-screen');
-      if (intro) { intro.remove(); document.body.style.overflow = ''; }
+      if (intro) { intro.remove(); document.documentElement.classList.remove('intro-active'); document.body.classList.remove('intro-active'); document.body.style.overflow = ''; document.documentElement.style.overflow = ''; }
       // Sync layout flush — clave: sin esto, el navegador no ha pintado la
       // expansión de content-visibility y el rect mide sobre el placeholder.
       void document.body.offsetHeight;
@@ -2413,6 +2418,43 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ─── HYDRO-REVEAL: dispara tras aterrizaje del scroll (no durante) ───
+  // Opt-in: cualquier nodo con .hydro-reveal entra al viewport y queda armado,
+  // pero sólo se revela cuando el scroll ha parado de verdad (scrollend o debounce).
+  (function(){
+    var _armed = new Set();
+    var _hydroDebounce = 0;
+    var _supportsSE = 'onscrollend' in window;
+    function _revealArmed(){
+      _armed.forEach(function(el){ el.classList.add('hydro-in'); });
+      _armed.clear();
+    }
+    var hydroObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          _armed.add(entry.target);
+          hydroObs.unobserve(entry.target);
+        }
+      });
+      // Si el usuario no está scrolleando, revelar inmediato en el siguiente frame.
+      if (_supportsSE) {
+        requestAnimationFrame(_revealArmed);
+      } else {
+        clearTimeout(_hydroDebounce);
+        _hydroDebounce = setTimeout(_revealArmed, 150);
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    if (_supportsSE) {
+      window.addEventListener('scrollend', _revealArmed, { passive: true });
+    } else {
+      window.addEventListener('scroll', function(){
+        clearTimeout(_hydroDebounce);
+        _hydroDebounce = setTimeout(_revealArmed, 150);
+      }, { passive: true });
+    }
+    document.querySelectorAll('.hydro-reveal').forEach(function(el){ hydroObs.observe(el); });
+  })();
 
   // Animate bars on scroll
   const barObserver = new IntersectionObserver((entries) => {
@@ -2485,13 +2527,36 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   }
   // Force-active on click: la clase .active se aplica al instante sin
   // esperar a que el smooth-scroll cruce los umbrales del observer.
+  // El force se mantiene hasta que el scroll se detenga de verdad (scrollend
+  // o debounce 150ms). Así cubre viajes largos sin ventana fija arbitraria.
+  let _scrollEndTimer = 0;
+  const _supportsScrollEnd = 'onscrollend' in window;
+  function _releaseForcedActive() {
+    _forcedActive = null;
+    _forcedUntil = 0;
+    _applyActive();
+  }
+  function _armScrollRelease() {
+    if (_supportsScrollEnd) return;   // scrollend listener ya lo maneja
+    clearTimeout(_scrollEndTimer);
+    _scrollEndTimer = setTimeout(_releaseForcedActive, 150);
+  }
+  if (_supportsScrollEnd) {
+    window.addEventListener('scrollend', function() {
+      if (_forcedActive) _releaseForcedActive();
+    }, { passive: true });
+  } else {
+    window.addEventListener('scroll', function() {
+      if (_forcedActive) _armScrollRelease();
+    }, { passive: true });
+  }
   document.addEventListener('click', function(e) {
     const a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
     if (!a) return;
     const href = a.getAttribute('href');
     if (!href || href === '#') return;
     _forcedActive = href.slice(1);
-    _forcedUntil = performance.now() + 900;   // ventana del smooth-scroll
+    _forcedUntil = performance.now() + 10000;   // cap de seguridad; scrollend libera antes
     navCats.forEach(x => {
       x.classList.remove('active');
       if (x.getAttribute('href') === href) x.classList.add('active');
@@ -2668,23 +2733,30 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   (function() {
     var intro = document.getElementById('intro-screen');
     if (!intro) return;
-    // Dismiss after 3.3 seconds (rod swing + line + bobber drop + splash complete)
+    var _dismissed = false;
+    function _hardDismiss() {
+      if (_dismissed) return;
+      _dismissed = true;
+      document.documentElement.classList.remove('intro-active');
+      document.body.classList.remove('intro-active');
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      try { intro.remove(); } catch(_){}
+      window.dispatchEvent(new Event('resize'));
+    }
     setTimeout(function() {
       intro.classList.add('fade-out');
+      document.documentElement.classList.remove('intro-active');
       document.body.classList.remove('intro-active');
-      setTimeout(function() {
-        intro.remove();
-        document.body.style.overflow = '';
-        window.dispatchEvent(new Event('resize'));
-      }, 900);
+      setTimeout(_hardDismiss, 900);
     }, 3300);
-    // Also allow click/tap to skip
     intro.addEventListener('click', function() {
       intro.classList.add('fade-out');
+      document.documentElement.classList.remove('intro-active');
       document.body.classList.remove('intro-active');
-      setTimeout(function() { intro.remove(); document.body.style.overflow = ''; window.dispatchEvent(new Event('resize')); }, 700);
+      setTimeout(_hardDismiss, 700);
     });
-    // Prevent scroll during intro
+    setTimeout(_hardDismiss, 6000);
     document.body.style.overflow = 'hidden';
   })();
 
