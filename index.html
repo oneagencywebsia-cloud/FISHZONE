@@ -230,10 +230,11 @@ body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsi
 html,body{overscroll-behavior-y:none}
 .mobile-menu{overscroll-behavior:contain}
 /* ─── HYDRO-REVEAL: coreografía post-aterrizaje ─── */
-.hydro-reveal{opacity:0;transform:translate3d(0,50px,0) scale(0.97);filter:blur(12px);will-change:opacity,transform,filter;transition:opacity .9s cubic-bezier(0.16,1,0.3,1),transform .9s cubic-bezier(0.16,1,0.3,1),filter .9s cubic-bezier(0.16,1,0.3,1)}
-.hydro-reveal.hydro-in{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
-.hydro-reveal.hydro-in{will-change:auto}
-@media (prefers-reduced-motion:reduce){.hydro-reveal{transition:opacity .2s linear;transform:none;filter:none}.hydro-reveal.hydro-in{transform:none;filter:none}}
+/* Fallback no-JS / pre-hydration: contenido siempre visible si JS falla o tarda */
+.hydro-reveal{opacity:1;transform:none;filter:none}
+html.hydro-ready .hydro-reveal{opacity:0;transform:translate3d(0,50px,0) scale(0.97);filter:blur(12px);will-change:opacity,transform,filter;transition:opacity .9s cubic-bezier(0.16,1,0.3,1),transform .9s cubic-bezier(0.16,1,0.3,1),filter .9s cubic-bezier(0.16,1,0.3,1)}
+html.hydro-ready .hydro-reveal.hydro-in{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0);will-change:auto}
+@media (prefers-reduced-motion:reduce){html.hydro-ready .hydro-reveal{transition:opacity .2s linear;transform:none;filter:none}html.hydro-ready .hydro-reveal.hydro-in{transform:none;filter:none}}
 /* Hit-test skip: decorativos no responden a eventos (libera CPU del raycaster) */
 .hero-fish-left,.hero-fish-right,.fish-swim,.hero-orb,.hero-orb-ring,.hero-caustics,.water-wave,.ripple,.intro-stars,.intro-water,.intro-water-glow,.intro-water-surface,.intro-ripple,.hook-drop,.line-cast,.bobber-float,#scroll-progress,#tide-transition,.bar-fill{pointer-events:none}
 /* text-size-adjust: evita re-layouts en rotación de pantalla iOS */
@@ -576,7 +577,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <ellipse cx="12" cy="40" rx="10" ry="16"/><rect x="10" y="4" width="4" height="26" rx="2"/><circle cx="12" cy="4" r="4"/>
   </svg>
 
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Agua Dulce</div>
       <h2 class="section-title">Pesca en Ríos y Embalses</h2>
@@ -777,7 +778,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <circle cx="20" cy="72" r="2" fill="var(--gold)"/>
   </svg>
 
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Cebos y Boilies</div>
       <h2 class="section-title">Las Mejores Marcas de Cebos</h2>
@@ -1005,7 +1006,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <section id="salada">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div><div class="water-wave"></div></div>
   <svg class="fish-swim" style="top:20%" width="80" height="40" viewBox="0 0 80 40" fill="var(--gold)"><path d="M5 20 Q20 5,40 18 Q55 3,68 14 L76 20 L68 26 Q55 37,40 22 Q20 35,5 20Z"/><circle cx="62" cy="17" r="2.5" fill="var(--bg)"/></svg>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Agua Salada</div>
       <h2 class="section-title">Pesca en Mar y Costa</h2>
@@ -1107,7 +1108,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ TÉCNICAS ══════ -->
 <section id="tecnicas">
   <svg class="line-cast"></svg>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Modalidades</div>
       <h2 class="section-title">Técnicas de Pesca</h2>
@@ -1251,7 +1252,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ ZONA ANDALUZA ═ -->
 <section id="zona">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Zona Local</div>
       <h2 class="section-title">Zona Andaluza</h2>
@@ -1323,7 +1324,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <section id="embalses">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div><div class="water-wave"></div></div>
   <div class="ambient-bubbles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Masas de Agua</div>
       <h2 class="section-title">Embalses de Andalucía</h2>
@@ -1409,7 +1410,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ RÍOS ══════════ -->
 <section id="rios">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Aguas Corrientes</div>
       <h2 class="section-title">Ríos de Andalucía</h2>
@@ -1458,7 +1459,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <!-- ═══════════════════════════════════════ PESCA SUBMARINA ═ -->
 <section id="submarina">
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Bajo el Agua</div>
       <h2 class="section-title">Pesca Submarina</h2>
@@ -1550,7 +1551,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ FLOTABILIDAD ═══ -->
 <section id="flotabilidad">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Embarcaciones</div>
       <h2 class="section-title">Pesca con Flotabilidad</h2>
@@ -1600,7 +1601,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <!-- ═══════════════════════════════════════ PROGRESIÓN 0→100 ═ -->
 <section id="progresion">
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Guía de Aprendizaje</div>
       <h2 class="section-title">De 0 a 100 en la Pesca</h2>
@@ -1693,7 +1694,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <!-- ═══════════════════════════════════════ EQUIPAMIENTO ═══ -->
 <section id="galeria">
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Material y Nudos</div>
       <h2 class="section-title">Equipamiento y Nudos</h2>
@@ -1802,7 +1803,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ APAREJOS ═══════ -->
 <section id="aparejos">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Terminal Tackle</div>
       <h2 class="section-title">Aparejos y Terminal</h2>
@@ -1865,7 +1866,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <!-- ═══════════════════════════════════════ MONTAJES ═════════ -->
 <section id="montajes">
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Rigs y Presentaciones</div>
       <h2 class="section-title">Montajes Profesionales</h2>
@@ -1916,7 +1917,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ SEÑUELOS ══════════ -->
 <section id="senluelos">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Artificiales</div>
       <h2 class="section-title">Señuelos por Especie</h2>
@@ -1991,7 +1992,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <!-- ═══════════════════════════════════════ MARCAS Y TIENDAS ═ -->
 <section id="marcas">
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Equipamiento Premium</div>
       <h2 class="section-title">Marcas y Tiendas</h2>
@@ -2079,7 +2080,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <!-- ═══════════════════════════════════════ ACAMPADA ══════════ -->
 <section id="acampada">
   <div class="water-bg"><div class="water-wave"></div><div class="water-wave"></div></div>
-  <div class="container">
+  <div class="container hydro-reveal">
     <div class="fade-in">
       <div class="tag">Pesca y Naturaleza</div>
       <h2 class="section-title">Acampada y Salidas</h2>
@@ -2423,6 +2424,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   // Opt-in: cualquier nodo con .hydro-reveal entra al viewport y queda armado,
   // pero sólo se revela cuando el scroll ha parado de verdad (scrollend o debounce).
   (function(){
+    // Activa el estado oculto sólo si JS está vivo. Si el script falla, CSS
+    // fallback deja todo visible (no se oculta nada permanentemente).
+    document.documentElement.classList.add('hydro-ready');
     var _armed = new Set();
     var _hydroDebounce = 0;
     var _supportsSE = 'onscrollend' in window;
