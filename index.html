@@ -229,13 +229,13 @@ body.intro-active>:not(#intro-screen){content-visibility:hidden;contain-intrinsi
 /* Evita scroll-chaining del body cuando el mobile menu está abierto (ahorra repaint) */
 html,body{overscroll-behavior-y:none}
 .mobile-menu{overscroll-behavior:contain}
-/* ─── HYDRO-REVEAL: emerger desde aguas profundas + tensión de sedal ─── */
-/* Estado base: siempre visible. Sólo se oculta cuando JS arma activamente el nodo. */
-.hydro-reveal{opacity:1;transform:none;filter:none}
-.hydro-reveal.hydro-armed{opacity:0;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6);will-change:opacity,transform,filter}
-.hydro-reveal.hydro-in{animation:hydroEmerge 1100ms cubic-bezier(.22,1.2,.36,1) forwards}
-.hydro-reveal.hydro-in::after{content:"";position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;background:linear-gradient(0deg,transparent 0%,rgba(201,168,76,.22) 45%,rgba(100,160,220,.12) 70%,transparent 100%);mix-blend-mode:screen;opacity:0;animation:hydroShine 1200ms cubic-bezier(.4,0,.2,1) forwards;will-change:transform,opacity;transform:translate3d(0,100%,0)}
-.hydro-reveal{position:relative}
+/* ─── HYDRO-REVEAL: detonación por callback (simple, directo) ─── */
+/* Base: siempre visible. Solo se oculta cuando JS añade .hydro-arming justo
+   antes del scroll. Al aterrizar, añade .hydro-reveal-active y dispara animación. */
+.hydro-reveal{opacity:1;transform:none;filter:none;position:relative}
+.hydro-reveal.hydro-arming{opacity:0;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6);will-change:opacity,transform,filter}
+.hydro-reveal.hydro-reveal-active{animation:hydroEmerge 1100ms cubic-bezier(.22,1.2,.36,1) forwards}
+.hydro-reveal.hydro-reveal-active::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,transparent 0%,rgba(201,168,76,.22) 45%,rgba(100,160,220,.12) 70%,transparent 100%);mix-blend-mode:screen;opacity:0;animation:hydroShine 1200ms cubic-bezier(.4,0,.2,1) forwards;will-change:transform,opacity;transform:translate3d(0,100%,0)}
 @keyframes hydroEmerge{
   0%{opacity:0;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6)}
   55%{opacity:1;filter:blur(0) saturate(1)}
@@ -248,9 +248,9 @@ html,body{overscroll-behavior-y:none}
   100%{opacity:0;transform:translate3d(0,-100%,0)}
 }
 @media (prefers-reduced-motion:reduce){
-  .hydro-reveal.hydro-armed{opacity:0;transform:none;filter:none}
-  .hydro-reveal.hydro-in{animation:hydroFadeRM 400ms ease forwards}
-  .hydro-reveal.hydro-in::after{display:none}
+  .hydro-reveal.hydro-arming{opacity:0;transform:none;filter:none}
+  .hydro-reveal.hydro-reveal-active{animation:hydroFadeRM 400ms ease forwards}
+  .hydro-reveal.hydro-reveal-active::after{display:none}
   @keyframes hydroFadeRM{to{opacity:1}}
 }
 /* Hit-test skip: decorativos no responden a eventos (libera CPU del raycaster) */
@@ -2234,6 +2234,49 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   // single-pass body.overflow reset before getBoundingClientRect. Keeping a
   // second capture listener here caused double layout shift during nav.
 
+  // ─── MOTOR DE SCROLL DE SEDA ──────────────────────────────
+  // window.__silkScroll(targetY, durationMs, onLanded)
+  //   - Curva: easeInOutQuart (arranque fluido, frenado como flotando).
+  //   - Usa rAF puro. window.scrollTo(0, y) instantáneo en cada frame.
+  //   - onLanded() dispara cuando |scrollY - targetY| <= 1 al final de la curva.
+  //   - Cancelación: nueva llamada aborta la anterior (no concurrencia).
+  (function(){
+    var _raf = 0;
+    function easeInOutQuart(t){ return t < 0.5 ? 8*t*t*t*t : 1 - Math.pow(-2*t + 2, 4) / 2; }
+    window.__silkScroll = function(targetY, duration, cb){
+      cancelAnimationFrame(_raf);
+      var startY = window.scrollY || window.pageYOffset || 0;
+      var deltaY = targetY - startY;
+      // Si el viaje es trivial (<2px) o duración 0 → salto + cb inmediato.
+      if (Math.abs(deltaY) < 2 || !duration || duration < 16) {
+        window.scrollTo(0, targetY);
+        if (cb) requestAnimationFrame(cb);
+        return;
+      }
+      // Desactivar scroll-behavior:smooth nativo durante el viaje para que
+      // nuestra curva matemática no compita con la del motor.
+      var htmlEl = document.documentElement;
+      var prevBehavior = htmlEl.style.scrollBehavior;
+      htmlEl.style.scrollBehavior = 'auto';
+      var startT = performance.now();
+      function tick(now){
+        var elapsed = now - startT;
+        var t = Math.min(1, elapsed / duration);
+        var eased = easeInOutQuart(t);
+        var y = startY + deltaY * eased;
+        window.scrollTo(0, y);
+        if (t < 1) {
+          _raf = requestAnimationFrame(tick);
+        } else {
+          window.scrollTo(0, targetY);
+          htmlEl.style.scrollBehavior = prevBehavior;
+          if (cb) cb();
+        }
+      }
+      _raf = requestAnimationFrame(tick);
+    };
+  })();
+
   // ─── TIDE PAGE TRANSITION ──────────────────────────────
   (function() {
     var tide = document.getElementById('tide-transition');
@@ -2416,10 +2459,26 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       timers.push(setTimeout(function() {
         tide.classList.remove('leave'); busy = false; timers.length = 0;
       }, 840));
-      // Scroll suave nativo con offset manual de -80 — el navegador respeta
-      // scroll-behavior:smooth del {top,behavior} inline aunque html tenga
-      // scroll-behavior:smooth global.
-      window.scrollTo({ top: Math.max(0, offsetTop - headerH), behavior: 'smooth' });
+      // ─── ARMAR HYDRO-REVEAL (oculta el destino antes del viaje) ───
+      var hydroTarget = destino.querySelector('.hydro-reveal');
+      if (hydroTarget) {
+        hydroTarget.classList.remove('hydro-reveal-active');
+        hydroTarget.classList.add('hydro-arming');
+        void hydroTarget.offsetWidth;
+      }
+      // ─── MOTOR DE SCROLL DE SEDA + CALLBACK AL ATERRIZAR ───
+      var finalY = Math.max(0, offsetTop - headerH);
+      window.__silkScroll(finalY, 1100, function(){
+        if (hydroTarget) {
+          hydroTarget.classList.remove('hydro-arming');
+          // rAF gap garantiza frame entre el remove y el add; sin esto
+          // el browser colapsaría los dos cambios y la animación arrancaría
+          // desde el estado final (invisible).
+          requestAnimationFrame(function(){
+            hydroTarget.classList.add('hydro-reveal-active');
+          });
+        }
+      });
       if (history.replaceState) try { history.replaceState(null, '', href); } catch (_) {}
       busy = true;
     }, true);
@@ -2441,130 +2500,22 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-  // ─── HYDRO-REVEAL: Máquina de estados estricta ───
-  // Estados por nodo: IDLE → ARMED → TRAVELING → LANDED → REVEALING → DONE
-  // Transiciones:
-  //   IDLE      → ARMED      : click en menú hacia la sección, o intersection
-  //                            observer cuando entra al viewport.
-  //   ARMED     → TRAVELING  : scroll activo detectado tras armar.
-  //   TRAVELING → LANDED     : scrollend o scrollY alcanza targetOffset (±4px).
-  //   LANDED    → REVEALING  : rAF tick siguiente → add .hydro-in.
-  //   REVEALING → DONE       : animationend del keyframe hydroEmerge.
-  // DONE permite re-armar al siguiente click. Scroll durante ARMED/TRAVELING
-  // NO revela antes de tiempo.
+  // ─── HYDRO-REVEAL: observer pasivo para scroll manual ───
+  // El flujo click-desencadenado vive en el click listener del tide/silk scroll
+  // (ver más arriba). Este observer sólo revela contenedores que el usuario
+  // alcanza por scroll manual, sin animación previa. Cero máquina de estados.
   (function(){
     if (!('IntersectionObserver' in window)) return;
-    var STATE = { IDLE:0, ARMED:1, TRAVELING:2, LANDED:3, REVEALING:4, DONE:5 };
-    var _state = new WeakMap();      // el → state
-    var _targetY = new WeakMap();    // el → scrollY objetivo (si vino de click)
-    var _supportsSE = 'onscrollend' in window;
-    var _scrollDebounce = 0;
-
-    function _getState(el){ return _state.get(el) || STATE.IDLE; }
-    function _setState(el, s){ _state.set(el, s); }
-
-    function _arm(el, targetY){
-      var s = _getState(el);
-      if (s === STATE.ARMED || s === STATE.TRAVELING || s === STATE.REVEALING) return;
-      el.classList.remove('hydro-in');
-      el.classList.add('hydro-armed');
-      void el.offsetWidth;   // flush hidden state antes de que el scroll arranque
-      _setState(el, STATE.ARMED);
-      if (typeof targetY === 'number') _targetY.set(el, targetY);
-      else _targetY.delete(el);
-    }
-
-    function _reveal(el){
-      var s = _getState(el);
-      if (s === STATE.REVEALING || s === STATE.DONE) return;
-      _setState(el, STATE.REVEALING);
-      el.classList.remove('hydro-armed');
-      // rAF garantiza que la eliminación de .hydro-armed se pinta antes de
-      // añadir .hydro-in — sin esto el browser los colapsaría en un único
-      // frame y la animación arrancaría desde el estado final, invisible.
-      requestAnimationFrame(function(){
-        el.classList.add('hydro-in');
-      });
-      var onEnd = function(ev){
-        if (ev.animationName && ev.animationName.indexOf('hydroEmerge') !== 0) return;
-        _setState(el, STATE.DONE);
-        el.removeEventListener('animationend', onEnd);
-      };
-      el.addEventListener('animationend', onEnd);
-    }
-
-    function _tryLandAll(){
-      // Itera todos los .hydro-reveal en estado ARMED o TRAVELING y comprueba
-      // si ya aterrizaron. Usamos scrollY global vs targetY (si lo hay) o
-      // viewport-intersection como fallback.
-      var nodes = document.querySelectorAll('.hydro-reveal.hydro-armed');
-      var sy = window.scrollY || window.pageYOffset || 0;
-      nodes.forEach(function(el){
-        var s = _getState(el);
-        if (s !== STATE.ARMED && s !== STATE.TRAVELING) return;
-        var ty = _targetY.get(el);
-        if (typeof ty === 'number') {
-          if (Math.abs(sy - ty) <= 4) {
-            _setState(el, STATE.LANDED);
-            _reveal(el);
-          }
-        } else {
-          // sin target explícito (scroll manual) → revelar si intersecta.
-          var r = el.getBoundingClientRect();
-          if (r.top < window.innerHeight && r.bottom > 0) {
-            _setState(el, STATE.LANDED);
-            _reveal(el);
-          }
-        }
-      });
-    }
-
-    // Scroll listener: marca TRAVELING y agenda _tryLandAll al debounce.
-    window.addEventListener('scroll', function(){
-      var armedNodes = document.querySelectorAll('.hydro-reveal.hydro-armed');
-      armedNodes.forEach(function(el){
-        if (_getState(el) === STATE.ARMED) _setState(el, STATE.TRAVELING);
-      });
-      if (!_supportsSE) {
-        clearTimeout(_scrollDebounce);
-        _scrollDebounce = setTimeout(_tryLandAll, 160);
-      }
-    }, { passive: true });
-
-    if (_supportsSE) {
-      window.addEventListener('scrollend', _tryLandAll, { passive: true });
-    }
-
-    // Observer: arma nodos que entran al viewport por scroll manual
-    // (sin targetY porque no hubo click).
     var hydroObs = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        if (entry.isIntersecting) {
-          var el = entry.target;
-          var s = _getState(el);
-          if (s === STATE.IDLE) _arm(el);
-        }
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.classList.contains('hydro-reveal-active')) return;
+        if (el.classList.contains('hydro-arming')) return;   // click en curso
+        el.classList.add('hydro-reveal-active');
+        hydroObs.unobserve(el);
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-
-    // Click en menú → ARMED con targetY calculado.
-    document.addEventListener('click', function(e){
-      var a = e.target && e.target.closest && e.target.closest('a[href^="#"]');
-      if (!a) return;
-      var href = a.getAttribute('href');
-      if (!href || href === '#' || href.length < 2) return;
-      var id = href.slice(1);
-      var destino = document.getElementById(id);
-      if (!destino) return;
-      var target = destino.querySelector('.hydro-reveal');
-      if (!target) return;
-      // DONE → permitir re-armar.
-      _state.delete(target);
-      var headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;
-      var ty = Math.max(0, destino.getBoundingClientRect().top + (window.scrollY||0) - headerH);
-      _arm(target, ty);
-    }, true);
-
     document.querySelectorAll('.hydro-reveal').forEach(function(el){ hydroObs.observe(el); });
   })();
 
@@ -2668,25 +2619,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     const href = a.getAttribute('href');
     if (!href || href === '#') return;
     _forcedActive = href.slice(1);
-    _forcedUntil = performance.now() + 10000;   // cap de seguridad; scrollend libera antes
-    let _activatedEl = null;
+    _forcedUntil = performance.now() + 10000;
     navCats.forEach(x => {
       x.classList.remove('active');
-      if (x.getAttribute('href') === href) { x.classList.add('active'); _activatedEl = x; }
+      if (x.getAttribute('href') === href) x.classList.add('active');
     });
-    // ─── FORCE SYNC REPAINT (TRIPLE BARRIER) ─────────────────────
-    // El motor agrupa layout+paint con el scrollTo del listener siguiente
-    // (mismo tick). Tres técnicas encadenadas para romper el batching en
-    // Blink, WebKit y Gecko respectivamente:
-    //  1) getBoundingClientRect → fuerza reflow sincrónico.
-    //  2) offsetWidth → invalidar cachés de BCR (Blink optimiza).
-    //  3) scrollTop read en documentElement → layout-blocking global según
-    //     CSSOM View Module § scrollTop. Obliga a flushear pending layout.
-    if (_activatedEl) {
-      _activatedEl.getBoundingClientRect();
-      void _activatedEl.offsetWidth;
-      void document.documentElement.scrollTop;
-    }
+    // La pintura de .active ocurre en el siguiente frame. __silkScroll arranca
+    // dentro de ese rAF (ver motor-scroll-de-seda más arriba), así el usuario
+    // ve la raya dorada pintada un frame ANTES del movimiento.
   }, true);
   var _parallaxActive = true;
   if ('IntersectionObserver' in window && (fishL || fishR)) {
@@ -2894,34 +2834,19 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 </script>
 <script>
-  // OVERRIDE DE NAVEGACIÓN O.N.E AGENCY
+  // OVERRIDE DE NAVEGACIÓN — neutralizado: el flujo real vive en el capture
+  // listener del tide/silk scroll. Dejamos el listener solo para forzar
+  // contentVisibility:visible del destino (útil si el capture listener se saltó).
   document.addEventListener("DOMContentLoaded", () => {
     const internalLinks = document.querySelectorAll('a[href^="#"]');
 
     internalLinks.forEach(link => {
       link.addEventListener('click', function(e) {
-        e.preventDefault();
-
         const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-
+        if (!targetId || targetId === '#') return;
         const targetElement = document.querySelector(targetId);
-
         if (targetElement) {
-          // WRITE phase
           targetElement.style.contentVisibility = 'visible';
-          // Defer READ to next animation frame — el navegador ha completado el
-          // layout tras el write y evita un forced-reflow sincrónico al leer
-          // getBoundingClientRect inmediatamente después de mutar style.
-          requestAnimationFrame(() => {
-            const offset = 80;
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - offset;
-            window.scrollTo({
-              top: Math.max(0, offsetPosition),
-              behavior: "smooth"
-            });
-          });
         }
       });
     });
