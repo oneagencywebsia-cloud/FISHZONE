@@ -238,25 +238,44 @@ html,body{overscroll-behavior-y:none}
    el nodo a su propia capa de composición desde el instante cero. Al pasar a
    .hydro-reveal-active el browser no recompone layers — sólo anima propiedades
    ya en la GPU. Elimina el "tirón" al aterrizar. */
-.hydro-reveal.hydro-arming{opacity:.01;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6);will-change:opacity,transform,filter;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
-.hydro-reveal.hydro-reveal-active{animation:hydroEmerge 1100ms cubic-bezier(.22,1.2,.36,1) forwards}
-.hydro-reveal.hydro-reveal-active::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,transparent 0%,rgba(201,168,76,.22) 45%,rgba(100,160,220,.12) 70%,transparent 100%);mix-blend-mode:screen;opacity:0;animation:hydroShine 1200ms cubic-bezier(.4,0,.2,1) forwards;will-change:transform,opacity;transform:translate3d(0,100%,0)}
-@keyframes hydroEmerge{
-  0%{opacity:.01;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6)}
-  55%{opacity:1;filter:blur(0) saturate(1)}
-  75%{transform:translate3d(0,-6px,0) scale(1.005);filter:blur(0) saturate(1)}
+.hydro-reveal.hydro-arming{opacity:.01;transform:translate3d(0,42px,0) scale(.955);filter:blur(12px) saturate(.65);will-change:opacity,transform,filter;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
+/* ─── LURE-DROP-RIPPLE: señuelo impactando la superficie + onda elástica ─── */
+/* Timing: 1250ms total. Cubic-bezier de tensión de sedal (.16,.78,.24,1)
+   simula la parábola de un señuelo: caída rápida inicial, freno elástico
+   en el agua, estabilización flotante. Propiedades 100% GPU. */
+.hydro-reveal.hydro-reveal-active{animation:lureDropRipple 1250ms cubic-bezier(.16,.78,.24,1) forwards}
+/* ::after = onda concéntrica dorada expandiéndose desde el punto de impacto.
+   box-shadow animado evita crear pseudo-layers costosos; se limita al top
+   del contenedor (origen del "impacto"). */
+.hydro-reveal.hydro-reveal-active::after{content:"";position:absolute;top:0;left:50%;width:6px;height:6px;border-radius:50%;pointer-events:none;transform:translate3d(-50%,-3px,0) scale(1);background:radial-gradient(circle,rgba(201,168,76,.85) 0%,rgba(100,160,220,.35) 45%,transparent 70%);opacity:0;animation:lureRippleWave 1100ms cubic-bezier(.22,.9,.3,1) forwards;will-change:transform,opacity,box-shadow}
+@keyframes lureDropRipple{
+  /* FASE 1 — IMPACTO (0-30%): el señuelo cae rápido y rompe la superficie.
+     Aceleración agresiva (curva principal ya la marca), escala 0.955 → 0.98,
+     blur disipando linealmente, Y desplazándose de 42px a 8px. */
+  0%{opacity:.01;transform:translate3d(0,42px,0) scale(.955);filter:blur(12px) saturate(.65)}
+  30%{opacity:.85;transform:translate3d(0,8px,0) scale(.98);filter:blur(5px) saturate(.85)}
+  /* FASE 2 — ONDA/RIPPLE (30-70%): el agua reacciona. Ligero rebote
+     negativo (-5px) simulando la superficie absorbiendo el impacto y
+     devolviendo energía. Blur disipando en forma de ola. */
+  55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.008);filter:blur(1.5px) saturate(1.05)}
+  70%{opacity:1;transform:translate3d(0,-3px,0) scale(1.004);filter:blur(0) saturate(1)}
+  /* FASE 3 — ESTABILIZACIÓN (70-100%): frenado ultra-suave, flotando
+     hasta la posición final. La curva cubic-bezier principal aporta el
+     "freno de sedal" — aquí sólo afinamos la trayectoria. */
   100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0) saturate(1);will-change:auto}
 }
-@keyframes hydroShine{
-  0%{opacity:0;transform:translate3d(0,100%,0)}
-  40%{opacity:1}
-  100%{opacity:0;transform:translate3d(0,-100%,0)}
+@keyframes lureRippleWave{
+  /* Onda concéntrica que nace del punto de impacto y se expande hacia fuera
+     mediante box-shadow (GPU-compositable). Doble anillo = señuelo + eco. */
+  0%{opacity:0;transform:translate3d(-50%,-3px,0) scale(1);box-shadow:0 0 0 0 rgba(201,168,76,.6),0 0 0 0 rgba(100,160,220,.3)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translate3d(-50%,-3px,0) scale(1.4);box-shadow:0 0 0 32px rgba(201,168,76,0),0 0 0 64px rgba(100,160,220,0)}
 }
 @media (prefers-reduced-motion:reduce){
   .hydro-reveal.hydro-arming{opacity:0;transform:none;filter:none}
-  .hydro-reveal.hydro-reveal-active{animation:hydroFadeRM 400ms ease forwards}
+  .hydro-reveal.hydro-reveal-active{animation:lureFadeRM 400ms ease forwards}
   .hydro-reveal.hydro-reveal-active::after{display:none}
-  @keyframes hydroFadeRM{to{opacity:1}}
+  @keyframes lureFadeRM{to{opacity:1}}
 }
 /* ─── WATER STRIKE: impacto acuático al activar nav-cat ─── */
 /* Pseudo-elemento ::before renderiza desde el instante cero (evita layer-creation
@@ -2485,7 +2504,13 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       timers.push(setTimeout(function() {
         tide.classList.remove('leave'); busy = false; timers.length = 0;
       }, 840));
-      // ─── ARMAR HYDRO-REVEAL (oculta el destino antes del viaje) ───
+      // ─── COREOGRAFÍA INQUEBRANTABLE (V10) ───
+      // Paso 1 (línea azul instantánea): la clase .active la inyecta el
+      // listener force-active dedicado (capture=true, mismo tick). El orden
+      // de registro garantiza que ambos listeners corren síncronamente antes
+      // de que __silkScroll inicie su primer rAF → el primer frame pintado
+      // post-click YA contiene la raya dorada en su destino.
+      // Paso 2: armar el destino (oculto en memoria GPU, sin layout shift).
       var hydroTarget = destino.querySelector('.hydro-reveal');
       if (hydroTarget) {
         hydroTarget.classList.remove('hydro-reveal-active');
@@ -2493,15 +2518,34 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         void hydroTarget.offsetWidth;
       }
       // ─── MOTOR DE SCROLL DE SEDA + CALLBACK AL ATERRIZAR ───
+      // BLOQUEO ABSOLUTO (V10): el callback de __silkScroll sólo se dispara
+      // cuando la matemática del rAF reporta t=1. Añadimos una verificación
+      // adicional al píxel — si scrollY difiere de finalY por >1px, esperamos
+      // otro frame. Garantía: la animación lureDropRipple NUNCA arranca sobre
+      // una sección que aún se está moviendo.
       var finalY = Math.max(0, offsetTop - headerH);
       window.__silkScroll(finalY, 1100, function(){
-        if (hydroTarget) {
+        function detonate() {
+          if (!hydroTarget) return;
           hydroTarget.classList.remove('hydro-arming');
-          // rAF gap garantiza frame entre el remove y el add; sin esto
-          // el browser colapsaría los dos cambios y la animación arrancaría
-          // desde el estado final (invisible).
+          // rAF gap garantiza frame entre remove y add; sin esto el browser
+          // colapsa los dos cambios y la animación arranca desde el estado
+          // final (invisible).
           requestAnimationFrame(function(){
             hydroTarget.classList.add('hydro-reveal-active');
+          });
+        }
+        // Verificación al píxel: scroll en reposo antes de detonar.
+        var delta = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
+        if (delta <= 1) {
+          detonate();
+        } else {
+          // Un frame más de espera. Si sigue sin estar en destino, forzamos
+          // y detonamos igualmente — nunca bloqueamos al usuario >32ms.
+          requestAnimationFrame(function(){
+            var d2 = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
+            if (d2 > 1) window.scrollTo(0, finalY);
+            detonate();
           });
         }
       });
@@ -2567,36 +2611,43 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   const fishL = document.querySelector('.hero-fish-left');
   const fishR = document.querySelector('.hero-fish-right');
   let _tick = false;
-  // ─── ACTIVE NAV STATE via IntersectionObserver ──────────────
-  // rootMargin '-20% 0px -60% 0px' = zona activa = banda horizontal
-  // entre 20%-40% de altura del viewport. Solo cuando la sección ocupa
-  // ese tercio superior-central se marca activa. Evita que dos secciones
-  // adyacentes coincidan y el activo "parpadee" entre ellas.
-  const _activeMap = new Map();
+  // ─── ACTIVE NAV STATE via IntersectionObserver (CALIBRACIÓN OMEGA) ──
+  // rootMargin '-40% 0px -50% 0px' = banda activa de SÓLO 10% del viewport
+  // exactamente a la altura del 40%-50% (centro geométrico visual). Una
+  // sección sólo es "activa" cuando atraviesa ese láser central. Desempate:
+  // si dos secciones caen simultáneamente en la banda (pantallas grandes +
+  // secciones cortas), gana la de MAYOR intersectionRatio — no la de orden
+  // DOM. Así la línea azul siempre refleja dónde está realmente la vista.
+  const _activeMap = new Map();  // id -> { ratio, top }
   let _forcedActive = null;     // id forzado por click (tiene prioridad durante scroll animado)
   let _forcedUntil = 0;
   function _applyActive() {
     let current = _forcedActive;
     if (!current || performance.now() > _forcedUntil) {
       current = null;
-      // Entre todas las secciones intersectando la banda activa, elegir la
-      // más cercana al top del viewport (orden DOM garantiza coherencia).
+      // Entre todas las secciones en la banda láser central, gana la de
+      // mayor intersectionRatio. Empate → la más cercana al top (orden DOM).
+      let bestRatio = -1;
       let bestTop = Infinity;
-      _activeMap.forEach((rect, id) => {
-        if (rect && rect.top >= 0 && rect.top < bestTop) { bestTop = rect.top; current = id; }
+      _activeMap.forEach((info, id) => {
+        if (!info) return;
+        if (info.ratio > bestRatio + 0.001) {
+          bestRatio = info.ratio; bestTop = info.top; current = id;
+        } else if (Math.abs(info.ratio - bestRatio) <= 0.001 && info.top < bestTop) {
+          bestTop = info.top; current = id;
+        }
       });
-      // Fallback: si ninguna está intersecting pero hay scroll, elegir la
-      // última cuyo top < viewport/2.
+      // Fallback: ninguna sección en la banda (entre secciones grandes) →
+      // última cuyo top cruzó el 45% del viewport.
       if (!current) {
-        const mid = window.innerHeight / 2;
+        const mark = window.innerHeight * 0.45;
         for (const s of sections) {
           const r = s.getBoundingClientRect();
-          if (r.top < mid) current = s.id;
+          if (r.top <= mark) current = s.id;
         }
       }
     }
     navCats.forEach(a => {
-      // Remove-all-then-set: garantiza exclusividad del estado activo.
       a.classList.remove('active');
       if (a.getAttribute('href') === '#' + current) a.classList.add('active');
     });
@@ -2605,13 +2656,21 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     const activeObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          _activeMap.set(entry.target.id, entry.boundingClientRect);
+          _activeMap.set(entry.target.id, {
+            ratio: entry.intersectionRatio,
+            top: entry.boundingClientRect.top
+          });
         } else {
           _activeMap.delete(entry.target.id);
         }
       });
       _applyActive();
-    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+    }, {
+      rootMargin: '-40% 0px -50% 0px',
+      // Múltiples thresholds: el observer recalcula ratio en cada escalón,
+      // permitiendo desempates finos cuando dos secciones coinciden en la banda.
+      threshold: [0, 0.25, 0.5, 0.75, 1]
+    });
     sections.forEach(s => activeObserver.observe(s));
   }
   // Force-active on click: la clase .active se aplica al instante sin
