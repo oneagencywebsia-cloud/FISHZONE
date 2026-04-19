@@ -238,38 +238,46 @@ html,body{overscroll-behavior-y:none}
    el nodo a su propia capa de composición desde el instante cero. Al pasar a
    .hydro-reveal-active el browser no recompone layers — sólo anima propiedades
    ya en la GPU. Elimina el "tirón" al aterrizar. */
-.hydro-reveal.hydro-arming{opacity:.01;transform:translate3d(0,42px,0) scale(.955);filter:blur(12px) saturate(.65);will-change:opacity,transform,filter;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
+/* hydro-arming (V11 — 100% GPU): sólo opacity + transform + pointer-events.
+   filter:blur se ELIMINA aquí (no es compositable en Android low-end y fuerza
+   repaint al transicionar). El efecto de blur se traslada íntegramente al
+   keyframe lureDropRipple, donde el compositor maneja la animación como
+   una sola unidad tras el first-paint. pointer-events:none evita que el
+   contenedor invisible capture taps durante el viaje del silk-scroll. */
+.hydro-reveal.hydro-arming{opacity:.01;transform:translate3d(0,42px,0) scale(.955);pointer-events:none;will-change:opacity,transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
 /* ─── LURE-DROP-RIPPLE: señuelo impactando la superficie + onda elástica ─── */
-/* Timing: 1250ms total. Cubic-bezier de tensión de sedal (.16,.78,.24,1)
-   simula la parábola de un señuelo: caída rápida inicial, freno elástico
-   en el agua, estabilización flotante. Propiedades 100% GPU. */
+/* Timing: 1250ms. Cubic-bezier de tensión de sedal (.16,.78,.24,1). El blur
+   entra y sale DENTRO de esta animación — el compositor lo trata como parte
+   de una pipeline única tras el first frame, evitando el reflow extra que
+   provoca al cambiarse entre estados estáticos. */
 .hydro-reveal.hydro-reveal-active{animation:lureDropRipple 1250ms cubic-bezier(.16,.78,.24,1) forwards}
-/* ::after = onda concéntrica dorada expandiéndose desde el punto de impacto.
-   box-shadow animado evita crear pseudo-layers costosos; se limita al top
-   del contenedor (origen del "impacto"). */
-.hydro-reveal.hydro-reveal-active::after{content:"";position:absolute;top:0;left:50%;width:6px;height:6px;border-radius:50%;pointer-events:none;transform:translate3d(-50%,-3px,0) scale(1);background:radial-gradient(circle,rgba(201,168,76,.85) 0%,rgba(100,160,220,.35) 45%,transparent 70%);opacity:0;animation:lureRippleWave 1100ms cubic-bezier(.22,.9,.3,1) forwards;will-change:transform,opacity,box-shadow}
+/* ::after = onda concéntrica dorada. V11: animamos SÓLO transform+opacity
+   (box-shadow descartado por repaint). scale(1→30) sobre un punto de 4px
+   con radial-gradient produce la ola visual sin abandonar la capa GPU. */
+.hydro-reveal.hydro-reveal-active::after{content:"";position:absolute;top:0;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(201,168,76,.9) 0%,rgba(201,168,76,.55) 30%,rgba(100,160,220,.25) 55%,transparent 75%);opacity:0;transform:translate3d(0,-2px,0) scale(1);animation:lureRippleWave 1100ms cubic-bezier(.22,.9,.3,1) forwards;will-change:transform,opacity;backface-visibility:hidden}
 @keyframes lureDropRipple{
   /* FASE 1 — IMPACTO (0-30%): el señuelo cae rápido y rompe la superficie.
-     Aceleración agresiva (curva principal ya la marca), escala 0.955 → 0.98,
-     blur disipando linealmente, Y desplazándose de 42px a 8px. */
+     Escala .955→.98, Y 42px→8px. El blur aparece aquí (no en arming) para
+     que el compositor lo absorba como parte de la animación. */
   0%{opacity:.01;transform:translate3d(0,42px,0) scale(.955);filter:blur(12px) saturate(.65)}
   30%{opacity:.85;transform:translate3d(0,8px,0) scale(.98);filter:blur(5px) saturate(.85)}
-  /* FASE 2 — ONDA/RIPPLE (30-70%): el agua reacciona. Ligero rebote
-     negativo (-5px) simulando la superficie absorbiendo el impacto y
-     devolviendo energía. Blur disipando en forma de ola. */
+  /* FASE 2 — ONDA/RIPPLE (30-70%): el agua reacciona. Rebote negativo -5px
+     simulando la superficie absorbiendo el impacto. Blur disipa. */
   55%{opacity:1;transform:translate3d(0,-5px,0) scale(1.008);filter:blur(1.5px) saturate(1.05)}
   70%{opacity:1;transform:translate3d(0,-3px,0) scale(1.004);filter:blur(0) saturate(1)}
-  /* FASE 3 — ESTABILIZACIÓN (70-100%): frenado ultra-suave, flotando
-     hasta la posición final. La curva cubic-bezier principal aporta el
-     "freno de sedal" — aquí sólo afinamos la trayectoria. */
+  /* FASE 3 — ESTABILIZACIÓN (70-100%): frenado ultra-suave hasta posición
+     final. will-change:auto libera la capa GPU al terminar. */
   100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0) saturate(1);will-change:auto}
 }
 @keyframes lureRippleWave{
-  /* Onda concéntrica que nace del punto de impacto y se expande hacia fuera
-     mediante box-shadow (GPU-compositable). Doble anillo = señuelo + eco. */
-  0%{opacity:0;transform:translate3d(-50%,-3px,0) scale(1);box-shadow:0 0 0 0 rgba(201,168,76,.6),0 0 0 0 rgba(100,160,220,.3)}
-  20%{opacity:1}
-  100%{opacity:0;transform:translate3d(-50%,-3px,0) scale(1.4);box-shadow:0 0 0 32px rgba(201,168,76,0),0 0 0 64px rgba(100,160,220,0)}
+  /* Onda concéntrica V11: scale puro sobre pseudo-elemento de 4px con
+     radial-gradient. scale(1→30) expande el gradient a ~120px de radio
+     visible, simulando la onda expansiva. Sólo transform+opacity tocan
+     la GPU — cero repaint. */
+  0%{opacity:0;transform:translate3d(0,-2px,0) scale(1)}
+  15%{opacity:1}
+  60%{opacity:.4}
+  100%{opacity:0;transform:translate3d(0,-2px,0) scale(30)}
 }
 @media (prefers-reduced-motion:reduce){
   .hydro-reveal.hydro-arming{opacity:0;transform:none;filter:none}
@@ -2517,37 +2525,39 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         hydroTarget.classList.add('hydro-arming');
         void hydroTarget.offsetWidth;
       }
-      // ─── MOTOR DE SCROLL DE SEDA + CALLBACK AL ATERRIZAR ───
-      // BLOQUEO ABSOLUTO (V10): el callback de __silkScroll sólo se dispara
-      // cuando la matemática del rAF reporta t=1. Añadimos una verificación
-      // adicional al píxel — si scrollY difiere de finalY por >1px, esperamos
-      // otro frame. Garantía: la animación lureDropRipple NUNCA arranca sobre
-      // una sección que aún se está moviendo.
+      // ─── MOTOR DE SCROLL DE SEDA + DOUBLE rAF (V11) ───
+      // Trampa del Double requestAnimationFrame: cuando __silkScroll reporta
+      // t=1 el motor sólo sabe que emitió la última llamada scrollTo. El
+      // browser aún no ha COMMITEADO ese frame al compositor, por lo que
+      // detonar la animación en ese instante la lanza sobre un layout en
+      // tránsito — de ahí el colapso/reflow en Android físicos.
+      //
+      // Primer rAF: el browser pinta el scroll final (commit de layout).
+      // Segundo rAF: el compositor ya consolidó el frame anterior; éste
+      // es un frame limpio sobre una página completamente quieta. AHORA
+      // removemos .hydro-arming y añadimos .hydro-reveal-active en el
+      // mismo microtask — el compositor los ve como un único swap atómico
+      // y la animación lureDropRipple arranca desde el 0% perfecto.
+      //
+      // Además verificamos al píxel que el scrollY final es correcto —
+      // si alguna extensión/usuario movió la página durante el intervalo,
+      // forzamos la posición antes de detonar.
       var finalY = Math.max(0, offsetTop - headerH);
       window.__silkScroll(finalY, 1100, function(){
-        function detonate() {
-          if (!hydroTarget) return;
-          hydroTarget.classList.remove('hydro-arming');
-          // rAF gap garantiza frame entre remove y add; sin esto el browser
-          // colapsa los dos cambios y la animación arranca desde el estado
-          // final (invisible).
+        if (!hydroTarget) return;
+        requestAnimationFrame(function(){
+          // Frame N: aquí el browser acaba de commitear el último scrollTo.
+          // Verificación de pixel-perfect antes del frame de detonación.
+          var delta = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
+          if (delta > 1) window.scrollTo(0, finalY);
           requestAnimationFrame(function(){
+            // Frame N+1: página 100% quieta, compositor descargado.
+            // Swap atómico arming → active. El browser interpola dentro
+            // de lureDropRipple sin reflow intermedio.
+            hydroTarget.classList.remove('hydro-arming');
             hydroTarget.classList.add('hydro-reveal-active');
           });
-        }
-        // Verificación al píxel: scroll en reposo antes de detonar.
-        var delta = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
-        if (delta <= 1) {
-          detonate();
-        } else {
-          // Un frame más de espera. Si sigue sin estar en destino, forzamos
-          // y detonamos igualmente — nunca bloqueamos al usuario >32ms.
-          requestAnimationFrame(function(){
-            var d2 = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
-            if (d2 > 1) window.scrollTo(0, finalY);
-            detonate();
-          });
-        }
+        });
       });
       if (history.replaceState) try { history.replaceState(null, '', href); } catch (_) {}
       busy = true;
