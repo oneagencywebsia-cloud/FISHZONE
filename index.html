@@ -233,11 +233,16 @@ html,body{overscroll-behavior-y:none}
 /* Base: siempre visible. Solo se oculta cuando JS añade .hydro-arming justo
    antes del scroll. Al aterrizar, añade .hydro-reveal-active y dispara animación. */
 .hydro-reveal{opacity:1;transform:none;filter:none;position:relative}
-.hydro-reveal.hydro-arming{opacity:0;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6);will-change:opacity,transform,filter}
+/* hydro-arming: ZERO-LAG. opacity:0.01 (no 0) fuerza al compositor a mantener
+   la layer GPU viva con los píxeles pre-renderizados. translateZ(0) promueve
+   el nodo a su propia capa de composición desde el instante cero. Al pasar a
+   .hydro-reveal-active el browser no recompone layers — sólo anima propiedades
+   ya en la GPU. Elimina el "tirón" al aterrizar. */
+.hydro-reveal.hydro-arming{opacity:.01;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6);will-change:opacity,transform,filter;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
 .hydro-reveal.hydro-reveal-active{animation:hydroEmerge 1100ms cubic-bezier(.22,1.2,.36,1) forwards}
 .hydro-reveal.hydro-reveal-active::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,transparent 0%,rgba(201,168,76,.22) 45%,rgba(100,160,220,.12) 70%,transparent 100%);mix-blend-mode:screen;opacity:0;animation:hydroShine 1200ms cubic-bezier(.4,0,.2,1) forwards;will-change:transform,opacity;transform:translate3d(0,100%,0)}
 @keyframes hydroEmerge{
-  0%{opacity:0;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6)}
+  0%{opacity:.01;transform:translate3d(0,70px,0) scale(.96);filter:blur(14px) saturate(.6)}
   55%{opacity:1;filter:blur(0) saturate(1)}
   75%{transform:translate3d(0,-6px,0) scale(1.005);filter:blur(0) saturate(1)}
   100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0) saturate(1);will-change:auto}
@@ -252,6 +257,27 @@ html,body{overscroll-behavior-y:none}
   .hydro-reveal.hydro-reveal-active{animation:hydroFadeRM 400ms ease forwards}
   .hydro-reveal.hydro-reveal-active::after{display:none}
   @keyframes hydroFadeRM{to{opacity:1}}
+}
+/* ─── WATER STRIKE: impacto acuático al activar nav-cat ─── */
+/* Pseudo-elemento ::before renderiza desde el instante cero (evita layer-creation
+   lag al detonar). Propiedades EXCLUSIVAMENTE GPU: transform + opacity. */
+.nav-cat{isolation:isolate}
+.nav-cat::before{content:"";position:absolute;top:50%;left:50%;width:120%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.55) 0%,rgba(201,168,76,.18) 45%,transparent 70%);transform:translate3d(-50%,-50%,0) scale(0);opacity:0;pointer-events:none;will-change:transform,opacity;z-index:-1}
+.nav-cat.active::before{animation:waterStrike 720ms cubic-bezier(.22,.9,.3,1) forwards}
+.nav-cat.active{animation:navStrikeGlow 520ms cubic-bezier(.34,1.4,.5,1) forwards}
+@keyframes waterStrike{
+  0%{transform:translate3d(-50%,-50%,0) scale(0);opacity:0}
+  30%{opacity:1}
+  65%{transform:translate3d(-50%,-50%,0) scale(1.15);opacity:.85}
+  100%{transform:translate3d(-50%,-50%,0) scale(1.45);opacity:0}
+}
+@keyframes navStrikeGlow{
+  0%{box-shadow:0 0 0 0 rgba(201,168,76,0),0 0 0 rgba(201,168,76,0)}
+  40%{box-shadow:0 0 0 3px rgba(201,168,76,.35),0 6px 22px rgba(201,168,76,.45)}
+  100%{box-shadow:0 0 0 1px rgba(201,168,76,.25),0 2px 8px rgba(201,168,76,.15)}
+}
+@media (prefers-reduced-motion:reduce){
+  .nav-cat.active::before,.nav-cat.active{animation:none}
 }
 /* Hit-test skip: decorativos no responden a eventos (libera CPU del raycaster) */
 .hero-fish-left,.hero-fish-right,.fish-swim,.hero-orb,.hero-orb-ring,.hero-caustics,.water-wave,.ripple,.intro-stars,.intro-water,.intro-water-glow,.intro-water-surface,.intro-ripple,.hook-drop,.line-cast,.bobber-float,#scroll-progress,#tide-transition,.bar-fill{pointer-events:none}
