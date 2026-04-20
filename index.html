@@ -238,6 +238,20 @@ html,body{overscroll-behavior-y:none}
    el nodo a su propia capa de composición desde el instante cero. Al pasar a
    .hydro-reveal-active el browser no recompone layers — sólo anima propiedades
    ya en la GPU. Elimina el "tirón" al aterrizar. */
+/* ─── V15: DEEP WATER SWAP — velo global para salto instantáneo ───
+   Overlay full-screen que se opaca en 180ms (entrada de inmersión), tapa
+   el salto de scrollTo síncrono, luego se retira en 260ms revelando el
+   destino. Radial-gradient simula la profundidad del agua; backdrop-filter
+   añade desenfoque global durante la ceguera. 100% GPU (opacity only). */
+#deep-water-veil{position:fixed;inset:0;z-index:99997;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(14,42,80,.88) 0%,rgba(4,12,28,.98) 70%,#020608 100%);backdrop-filter:blur(18px) saturate(.4);-webkit-backdrop-filter:blur(18px) saturate(.4);will-change:opacity;transition:opacity 180ms cubic-bezier(.7,0,.3,1)}
+#deep-water-veil.dwv-diving{opacity:1;pointer-events:auto}
+#deep-water-veil.dwv-emerging{opacity:0;transition:opacity 260ms cubic-bezier(.22,.9,.3,1)}
+#deep-water-veil .dwv-caustics{position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(100,160,220,.15) 0%,transparent 35%),radial-gradient(circle at 70% 60%,rgba(201,168,76,.12) 0%,transparent 40%);opacity:0;transition:opacity 180ms ease-out;mix-blend-mode:screen;will-change:opacity}
+#deep-water-veil.dwv-diving .dwv-caustics{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  #deep-water-veil{transition:opacity 100ms linear}
+  #deep-water-veil.dwv-emerging{transition:opacity 120ms linear}
+}
 /* ─── V14: AISLAMIENTO ESTRUCTURAL ─── */
 /* El <section> padre (anclaje del scroll) es INMUNE a toda animación. Nunca
    recibe opacity/transform. Aislamos su compositing context para que el
@@ -341,6 +355,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </head>
 <body class="intro-active">
 <script>document.documentElement.classList.add('intro-active')</script>
+
+<!-- V15: velo Deep Water Swap. Controlado por JS: dwv-diving (opaca) → salto
+     instantáneo de scroll → dwv-emerging (retira). -->
+<div id="deep-water-veil" aria-hidden="true"><div class="dwv-caustics"></div></div>
 
 <div id="tide-transition" aria-hidden="true">
   <div class="tide-bg"></div>
@@ -2584,55 +2602,69 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         hydroTarget.classList.add('hydro-arming');
         void hydroTarget.offsetWidth;
       }
-      // ─── MOTOR DE SCROLL DE SEDA + DOUBLE rAF (V11) ───
-      // Trampa del Double requestAnimationFrame: cuando __silkScroll reporta
-      // t=1 el motor sólo sabe que emitió la última llamada scrollTo. El
-      // browser aún no ha COMMITEADO ese frame al compositor, por lo que
-      // detonar la animación en ese instante la lanza sobre un layout en
-      // tránsito — de ahí el colapso/reflow en Android físicos.
-      //
-      // Primer rAF: el browser pinta el scroll final (commit de layout).
-      // Segundo rAF: el compositor ya consolidó el frame anterior; éste
-      // es un frame limpio sobre una página completamente quieta. AHORA
-      // removemos .hydro-arming y añadimos .hydro-reveal-active en el
-      // mismo microtask — el compositor los ve como un único swap atómico
-      // y la animación lureDropRipple arranca desde el 0% perfecto.
-      //
-      // Además verificamos al píxel que el scrollY final es correcto —
-      // si alguna extensión/usuario movió la página durante el intervalo,
-      // forzamos la posición antes de detonar.
+      // ─── DEEP WATER SWAP (V15) — SPA-style cero viaje visual ───
+      // Secuencia inquebrantable:
+      //   T=0ms    velo.dwv-diving=true → fade-in 180ms, pointer-events:auto
+      //   T=200ms  scrollTo INSTANTÁNEO (detrás del velo opaco) + force-reflow
+      //   T=220ms  velo.dwv-emerging=true → fade-out 260ms, detona hydro-active
+      //   T=480ms  limpia clases del velo
+      // El usuario NO VE desplazamiento intermedio. La matemática del scroll
+      // se ejecuta en un solo frame síncrono bajo un overlay opaco.
       var finalY = Math.max(0, offsetTop - headerH);
-      window.__silkScroll(finalY, 1100, function(){
-        if (!hydroTarget) {
-          // Sin target: libera flag igualmente para no ahogar a los observers.
-          window.__silkTraveling = false;
-          return;
+      var veil = document.getElementById('deep-water-veil');
+      function _dwvJump(){
+        // Bajo velo: salto instantáneo. scroll-behavior neutralizado vía
+        // style inline para ganar a cualquier smooth heredado del root.
+        var prevBh = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, finalY);
+        // Force reflow: consolida el salto antes de levantar el velo.
+        void document.body.offsetHeight;
+        document.documentElement.style.scrollBehavior = prevBh;
+      }
+      function _dwvEmerge(){
+        // Verificación pixel-perfect tras el reflow.
+        var delta = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
+        if (delta > 1) window.scrollTo(0, finalY);
+        if (veil){
+          veil.classList.remove('dwv-diving');
+          veil.classList.add('dwv-emerging');
         }
-        requestAnimationFrame(function(){
-          // Frame N: aquí el browser acaba de commitear el último scrollTo.
-          // Verificación de pixel-perfect antes del frame de detonación.
-          var delta = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);
-          if (delta > 1) window.scrollTo(0, finalY);
+        // Swap atómico arming → active DENTRO del frame de emergencia.
+        // El usuario ve el contenido destino emerger del velo + Lure Drop.
+        if (hydroTarget){
           requestAnimationFrame(function(){
-            // Frame N+1: página 100% quieta, compositor descargado.
-            // Swap atómico arming → active. V13: force-reflow entre remove
-            // y add garantiza RE-TRIGGER de la animación en clicks sucesivos
-            // (sin esto, el browser colapsa los cambios y lureDropRipple
-            // queda "atascada" en el estado final del click anterior).
             hydroTarget.classList.remove('hydro-arming');
             hydroTarget.classList.remove('hydro-reveal-active');
-            // Force reflow: la lectura de offsetWidth crea un sync layout
-            // boundary. El browser "ve" el estado intermedio sin clases y
-            // al añadir .hydro-reveal-active detona la animación desde 0%.
-            void hydroTarget.offsetWidth;
+            void hydroTarget.offsetWidth;      // force re-trigger
             hydroTarget.classList.add('hydro-reveal-active');
-            // V12: libera el mutismo ÚNICAMENTE después de inyectar la
-            // clase. A partir de aquí los observers pueden volver a operar
-            // sin sabotear el arranque de la animación.
-            window.__silkTraveling = false;
           });
-        });
-      });
+        }
+        // Limpieza del velo al terminar la transición de opacity.
+        setTimeout(function(){
+          if (veil) veil.classList.remove('dwv-emerging');
+          window.__silkTraveling = false;
+        }, 280);
+      }
+      if (veil){
+        // Arranca la inmersión. pointer-events:auto en dwv-diving bloquea
+        // cualquier clic del usuario durante el blackout (180ms).
+        veil.classList.remove('dwv-emerging');
+        veil.classList.add('dwv-diving');
+        // Espera al final del fade-in (180ms) antes de saltar y emerger.
+        // Un solo setTimeout encadenando los dos pasos garantiza que el
+        // browser pinte el velo opaco antes de tocar scrollY.
+        setTimeout(function(){
+          _dwvJump();
+          // rAF tras el salto: el browser acaba de commitear el scrollTo
+          // bajo el velo. Siguiente frame emerge limpio.
+          requestAnimationFrame(_dwvEmerge);
+        }, 200);
+      } else {
+        // Fallback sin velo (no debería ocurrir): salto directo y detonación.
+        _dwvJump();
+        _dwvEmerge();
+      }
       if (history.replaceState) try { history.replaceState(null, '', href); } catch (_) {}
       busy = true;
     }, true);
@@ -2702,78 +2734,61 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   const fishL = document.querySelector('.hero-fish-left');
   const fishR = document.querySelector('.hero-fish-right');
   let _tick = false;
-  // ─── ACTIVE NAV STATE via IntersectionObserver (CALIBRACIÓN OMEGA) ──
-  // rootMargin '-40% 0px -50% 0px' = banda activa de SÓLO 10% del viewport
-  // exactamente a la altura del 40%-50% (centro geométrico visual). Una
-  // sección sólo es "activa" cuando atraviesa ese láser central. Desempate:
-  // si dos secciones caen simultáneamente en la banda (pantallas grandes +
-  // secciones cortas), gana la de MAYOR intersectionRatio — no la de orden
-  // DOM. Así la línea azul siempre refleja dónde está realmente la vista.
-  const _activeMap = new Map();  // id -> { ratio, top }
-  let _forcedActive = null;     // id forzado por click (tiene prioridad durante scroll animado)
+  // ─── MOTOR GEOMÉTRICO V15 (SCROLL SPY ALGORÍTMICO) ──
+  // Reemplaza el IntersectionObserver por cálculo matemático directo en
+  // cada scroll. Para cada sección computa la distancia entre su TOP y
+  // el umbral del viewport (header + 80px). La sección con menor distancia
+  // NO-NEGATIVA (top ≤ umbral, ya entró) es la activa.
+  //
+  // VENTAJAS sobre el Observer:
+  //   · Inmune al tamaño de la sección (no depende de alcanzar una banda).
+  //   · Sin colisiones: siempre devuelve UNA sección.
+  //   · Compatible con secciones cortas (<100vh) y largas (>200vh).
+  //
+  // LÍMITE FÍSICO: si (viewport + scrollY) ≥ (scrollHeight - 15), fuerza
+  // la última sección del DOM. Resuelve el caso del fondo aunque la
+  // penúltima sección esté "más cerca" del umbral.
+  let _forcedActive = null;
   let _forcedUntil = 0;
+  let _lastActiveId = null;
+  let _spyRaf = 0;
+  function _computeActive() {
+    if ((window.innerHeight + Math.round(window.scrollY)) >= (document.documentElement.scrollHeight - 15)) {
+      return sections.length > 0 ? sections[sections.length - 1].id : null;
+    }
+    const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;
+    const threshold = headerH + 80;
+    let best = null;
+    let bestDist = Infinity;
+    for (const s of sections) {
+      const rect = s.getBoundingClientRect();
+      const dist = threshold - rect.top;   // positivo si la sección ya cruzó hacia arriba
+      if (dist >= 0 && dist < bestDist) { bestDist = dist; best = s.id; }
+    }
+    if (!best && sections.length > 0) best = sections[0].id;
+    return best;
+  }
   function _applyActive() {
     let current = _forcedActive;
     if (!current || performance.now() > _forcedUntil) {
-      // ─── V14: FIX LÍMITE INFERIOR (SCROLL SPY BOTTOM) ───
-      // Si el usuario ha tocado el fondo físico del DOM, las últimas
-      // secciones (cortas, <100vh) NUNCA alcanzan la banda láser del
-      // observer. Detección matemática: viewport+scrollY ≥ document-15px.
-      // Forzamos la última sección del DOM como activa, ignorando observer.
-      const atBottom = (window.innerHeight + Math.round(window.scrollY)) >= (document.documentElement.scrollHeight - 15);
-      if (atBottom && sections.length > 0) {
-        current = sections[sections.length - 1].id;
-      } else {
-        current = null;
-        // Entre todas las secciones en la banda láser central, gana la de
-        // mayor intersectionRatio. Empate → la más cercana al top (orden DOM).
-        let bestRatio = -1;
-        let bestTop = Infinity;
-        _activeMap.forEach((info, id) => {
-          if (!info) return;
-          if (info.ratio > bestRatio + 0.001) {
-            bestRatio = info.ratio; bestTop = info.top; current = id;
-          } else if (Math.abs(info.ratio - bestRatio) <= 0.001 && info.top < bestTop) {
-            bestTop = info.top; current = id;
-          }
-        });
-        // Fallback: ninguna sección en la banda (entre secciones grandes) →
-        // última cuyo top cruzó el 45% del viewport.
-        if (!current) {
-          const mark = window.innerHeight * 0.45;
-          for (const s of sections) {
-            const r = s.getBoundingClientRect();
-            if (r.top <= mark) current = s.id;
-          }
-        }
-      }
+      current = _computeActive();
     }
+    if (current === _lastActiveId) return;
+    _lastActiveId = current;
     navCats.forEach(a => {
       a.classList.remove('active');
       if (a.getAttribute('href') === '#' + current) a.classList.add('active');
     });
   }
-  if ('IntersectionObserver' in window) {
-    const activeObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          _activeMap.set(entry.target.id, {
-            ratio: entry.intersectionRatio,
-            top: entry.boundingClientRect.top
-          });
-        } else {
-          _activeMap.delete(entry.target.id);
-        }
-      });
-      _applyActive();
-    }, {
-      rootMargin: '-40% 0px -50% 0px',
-      // Múltiples thresholds: el observer recalcula ratio en cada escalón,
-      // permitiendo desempates finos cuando dos secciones coinciden en la banda.
-      threshold: [0, 0.25, 0.5, 0.75, 1]
-    });
-    sections.forEach(s => activeObserver.observe(s));
+  function _spyTick() { _spyRaf = 0; _applyActive(); }
+  function _spyOnScroll() {
+    if (_spyRaf) return;     // throttle a 1/frame
+    _spyRaf = requestAnimationFrame(_spyTick);
   }
+  window.addEventListener('scroll', _spyOnScroll, { passive: true });
+  window.addEventListener('resize', _spyOnScroll, { passive: true });
+  window.addEventListener('load', _applyActive);
+  _applyActive();
   // Force-active on click: la clase .active se aplica al instante sin
   // esperar a que el smooth-scroll cruce los umbrales del observer.
   // El force se mantiene hasta que el scroll se detenga de verdad (scrollend
