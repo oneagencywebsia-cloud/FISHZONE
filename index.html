@@ -243,14 +243,41 @@ html,body{overscroll-behavior-y:none}
    el salto de scrollTo síncrono, luego se retira en 260ms revelando el
    destino. Radial-gradient simula la profundidad del agua; backdrop-filter
    añade desenfoque global durante la ceguera. 100% GPU (opacity only). */
-#deep-water-veil{position:fixed;inset:0;z-index:99997;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(14,42,80,.88) 0%,rgba(4,12,28,.98) 70%,#020608 100%);backdrop-filter:blur(18px) saturate(.4);-webkit-backdrop-filter:blur(18px) saturate(.4);will-change:opacity;transition:opacity 180ms cubic-bezier(.7,0,.3,1)}
-#deep-water-veil.dwv-diving{opacity:1;pointer-events:auto}
-#deep-water-veil.dwv-emerging{opacity:0;transition:opacity 260ms cubic-bezier(.22,.9,.3,1)}
-#deep-water-veil .dwv-caustics{position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(100,160,220,.15) 0%,transparent 35%),radial-gradient(circle at 70% 60%,rgba(201,168,76,.12) 0%,transparent 40%);opacity:0;transition:opacity 180ms ease-out;mix-blend-mode:screen;will-change:opacity}
-#deep-water-veil.dwv-diving .dwv-caustics{opacity:1}
+/* V19 — VELO ACUÁTICO ACTIVO. Ya no es una pausa muerta: durante la
+   inmersión el velo ejecuta una coreografía propia (iris que se cierra,
+   cáusticas flotando, onda expansiva). Así el segundo de "blackout" deja
+   de sentirse estático y transmite inmersión acuática real. */
+#deep-water-veil{position:fixed;inset:0;z-index:99997;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(14,42,80,.88) 0%,rgba(4,12,28,.98) 70%,#020608 100%);backdrop-filter:blur(0px) saturate(1);-webkit-backdrop-filter:blur(0px) saturate(1);will-change:opacity,backdrop-filter;transition:opacity 220ms cubic-bezier(.7,0,.3,1),backdrop-filter 260ms cubic-bezier(.4,0,.2,1),-webkit-backdrop-filter 260ms cubic-bezier(.4,0,.2,1)}
+#deep-water-veil.dwv-diving{opacity:1;pointer-events:auto;backdrop-filter:blur(22px) saturate(.45);-webkit-backdrop-filter:blur(22px) saturate(.45)}
+/* V19: fadeout más corto y curva acuática (descomprime la burbuja de agua). */
+#deep-water-veil.dwv-emerging{opacity:0;backdrop-filter:blur(0px) saturate(1);-webkit-backdrop-filter:blur(0px) saturate(1);transition:opacity 520ms cubic-bezier(.22,.9,.3,1),backdrop-filter 420ms cubic-bezier(.22,.9,.3,1),-webkit-backdrop-filter 420ms cubic-bezier(.22,.9,.3,1)}
+/* Cáusticas: manchas de luz que flotan dentro del velo. */
+#deep-water-veil .dwv-caustics{position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(100,160,220,.22) 0%,transparent 35%),radial-gradient(circle at 70% 60%,rgba(201,168,76,.18) 0%,transparent 40%),radial-gradient(circle at 50% 80%,rgba(70,140,200,.14) 0%,transparent 45%);opacity:0;mix-blend-mode:screen;will-change:opacity,transform}
+#deep-water-veil.dwv-diving .dwv-caustics{opacity:1;animation:dwvCausticsDrift 2400ms ease-in-out infinite alternate}
+@keyframes dwvCausticsDrift{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(2%,-1.5%,0) scale(1.08)}
+  100%{transform:translate3d(-1.5%,1%,0) scale(1.04)}
+}
+/* V19 — Iris acuático: aperture radial que se CIERRA durante el dive
+   (simula sumergirse) y se ABRE durante el emerge (simula emerger).
+   Creado vía pseudo-elemento con radial-gradient de máscara. */
+#deep-water-veil::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 30%,rgba(4,12,28,.55) 55%,rgba(2,8,18,.92) 100%);opacity:0;transform:scale(1.6);transition:opacity 220ms ease-out,transform 520ms cubic-bezier(.7,0,.3,1);will-change:opacity,transform}
+#deep-water-veil.dwv-diving::before{opacity:1;transform:scale(1)}
+#deep-water-veil.dwv-emerging::before{opacity:0;transform:scale(1.8);transition:opacity 420ms ease-in,transform 520ms cubic-bezier(.22,.9,.3,1)}
+/* V19 — Onda expansiva: anillo de luz que recorre la pantalla al iniciar
+   la inmersión. Refuerza el signo "impacto de entrada al agua". */
+#deep-water-veil::after{content:"";position:absolute;top:50%;left:50%;width:40vmax;height:40vmax;margin-left:-20vmax;margin-top:-20vmax;border-radius:50%;pointer-events:none;border:2px solid rgba(201,168,76,0);box-shadow:0 0 60px rgba(100,160,220,0);opacity:0;transform:scale(.15);will-change:transform,opacity,border-color}
+#deep-water-veil.dwv-diving::after{animation:dwvShockwave 700ms cubic-bezier(.22,.9,.3,1) forwards}
+@keyframes dwvShockwave{
+  0%{opacity:0;transform:scale(.1);border-color:rgba(201,168,76,.9);box-shadow:0 0 0 rgba(100,160,220,0)}
+  30%{opacity:.9;border-color:rgba(201,168,76,.7);box-shadow:0 0 80px rgba(100,160,220,.4)}
+  100%{opacity:0;transform:scale(1.8);border-color:rgba(201,168,76,0);box-shadow:0 0 100px rgba(100,160,220,0)}
+}
 @media (prefers-reduced-motion:reduce){
   #deep-water-veil{transition:opacity 100ms linear}
   #deep-water-veil.dwv-emerging{transition:opacity 120ms linear}
+  #deep-water-veil::before,#deep-water-veil::after,#deep-water-veil .dwv-caustics{animation:none !important;transition:opacity 100ms linear !important}
 }
 /* ─── V14: AISLAMIENTO ESTRUCTURAL ─── */
 /* El <section> padre (anclaje del scroll) es INMUNE a toda animación. Nunca
@@ -2614,12 +2641,16 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         void document.body.offsetHeight;
         document.documentElement.style.scrollBehavior = prevBh;
       }
-      // V18 — COREOGRAFÍA ASÍNCRONA ESTRICTA (cero transitionend).
-      // Gobernamos los tiempos desde JS con setTimeout imperativo. Los
-      // valores coinciden con las duraciones CSS del velo (260ms de fade-out
-      // + buffer 40ms para repintado). Esto es robusto en WebViews/Android
-      // donde transitionend puede no disparar si el repintado se pospone.
-      var DWV_FADEOUT_MS = 300; // duración de opacidad dwv-emerging → 0
+      // V19 — CROSSFADE ACTIVO (cero tiempo muerto, cero pop-in).
+      // El hydro-reveal NO espera a que el velo termine de irse: arranca
+      // EN EL MISMO FRAME en que el velo empieza su fadeout. Así el usuario
+      // ve cómo el contenido EMERGE del agua mientras el agua se disipa.
+      // Los 520ms del fadeout del velo se solapan con los 1200ms del Lure
+      // Drop — los primeros ~43% de la animación ocurren "bajo el agua"
+      // (visible parcialmente a través del velo en transición), el resto
+      // ocurre ya limpio. Eso es exactamente lo que pide una coreografía
+      // de inmersión: el señuelo cae en el agua, el agua se retira.
+      var DWV_FADEOUT_MS = 540; // ~520ms CSS + 20ms margen repintado
       function _fireHydro(){
         if (!hydroTarget) return;
         hydroTarget.classList.remove('hydro-arming');
@@ -2635,15 +2666,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           veil.classList.remove('dwv-diving');
           veil.classList.add('dwv-emerging');
         }
-        // Flujo imperativo: esperar el tiempo matemático del fade-out,
-        // luego retirar el velo y, en el rAF siguiente, detonar la animación.
-        // No escuchamos al DOM: nosotros marcamos el ritmo.
+        // CROSSFADE: detona el hydro EN EL MISMO rAF que el fadeout del velo.
+        // El contenido emerge mientras el agua aún está disipándose.
+        requestAnimationFrame(function(){
+          _fireHydro();
+        });
+        // Limpieza tras el fadeout completo: retira la clase del velo
+        // (no afecta lo ya visible; solo resetea estado para el próximo uso)
+        // y libera el flag de tránsito.
         setTimeout(function(){
           if (veil) veil.classList.remove('dwv-emerging');
-          requestAnimationFrame(function(){
-            _fireHydro();
-            window.__silkTraveling = false;
-          });
+          window.__silkTraveling = false;
         }, DWV_FADEOUT_MS);
       }
       if (veil){
