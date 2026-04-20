@@ -238,6 +238,14 @@ html,body{overscroll-behavior-y:none}
    el nodo a su propia capa de composición desde el instante cero. Al pasar a
    .hydro-reveal-active el browser no recompone layers — sólo anima propiedades
    ya en la GPU. Elimina el "tirón" al aterrizar. */
+/* ─── V14: AISLAMIENTO ESTRUCTURAL ─── */
+/* El <section> padre (anclaje del scroll) es INMUNE a toda animación. Nunca
+   recibe opacity/transform. Aislamos su compositing context para que el
+   contenedor hijo pueda animarse sin afectar layout/position del padre.
+   Garantiza que la matemática de silkScroll (offsetTop) sea estable aunque
+   el hijo esté transformándose. */
+section[id] > .hydro-reveal{isolation:isolate}
+section[id]{opacity:1 !important;transform:none !important}
 /* hydro-arming (V13): estado de TENSIÓN PRE-IMPACTO. invisible + scale(.85)
    + Y negativo (suspendido sobre la superficie). 100% GPU. pointer-events:none
    evita capturar taps durante el silk-scroll. */
@@ -2707,26 +2715,36 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   function _applyActive() {
     let current = _forcedActive;
     if (!current || performance.now() > _forcedUntil) {
-      current = null;
-      // Entre todas las secciones en la banda láser central, gana la de
-      // mayor intersectionRatio. Empate → la más cercana al top (orden DOM).
-      let bestRatio = -1;
-      let bestTop = Infinity;
-      _activeMap.forEach((info, id) => {
-        if (!info) return;
-        if (info.ratio > bestRatio + 0.001) {
-          bestRatio = info.ratio; bestTop = info.top; current = id;
-        } else if (Math.abs(info.ratio - bestRatio) <= 0.001 && info.top < bestTop) {
-          bestTop = info.top; current = id;
-        }
-      });
-      // Fallback: ninguna sección en la banda (entre secciones grandes) →
-      // última cuyo top cruzó el 45% del viewport.
-      if (!current) {
-        const mark = window.innerHeight * 0.45;
-        for (const s of sections) {
-          const r = s.getBoundingClientRect();
-          if (r.top <= mark) current = s.id;
+      // ─── V14: FIX LÍMITE INFERIOR (SCROLL SPY BOTTOM) ───
+      // Si el usuario ha tocado el fondo físico del DOM, las últimas
+      // secciones (cortas, <100vh) NUNCA alcanzan la banda láser del
+      // observer. Detección matemática: viewport+scrollY ≥ document-15px.
+      // Forzamos la última sección del DOM como activa, ignorando observer.
+      const atBottom = (window.innerHeight + Math.round(window.scrollY)) >= (document.documentElement.scrollHeight - 15);
+      if (atBottom && sections.length > 0) {
+        current = sections[sections.length - 1].id;
+      } else {
+        current = null;
+        // Entre todas las secciones en la banda láser central, gana la de
+        // mayor intersectionRatio. Empate → la más cercana al top (orden DOM).
+        let bestRatio = -1;
+        let bestTop = Infinity;
+        _activeMap.forEach((info, id) => {
+          if (!info) return;
+          if (info.ratio > bestRatio + 0.001) {
+            bestRatio = info.ratio; bestTop = info.top; current = id;
+          } else if (Math.abs(info.ratio - bestRatio) <= 0.001 && info.top < bestTop) {
+            bestTop = info.top; current = id;
+          }
+        });
+        // Fallback: ninguna sección en la banda (entre secciones grandes) →
+        // última cuyo top cruzó el 45% del viewport.
+        if (!current) {
+          const mark = window.innerHeight * 0.45;
+          for (const s of sections) {
+            const r = s.getBoundingClientRect();
+            if (r.top <= mark) current = s.id;
+          }
         }
       }
     }
