@@ -243,41 +243,60 @@ html,body{overscroll-behavior-y:none}
    el salto de scrollTo síncrono, luego se retira en 260ms revelando el
    destino. Radial-gradient simula la profundidad del agua; backdrop-filter
    añade desenfoque global durante la ceguera. 100% GPU (opacity only). */
-/* V19 — VELO ACUÁTICO ACTIVO. Ya no es una pausa muerta: durante la
-   inmersión el velo ejecuta una coreografía propia (iris que se cierra,
-   cáusticas flotando, onda expansiva). Así el segundo de "blackout" deja
-   de sentirse estático y transmite inmersión acuática real. */
-#deep-water-veil{position:fixed;inset:0;z-index:99997;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(14,42,80,.88) 0%,rgba(4,12,28,.98) 70%,#020608 100%);backdrop-filter:blur(0px) saturate(1);-webkit-backdrop-filter:blur(0px) saturate(1);will-change:opacity,backdrop-filter;transition:opacity 220ms cubic-bezier(.7,0,.3,1),backdrop-filter 260ms cubic-bezier(.4,0,.2,1),-webkit-backdrop-filter 260ms cubic-bezier(.4,0,.2,1)}
-#deep-water-veil.dwv-diving{opacity:1;pointer-events:auto;backdrop-filter:blur(22px) saturate(.45);-webkit-backdrop-filter:blur(22px) saturate(.45)}
-/* V19: fadeout más corto y curva acuática (descomprime la burbuja de agua). */
-#deep-water-veil.dwv-emerging{opacity:0;backdrop-filter:blur(0px) saturate(1);-webkit-backdrop-filter:blur(0px) saturate(1);transition:opacity 520ms cubic-bezier(.22,.9,.3,1),backdrop-filter 420ms cubic-bezier(.22,.9,.3,1),-webkit-backdrop-filter 420ms cubic-bezier(.22,.9,.3,1)}
-/* Cáusticas: manchas de luz que flotan dentro del velo. */
-#deep-water-veil .dwv-caustics{position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(100,160,220,.22) 0%,transparent 35%),radial-gradient(circle at 70% 60%,rgba(201,168,76,.18) 0%,transparent 40%),radial-gradient(circle at 50% 80%,rgba(70,140,200,.14) 0%,transparent 45%);opacity:0;mix-blend-mode:screen;will-change:opacity,transform}
+/* ═══════════════════════════════════════════════════════════════════
+   V20 — WATER SURGE (ACTIVE DIVE TRANSITION)
+   ═══════════════════════════════════════════════════════════════════
+   El velo YA NO es un fade estático. Es una "inmersión activa" con:
+   • Burbujas ascendentes (3 capas, animación continua).
+   • Iris radial que se CIERRA (cámara sumergiéndose hacia abisal).
+   • Shockwave dorada de 700ms (impacto dorado al entrar al agua).
+   • Distorsión por backdrop-filter (blur extremo + saturación caída).
+   60FPS: solo opacity/transform/filter → composited layers, 0 layout.
+   ═══════════════════════════════════════════════════════════════════ */
+#deep-water-veil{position:fixed;inset:0;z-index:99997;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(14,42,80,.92) 0%,rgba(4,12,28,.98) 55%,#010409 100%);backdrop-filter:blur(0px) saturate(1);-webkit-backdrop-filter:blur(0px) saturate(1);will-change:opacity,backdrop-filter;transition:opacity 200ms cubic-bezier(.7,0,.3,1),backdrop-filter 260ms cubic-bezier(.4,0,.2,1),-webkit-backdrop-filter 260ms cubic-bezier(.4,0,.2,1);overflow:hidden}
+#deep-water-veil.dwv-diving{opacity:1;pointer-events:auto;backdrop-filter:blur(24px) saturate(.35);-webkit-backdrop-filter:blur(24px) saturate(.35)}
+#deep-water-veil.dwv-emerging{opacity:0;backdrop-filter:blur(0px) saturate(1);-webkit-backdrop-filter:blur(0px) saturate(1);transition:opacity 560ms cubic-bezier(.22,.9,.3,1),backdrop-filter 460ms cubic-bezier(.22,.9,.3,1),-webkit-backdrop-filter 460ms cubic-bezier(.22,.9,.3,1)}
+/* Cáusticas (manchas de luz) que flotan mientras estamos sumergidos. */
+#deep-water-veil .dwv-caustics{position:absolute;inset:0;background:radial-gradient(circle at 28% 38%,rgba(100,160,220,.28) 0%,transparent 38%),radial-gradient(circle at 72% 62%,rgba(201,168,76,.22) 0%,transparent 42%),radial-gradient(circle at 50% 82%,rgba(70,140,200,.18) 0%,transparent 48%);opacity:0;mix-blend-mode:screen;will-change:opacity,transform}
 #deep-water-veil.dwv-diving .dwv-caustics{opacity:1;animation:dwvCausticsDrift 2400ms ease-in-out infinite alternate}
 @keyframes dwvCausticsDrift{
   0%{transform:translate3d(0,0,0) scale(1)}
   50%{transform:translate3d(2%,-1.5%,0) scale(1.08)}
   100%{transform:translate3d(-1.5%,1%,0) scale(1.04)}
 }
-/* V19 — Iris acuático: aperture radial que se CIERRA durante el dive
-   (simula sumergirse) y se ABRE durante el emerge (simula emerger).
-   Creado vía pseudo-elemento con radial-gradient de máscara. */
-#deep-water-veil::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 30%,rgba(4,12,28,.55) 55%,rgba(2,8,18,.92) 100%);opacity:0;transform:scale(1.6);transition:opacity 220ms ease-out,transform 520ms cubic-bezier(.7,0,.3,1);will-change:opacity,transform}
+/* Iris acuático (::before): oscurece por los bordes, simulando que la
+   presión del agua cierra el campo de visión. */
+#deep-water-veil::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 28%,rgba(4,12,28,.6) 58%,rgba(2,8,18,.95) 100%);opacity:0;transform:scale(1.6);transition:opacity 200ms ease-out,transform 540ms cubic-bezier(.7,0,.3,1);will-change:opacity,transform}
 #deep-water-veil.dwv-diving::before{opacity:1;transform:scale(1)}
-#deep-water-veil.dwv-emerging::before{opacity:0;transform:scale(1.8);transition:opacity 420ms ease-in,transform 520ms cubic-bezier(.22,.9,.3,1)}
-/* V19 — Onda expansiva: anillo de luz que recorre la pantalla al iniciar
-   la inmersión. Refuerza el signo "impacto de entrada al agua". */
+#deep-water-veil.dwv-emerging::before{opacity:0;transform:scale(1.8);transition:opacity 420ms ease-in,transform 540ms cubic-bezier(.22,.9,.3,1)}
+/* Shockwave dorada (::after): anillo de luz que recorre la pantalla al
+   tocar el agua. 700ms, cubic-bezier acuático. */
 #deep-water-veil::after{content:"";position:absolute;top:50%;left:50%;width:40vmax;height:40vmax;margin-left:-20vmax;margin-top:-20vmax;border-radius:50%;pointer-events:none;border:2px solid rgba(201,168,76,0);box-shadow:0 0 60px rgba(100,160,220,0);opacity:0;transform:scale(.15);will-change:transform,opacity,border-color}
 #deep-water-veil.dwv-diving::after{animation:dwvShockwave 700ms cubic-bezier(.22,.9,.3,1) forwards}
 @keyframes dwvShockwave{
-  0%{opacity:0;transform:scale(.1);border-color:rgba(201,168,76,.9);box-shadow:0 0 0 rgba(100,160,220,0)}
-  30%{opacity:.9;border-color:rgba(201,168,76,.7);box-shadow:0 0 80px rgba(100,160,220,.4)}
-  100%{opacity:0;transform:scale(1.8);border-color:rgba(201,168,76,0);box-shadow:0 0 100px rgba(100,160,220,0)}
+  0%{opacity:0;transform:scale(.1);border-color:rgba(201,168,76,.95);box-shadow:0 0 0 rgba(100,160,220,0)}
+  30%{opacity:.95;border-color:rgba(201,168,76,.75);box-shadow:0 0 90px rgba(100,160,220,.5)}
+  100%{opacity:0;transform:scale(1.85);border-color:rgba(201,168,76,0);box-shadow:0 0 110px rgba(100,160,220,0)}
+}
+/* Burbujas ascendentes: el contenedor .dwv-bubbles genera 3 capas
+   radiales, cada una con su propia velocidad. Crean profundidad visual. */
+#deep-water-veil .dwv-bubbles{position:absolute;inset:0;pointer-events:none;opacity:0;will-change:opacity}
+#deep-water-veil.dwv-diving .dwv-bubbles{opacity:1;transition:opacity 180ms ease-out}
+#deep-water-veil .dwv-bubbles span{position:absolute;left:0;right:0;top:100%;height:200%;background-repeat:repeat;will-change:transform}
+#deep-water-veil .dwv-bubbles .b1{background-image:radial-gradient(circle at 15% 20%,rgba(180,220,255,.35) 0,rgba(180,220,255,.35) 2px,transparent 3px),radial-gradient(circle at 75% 45%,rgba(180,220,255,.25) 0,rgba(180,220,255,.25) 1.5px,transparent 2.5px),radial-gradient(circle at 40% 80%,rgba(180,220,255,.3) 0,rgba(180,220,255,.3) 2px,transparent 3px);background-size:180px 240px}
+#deep-water-veil .dwv-bubbles .b2{background-image:radial-gradient(circle at 55% 30%,rgba(201,168,76,.25) 0,rgba(201,168,76,.25) 1.5px,transparent 2.5px),radial-gradient(circle at 25% 70%,rgba(180,220,255,.22) 0,rgba(180,220,255,.22) 2.5px,transparent 3.5px);background-size:260px 320px}
+#deep-water-veil .dwv-bubbles .b3{background-image:radial-gradient(circle at 80% 20%,rgba(100,160,220,.22) 0,rgba(100,160,220,.22) 3px,transparent 4px),radial-gradient(circle at 30% 60%,rgba(180,220,255,.18) 0,rgba(180,220,255,.18) 2px,transparent 3px);background-size:340px 420px}
+#deep-water-veil.dwv-diving .dwv-bubbles .b1{animation:dwvBubbleRise 1400ms linear infinite}
+#deep-water-veil.dwv-diving .dwv-bubbles .b2{animation:dwvBubbleRise 2000ms linear infinite}
+#deep-water-veil.dwv-diving .dwv-bubbles .b3{animation:dwvBubbleRise 2800ms linear infinite}
+@keyframes dwvBubbleRise{
+  0%{transform:translate3d(0,0,0)}
+  100%{transform:translate3d(0,-100%,0)}
 }
 @media (prefers-reduced-motion:reduce){
   #deep-water-veil{transition:opacity 100ms linear}
   #deep-water-veil.dwv-emerging{transition:opacity 120ms linear}
-  #deep-water-veil::before,#deep-water-veil::after,#deep-water-veil .dwv-caustics{animation:none !important;transition:opacity 100ms linear !important}
+  #deep-water-veil::before,#deep-water-veil::after,#deep-water-veil .dwv-caustics,#deep-water-veil .dwv-bubbles span{animation:none !important;transition:opacity 100ms linear !important}
 }
 /* ─── V14: AISLAMIENTO ESTRUCTURAL ─── */
 /* El <section> padre (anclaje del scroll) es INMUNE a toda animación. Nunca
@@ -287,57 +306,62 @@ html,body{overscroll-behavior-y:none}
    el hijo esté transformándose. */
 section[id] > .hydro-reveal{isolation:isolate}
 section[id]{opacity:1 !important;transform:none !important}
-/* hydro-arming (V13): estado de TENSIÓN PRE-IMPACTO. invisible + scale(.85)
-   + Y negativo (suspendido sobre la superficie). 100% GPU. pointer-events:none
-   evita capturar taps durante el silk-scroll. */
-.hydro-reveal.hydro-arming{opacity:0;transform:translate3d(0,-30px,0) scale(.85);pointer-events:none;will-change:opacity,transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
-/* ─── LURE-DROP-RIPPLE V13: física innegable del señuelo ───
-   Especificidad reforzada (body .hydro-reveal...) + shorthand animation
-   completo + !important. Blinda contra cualquier colisión de reglas base.
-   Duración 1200ms, fill-mode forwards anclado al 100%. */
+/* ═══════════════════════════════════════════════════════════════════
+   V20 — HOOK SET CHOREOGRAPHY (CONTENT LANDING)
+   ═══════════════════════════════════════════════════════════════════
+   Física temática de caña de pescar. El contenido está en TENSIÓN
+   EXTREMA bajo el velo (blur fuerte, desplazado, comprimido) y se
+   "tira hacia arriba" con la curva elástica de una caña tensada.
+   4 fases visibles:
+     0%   TENSIÓN: invisible, blur 14px, scale .78, Y +80px (profundo)
+     35%  SNAP: la caña cede, contenido asciende acelerando
+     55%  HOOK SET: overshoot elástico, Y -14px (rebasa el final),
+          scale 1.035 (contenido "tira" hacia arriba), blur 0
+     72%  REBOTE: cede ligeramente abajo (Y 4px, scale .993)
+     88%  OSCILACIÓN: micro-tensión residual (Y -2px)
+     100% ESTABILIZACIÓN: posición exacta, escala real, sin blur.
+   Duración 1300ms — el usuario PERCIBE la física, no la pierde.
+   ═══════════════════════════════════════════════════════════════════ */
+.hydro-reveal.hydro-arming{opacity:0;transform:translate3d(0,80px,0) scale(.78);filter:blur(14px);pointer-events:none;will-change:opacity,transform,filter;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
 body .hydro-reveal.hydro-reveal-active{
-  /* V17 — CERO delay CSS. El disparo se hace por evento `transitionend`
-     del velo (oscuro → transparente). Cuando esta clase entra al DOM,
-     el velo ya reporta opacidad 0 físicamente. Animación arranca en su
-     frame nativo, sin adivinanzas de tiempo. */
-  animation:lureDropRipple 1200ms cubic-bezier(.34,1.26,.64,1) 1 normal forwards running !important;
+  animation:hookSetReel 1300ms cubic-bezier(.16,1.04,.3,1) 1 normal forwards running !important;
   opacity:1;
 }
-/* ::after = onda concéntrica post-impacto. Delay 300ms relativo al 40%
-   del keyframe principal (impacto visual). Este delay es INTERNO a la
-   animación encadenada, no depende del velo. */
+/* Onda de ruptura de superficie (::after). Al "romper" el agua con el
+   hook set, una onda concéntrica dorada recorre desde el punto de salida.
+   Delay 240ms = cuando el contenido está cruzando la superficie (35%). */
 body .hydro-reveal.hydro-reveal-active::after{
-  content:"";position:absolute;top:0;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(201,168,76,.9) 0%,rgba(201,168,76,.55) 30%,rgba(100,160,220,.25) 55%,transparent 75%);
+  content:"";position:absolute;top:0;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(201,168,76,.95) 0%,rgba(201,168,76,.6) 28%,rgba(100,160,220,.3) 55%,transparent 78%);
   opacity:0;transform:translate3d(0,-2px,0) scale(1);
-  animation:lureRippleWave 900ms cubic-bezier(.22,.9,.3,1) 300ms 1 normal forwards running !important;
+  animation:hookSurfaceBreak 1000ms cubic-bezier(.22,.9,.3,1) 240ms 1 normal forwards running !important;
   will-change:transform,opacity;backface-visibility:hidden;
 }
-@keyframes lureDropRipple{
-  /* 0% — TENSIÓN: invisible, suspendido arriba (Y:-30px), comprimido (scale .85).
-     El señuelo está sobre la superficie, a punto de caer. */
-  0%{opacity:0;transform:translate3d(0,-30px,0) scale(.85);filter:blur(6px)}
-  /* 20% — CAÍDA: emerge ganando opacidad mientras acelera hacia abajo. */
-  20%{opacity:.6;transform:translate3d(0,-10px,0) scale(.92);filter:blur(3px)}
-  /* 40% — IMPACTO (overshoot): rebasa la posición original con fuerza,
-     scale 1.03, Y=12px (por debajo del final). Aquí suena la picada. */
-  40%{opacity:1;transform:translate3d(0,12px,0) scale(1.03);filter:blur(0)}
-  /* 55% — ABSORCIÓN: el agua amortigua, vuelve hacia arriba. */
-  55%{opacity:1;transform:translate3d(0,-4px,0) scale(.99);filter:blur(0)}
-  /* 70% — REBOTE (tensión de caña): segundo overshoot hacia arriba. */
-  70%{opacity:1;transform:translate3d(0,-6px,0) scale(1.005);filter:blur(0)}
-  /* 85% — SEGUNDA ABSORCIÓN: oscilación decreciendo. */
-  85%{opacity:1;transform:translate3d(0,2px,0) scale(.998);filter:blur(0)}
-  /* 100% — ESTABILIZACIÓN: posición exacta, escala real, opacidad absoluta. */
+@keyframes hookSetReel{
+  /* 0% — TENSIÓN MÁXIMA: bajo la superficie, invisible, borroso,
+     desplazado 80px hacia abajo, comprimido al 78%. */
+  0%{opacity:0;transform:translate3d(0,80px,0) scale(.78);filter:blur(14px)}
+  /* 15% — PRIMER TIRÓN: la caña empieza a ceder, contenido asciende. */
+  15%{opacity:.3;transform:translate3d(0,50px,0) scale(.86);filter:blur(9px)}
+  /* 35% — ROMPE LA SUPERFICIE: cruza el plano, opacidad casi plena,
+     blur disipando (el agua se quita de encima). */
+  35%{opacity:.85;transform:translate3d(0,18px,0) scale(.96);filter:blur(3px)}
+  /* 55% — HOOK SET (overshoot): REBASA la posición final, Y -14px,
+     scale 1.035. El anzuelo clava con fuerza. Usuario VE el jolt. */
+  55%{opacity:1;transform:translate3d(0,-14px,0) scale(1.035);filter:blur(0)}
+  /* 72% — PRIMER REBOTE: el agua tira de vuelta, cede ligeramente. */
+  72%{opacity:1;transform:translate3d(0,4px,0) scale(.993);filter:blur(0)}
+  /* 88% — MICRO-OSCILACIÓN: tensión residual de la caña. */
+  88%{opacity:1;transform:translate3d(0,-2px,0) scale(1.002);filter:blur(0)}
+  /* 100% — CAPTURA: posición fija, escala 1, filtro limpio. */
   100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0);will-change:auto}
 }
-@keyframes lureRippleWave{
-  /* Onda concéntrica: scale(1→32) sobre pseudo de 4px + radial-gradient.
-     Arranca con delay 300ms = cuando el keyframe principal llega al impacto. */
+@keyframes hookSurfaceBreak{
+  /* Anillo dorado que expande desde el punto de ruptura. scale 1→38. */
   0%{opacity:0;transform:translate3d(0,-2px,0) scale(1)}
   12%{opacity:1}
-  60%{opacity:.35}
-  100%{opacity:0;transform:translate3d(0,-2px,0) scale(32)}
+  60%{opacity:.4}
+  100%{opacity:0;transform:translate3d(0,-2px,0) scale(38)}
 }
 @media (prefers-reduced-motion:reduce){
   .hydro-reveal.hydro-arming{opacity:0;transform:none;filter:none}
@@ -390,7 +414,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <!-- V15: velo Deep Water Swap. Controlado por JS: dwv-diving (opaca) → salto
      instantáneo de scroll → dwv-emerging (retira). -->
-<div id="deep-water-veil" aria-hidden="true"><div class="dwv-caustics"></div></div>
+<div id="deep-water-veil" aria-hidden="true"><div class="dwv-caustics"></div><div class="dwv-bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div></div>
 
 <div id="tide-transition" aria-hidden="true">
   <div class="tide-bg"></div>
@@ -2641,16 +2665,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         void document.body.offsetHeight;
         document.documentElement.style.scrollBehavior = prevBh;
       }
-      // V19 — CROSSFADE ACTIVO (cero tiempo muerto, cero pop-in).
-      // El hydro-reveal NO espera a que el velo termine de irse: arranca
-      // EN EL MISMO FRAME en que el velo empieza su fadeout. Así el usuario
-      // ve cómo el contenido EMERGE del agua mientras el agua se disipa.
-      // Los 520ms del fadeout del velo se solapan con los 1200ms del Lure
-      // Drop — los primeros ~43% de la animación ocurren "bajo el agua"
-      // (visible parcialmente a través del velo en transición), el resto
-      // ocurre ya limpio. Eso es exactamente lo que pide una coreografía
-      // de inmersión: el señuelo cae en el agua, el agua se retira.
-      var DWV_FADEOUT_MS = 540; // ~520ms CSS + 20ms margen repintado
+      // V20 — CROSSFADE HOOK SET (cero tiempo muerto, cero pop-in).
+      // El hook-set arranca EN EL MISMO frame en que el velo empieza su
+      // fadeout (560ms). Timeline visual:
+      //   0ms      dwv-emerging + hydro-reveal-active (crossfade inicia)
+      //   0-560ms  velo se disipa; contenido asciende desde 80px/blur14
+      //   455ms    (35% de 1300ms) contenido rompe la superficie
+      //   715ms    (55%) hook set — overshoot dorado clava el anzuelo
+      //   1300ms   estabilización final
+      // Durante los primeros 560ms el usuario ve EL CONTENIDO EMERGIENDO
+      // A TRAVÉS DEL AGUA QUE SE RETIRA. Esa es la fusión acuática.
+      var DWV_FADEOUT_MS = 580; // 560ms CSS + 20ms buffer repintado
       function _fireHydro(){
         if (!hydroTarget) return;
         hydroTarget.classList.remove('hydro-arming');
