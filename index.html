@@ -269,20 +269,21 @@ section[id]{opacity:1 !important;transform:none !important}
    completo + !important. Blinda contra cualquier colisión de reglas base.
    Duración 1200ms, fill-mode forwards anclado al 100%. */
 body .hydro-reveal.hydro-reveal-active{
-  /* V16: delay 130ms sincroniza el 0% del keyframe (tensión invisible)
-     con el instante en que el velo Deep Water cae a ~50% opacidad. Así
-     el usuario VE la caída del señuelo emergiendo del agua, no queda
-     oculta tras el velo opaco. */
-  animation:lureDropRipple 1200ms cubic-bezier(.34,1.26,.64,1) 130ms 1 normal forwards running !important;
+  /* V17 — CERO delay CSS. El disparo se hace por evento `transitionend`
+     del velo (oscuro → transparente). Cuando esta clase entra al DOM,
+     el velo ya reporta opacidad 0 físicamente. Animación arranca en su
+     frame nativo, sin adivinanzas de tiempo. */
+  animation:lureDropRipple 1200ms cubic-bezier(.34,1.26,.64,1) 1 normal forwards running !important;
   opacity:1;
 }
-/* ::after = onda concéntrica post-impacto. Arranca con delay 300ms (tras el
-   momento del impacto visual en el 40% del keyframe principal). */
+/* ::after = onda concéntrica post-impacto. Delay 300ms relativo al 40%
+   del keyframe principal (impacto visual). Este delay es INTERNO a la
+   animación encadenada, no depende del velo. */
 body .hydro-reveal.hydro-reveal-active::after{
   content:"";position:absolute;top:0;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,rgba(201,168,76,.9) 0%,rgba(201,168,76,.55) 30%,rgba(100,160,220,.25) 55%,transparent 75%);
   opacity:0;transform:translate3d(0,-2px,0) scale(1);
-  animation:lureRippleWave 900ms cubic-bezier(.22,.9,.3,1) 430ms 1 normal forwards running !important;
+  animation:lureRippleWave 900ms cubic-bezier(.22,.9,.3,1) 300ms 1 normal forwards running !important;
   will-change:transform,opacity;backface-visibility:hidden;
 }
 @keyframes lureDropRipple{
@@ -2621,21 +2622,47 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           veil.classList.remove('dwv-diving');
           veil.classList.add('dwv-emerging');
         }
-        // Swap atómico arming → active DENTRO del frame de emergencia.
-        // El usuario ve el contenido destino emerger del velo + Lure Drop.
-        if (hydroTarget){
-          requestAnimationFrame(function(){
-            hydroTarget.classList.remove('hydro-arming');
-            hydroTarget.classList.remove('hydro-reveal-active');
-            void hydroTarget.offsetWidth;      // force re-trigger
-            hydroTarget.classList.add('hydro-reveal-active');
-          });
+        // V17 — SINCRONIZACIÓN POR EVENTO NATIVO `transitionend`.
+        // NO confiamos en timers ni rAF para detonar la animación del destino.
+        // El velo reporta al DOM el momento EXACTO en que su opacidad
+        // alcanza el valor final (0, transparente). Solo entonces el usuario
+        // puede VER el hydro-reveal. Inyectar la clase antes = animación en
+        // la sombra del velo opaco (V16 bug).
+        function _fireHydro(){
+          if (!hydroTarget) return;
+          hydroTarget.classList.remove('hydro-arming');
+          hydroTarget.classList.remove('hydro-reveal-active');
+          void hydroTarget.offsetWidth;    // force re-trigger
+          hydroTarget.classList.add('hydro-reveal-active');
         }
-        // Limpieza del velo al terminar la transición de opacity.
-        setTimeout(function(){
-          if (veil) veil.classList.remove('dwv-emerging');
+        if (veil){
+          var _fired = false;
+          function _onVeilEnd(ev){
+            // Solo la transición de opacity del propio velo cuenta.
+            if (ev.target !== veil || ev.propertyName !== 'opacity') return;
+            if (_fired) return;
+            _fired = true;
+            veil.removeEventListener('transitionend', _onVeilEnd);
+            veil.classList.remove('dwv-emerging');
+            window.__silkTraveling = false;
+            _fireHydro();
+          }
+          veil.addEventListener('transitionend', _onVeilEnd);
+          // Salvaguarda: si transitionend nunca dispara (tab backgrounded,
+          // transición interrumpida), forzamos a los 500ms (>260ms de la
+          // transición CSS + margen). Nunca dejamos el sistema colgado.
+          setTimeout(function(){
+            if (_fired) return;
+            _fired = true;
+            veil.removeEventListener('transitionend', _onVeilEnd);
+            veil.classList.remove('dwv-emerging');
+            window.__silkTraveling = false;
+            _fireHydro();
+          }, 500);
+        } else {
           window.__silkTraveling = false;
-        }, 280);
+          _fireHydro();
+        }
       }
       if (veil){
         // Arranca la inmersión. pointer-events:auto en dwv-diving bloquea
@@ -2912,24 +2939,20 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     var bar = document.getElementById('scroll-progress');
     var btn = document.getElementById('back-top');
     var nav = document.querySelector('nav');
-    var dh = 1, tick = false, lastScrolled = null, lastVis = null;
-    function recalc() {
-      var d = document.documentElement, b = document.body;
-      dh = Math.max(d.scrollHeight, b.scrollHeight, d.offsetHeight, b.offsetHeight) - window.innerHeight;
-      if (dh < 1) dh = 1;
-    }
-    recalc();
-    window.addEventListener('load', recalc);
-    window.addEventListener('resize', recalc, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(recalc);
+    var tick = false, lastScrolled = null, lastVis = null;
     function onScroll() {
       if (tick) return;
       tick = true;
       requestAnimationFrame(function() {
         var st = window.scrollY || window.pageYOffset || 0;
-        // V16 — MATEMÁTICA PURA: p = scrollY / (scrollHeight - viewportHeight).
-        // Sin thresholds artificiales. El 100% sólo es matemáticamente
-        // posible cuando (innerHeight + scrollY) == scrollHeight absoluto.
+        // V17 — MATEMÁTICA DINÁMICA: el divisor (altura scrolleable real)
+        // se recalcula en CADA tick. La página muta su altura durante el
+        // ciclo de vida (fuentes custom, lazy-load de imágenes, reflows
+        // diferidos). Cachear el valor → 100% prematuro en Galería/Montajes.
+        // Coste: 4 lecturas + max(). O(1). Inapreciable vs. el valor correcto.
+        var d = document.documentElement, b = document.body;
+        var dh = Math.max(d.scrollHeight, b.scrollHeight, d.offsetHeight, b.offsetHeight) - window.innerHeight;
+        if (dh < 1) dh = 1;
         var p = st / dh;
         if (p < 0) p = 0;
         if (p > 1) p = 1;
