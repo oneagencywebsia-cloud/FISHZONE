@@ -404,6 +404,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .fish-img,.tech-card img,.location-card img,.bait-card img,.gear-card img,.rig-card img{image-rendering:auto;transform:translateZ(0)}
   /* Desactiva transiciones costosas de hover en táctiles (no se usan, liberan compositor) */
   .card:hover,.tech-card:hover,.bait-card:hover,.gear-card:hover,.location-card:hover,.rig-card:hover{transform:none !important}
+  /* backdrop-filter está desactivado en móvil: compensar con background opaco para que el velo tape la pantalla */
+  #deep-water-veil.dwv-diving{background:rgba(4,12,28,.98) !important}
 }
 /* Reduce paint de elementos fuera del viewport aunque no tengan content-visibility */
 .fade-in:not(.visible){contain:layout paint style}
