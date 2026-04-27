@@ -109,8 +109,8 @@
 .hero-fish-swim.f7{top:44%;animation:heroFishCrossR 38s linear -30s infinite}
 .hero-fish-swim .body{animation:fishWiggle 1.2s ease-in-out infinite;transform-origin:center}
 .hero-fish-swim .tail{animation:fishTail .6s ease-in-out infinite;transform-origin:0% 50%}
-@keyframes heroFishCrossR{0%{left:-8%;opacity:0;transform:translateY(0)}6%{opacity:.55}50%{transform:translateY(-14px)}94%{opacity:.55}100%{left:108%;opacity:0;transform:translateY(6px)}}
-@keyframes heroFishCrossL{0%{right:-8%;opacity:0;transform:scaleX(-1) translateY(0)}6%{opacity:.55}50%{transform:scaleX(-1) translateY(12px)}94%{opacity:.55}100%{right:108%;opacity:0;transform:scaleX(-1) translateY(-6px)}}
+
+
 @keyframes fishWiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 @keyframes fishTail{0%,100%{transform:rotate(-8deg) scaleX(.92)}50%{transform:rotate(8deg) scaleX(1.08)}}
 /* Burbujas subiendo desde el fondo */
@@ -140,7 +140,7 @@
 .hero-particles i:nth-child(6){top:25%;left:85%;animation-duration:16s;animation-delay:-6s}
 .hero-particles i:nth-child(7){top:55%;left:92%;animation-duration:22s;animation-delay:-12s}
 .hero-particles i:nth-child(8){top:80%;left:10%;animation-duration:17s;animation-delay:-2s}
-@keyframes particleFloat{0%{transform:translate(0,0);opacity:0}10%{opacity:.9}50%{transform:translate(20px,-40px);opacity:.6}90%{opacity:.4}100%{transform:translate(-15px,-90px);opacity:0}}
+
 /* Rayos de luz diagonales */
 .hero-rays{position:absolute;inset:0;background:linear-gradient(110deg,transparent 0%,transparent 20%,rgba(226,201,126,.06) 22%,rgba(226,201,126,.12) 25%,rgba(226,201,126,.06) 28%,transparent 30%,transparent 50%,rgba(26,155,138,.04) 52%,rgba(26,155,138,.08) 55%,rgba(26,155,138,.04) 58%,transparent 60%,transparent 80%,rgba(226,201,126,.05) 82%,rgba(226,201,126,.09) 85%,rgba(226,201,126,.05) 88%,transparent 90%);mix-blend-mode:screen;animation:raysDrift 16s ease-in-out infinite alternate}
 @keyframes raysDrift{0%{transform:translateX(-5%) skewX(-2deg);opacity:.4}100%{transform:translateX(5%) skewX(2deg);opacity:.7}}
@@ -542,7 +542,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <nav>
   <div class="container">
     <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer;cursor:none">
-      <picture><source media="(min-width:769px)" type="image/webp" srcset="logotipo-150-v3-pc.webp" /><source type="image/webp" srcset="logotipo-150-v3.webp" /><img src="logotipo-150-v3.webp" sizes="46px" alt="FishZone Logo" class="nav-logo-real-img" width="46" height="46" fetchpriority="high" decoding="async" style="width:46px;height:46px;object-fit:contain;"/></picture>
+      <picture><source media="(min-width:769px)" type="image/webp" srcset="logotipo-92-v3-pc.webp" /><source type="image/webp" srcset="logotipo-92-v3.webp" /><img src="logotipo-92-v3.webp" alt="FishZone Logo" class="nav-logo-real-img" width="46" height="46" fetchpriority="high" decoding="async" style="width:46px;height:46px;object-fit:contain;"/></picture>
       Fish<span>Zone</span>
     </div>
     <ul class="nav-categories">
@@ -2383,10 +2383,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </footer>
 
-<script>
-  // V16 — Mobile menu minificado (ahorro de bytes en Main Thread)
-  function toggleMenu(){var mm=document.getElementById('mobileMenu'),hb=document.querySelector('.nav-hamburger'),o=!mm.classList.contains('open');mm.classList.toggle('open',o);if(hb)hb.classList.toggle('active',o);document.body.style.overflow=o?'hidden':''}
-  function closeMenu(){var mm=document.getElementById('mobileMenu');if(!mm||!mm.classList.contains('open'))return;mm.classList.remove('open');var hb=document.querySelector('.nav-hamburger');if(hb)hb.classList.remove('active');document.body.style.overflow=''}
+<script>function toggleMenu(){var m=document.getElementById('mobileMenu'),h=document.querySelector('.nav-hamburger'),o=!m.classList.contains('open');m.classList.toggle('open',o);if(h)h.classList.toggle('active',o);document.body.style.overflow=o?'hidden':''}function closeMenu(){var m=document.getElementById('mobileMenu');if(!m||!m.classList.contains('open'))return;m.classList.remove('open');var h=document.querySelector('.nav-hamburger');if(h)h.classList.remove('active');document.body.style.overflow=''}
   // Auto-close is handled INSIDE the tide-transition listener now to guarantee
   // single-pass body.overflow reset before getBoundingClientRect. Keeping a
   // second capture listener here caused double layout shift during nav.
