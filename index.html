@@ -447,9 +447,29 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 }
 /* Reduce paint de elementos fuera del viewport aunque no tengan content-visibility */
 .fade-in:not(.visible){contain:layout paint style}
+
+/* WhatsApp CTA */
+.fz-wa-btn{display:inline-flex;align-items:center;gap:.65rem;background:linear-gradient(135deg,#25D366 0%,#1aab52 100%);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.06em;padding:.9rem 2.2rem;border-radius:50px;text-decoration:none;box-shadow:0 4px 24px rgba(37,211,102,.4),0 0 0 0 rgba(37,211,102,.3);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;position:relative;overflow:hidden}
+.fz-wa-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);pointer-events:none}
+.fz-wa-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 8px 36px rgba(37,211,102,.55),0 0 0 8px rgba(37,211,102,.08)}
+.fz-wa-btn:active{transform:translateY(0) scale(.98)}
+
+/* Floating WhatsApp button */
+.fz-wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9000;display:flex;align-items:center;gap:.55rem;background:linear-gradient(135deg,#25D366,#1aab52);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;padding:.7rem 1.4rem .7rem 1rem;border-radius:50px;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,max-width .3s;max-width:56px;overflow:hidden;white-space:nowrap}
+.fz-wa-float:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,211,102,.6);max-width:260px}
+.fz-wa-float svg{flex-shrink:0;width:26px;height:26px}
+.fz-wa-float span{opacity:0;transition:opacity .2s .1s}
+.fz-wa-float:hover span{opacity:1}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.4)}}
 </style>
 </head>
 <body class="intro-active">
+
+<!-- Floating WhatsApp -->
+<a href="https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s" target="_blank" rel="noopener" class="fz-wa-float" aria-label="Únete a la comunidad de WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.557 4.126 1.533 5.86L.057 23.428a.75.75 0 0 0 .915.915l5.568-1.476A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.384l-.364-.216-3.763.998.998-3.763-.216-.364A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+  <span>Únete a la Comunidad</span>
+</a>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PTNK3FLD"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -1210,6 +1230,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ WHATSAPP CTA ═ -->
+<section style="padding:4rem 1rem;background:linear-gradient(135deg,#0a1628 0%,#0d2137 50%,#0a1628 100%);position:relative;overflow:hidden;text-align:center">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(37,211,102,.08) 0%,transparent 70%);pointer-events:none"></div>
+  <div style="position:relative;z-index:1;max-width:600px;margin:0 auto">
+    <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.25);border-radius:50px;padding:.3rem .9rem;margin-bottom:1.2rem">
+      <span style="width:7px;height:7px;background:#25D366;border-radius:50%;animation:pulse 1.5s infinite"></span>
+      <span style="color:#25D366;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase">Comunidad activa</span>
+    </div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3.2rem);color:#fff;margin:0 0 .6rem;line-height:1.1">Pesca con los mejores.<br><span style="color:#25D366">Gratis.</span></h2>
+    <p style="color:rgba(180,200,220,.75);font-size:1rem;margin:0 0 2rem;line-height:1.6">Comparte capturas, descubre zonas secretas y aprende de pescadores experimentados. La comunidad FishZone te espera.</p>
+    <a href="https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s" target="_blank" rel="noopener" class="fz-wa-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.557 4.126 1.533 5.86L.057 23.428a.75.75 0 0 0 .915.915l5.568-1.476A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.944 9.944 0 0 1-5.072-1.384l-.364-.216-3.763.998.998-3.763-.216-.364A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Unirme a la Comunidad
+    </a>
+    <p style="color:rgba(120,140,160,.6);font-size:.75rem;margin-top:1rem">100% gratis · Sin spam · Solo pesca</p>
   </div>
 </section>
 
