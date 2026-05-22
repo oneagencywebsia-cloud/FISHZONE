@@ -455,11 +455,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .fz-wa-btn:active{transform:translateY(0) scale(.98)}
 
 /* Floating WhatsApp button */
-.fz-wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9000;display:flex;align-items:center;gap:.55rem;background:linear-gradient(135deg,#25D366,#1aab52);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;padding:.7rem 1.4rem .7rem 1rem;border-radius:50px;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,max-width .3s;max-width:56px;overflow:hidden;white-space:nowrap}
+.fz-wa-float{position:fixed;bottom:5rem;right:1.5rem;z-index:9000;display:flex;align-items:center;gap:.55rem;background:linear-gradient(135deg,#25D366,#1aab52);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;padding:.7rem 1.4rem .7rem 1rem;border-radius:50px;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,max-width .3s;max-width:56px;overflow:hidden;white-space:nowrap}
 .fz-wa-float:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,211,102,.6);max-width:260px}
 .fz-wa-float svg{flex-shrink:0;width:26px;height:26px}
 .fz-wa-float span{opacity:0;transition:opacity .2s .1s}
 .fz-wa-float:hover span{opacity:1}
+@media(max-width:768px){.fz-wa-float{max-width:260px;bottom:5rem;right:1rem;padding:.65rem 1.2rem .65rem .9rem}.fz-wa-float span{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.4)}}
 </style>
 </head>
