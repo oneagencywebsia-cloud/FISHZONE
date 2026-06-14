@@ -1,29 +1,10 @@
-# robots.txt - FishZone
-# Guía de pesca profesional
+# robots.txt — FishZone · Guía de pesca profesional
 
 User-agent: *
 Allow: /
-Disallow:
+Crawl-delay: 1
 
-User-agent: Googlebot
-Allow: /
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-# Bloquear bots maliciosos / scrapers
+# Bloquear bots de scraping SEO agresivos
 User-agent: AhrefsBot
 Disallow: /
 
@@ -36,9 +17,4 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Crawl-delay razonable
-Crawl-delay: 1
-
-# Sitemap
 Sitemap: https://fishzone.es/sitemap.xml
-Host: https://fishzone.es

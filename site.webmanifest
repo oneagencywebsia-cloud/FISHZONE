@@ -1,0 +1,16 @@
+{
+  "name": "FishZone — Guía experta de pesca",
+  "short_name": "FishZone",
+  "description": "Guía experta de pesca deportiva en agua dulce y salada de Andalucía. Técnicas, especies, cebos, montajes y zonas.",
+  "lang": "es-ES",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#0a0f1e",
+  "icons": [
+    { "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/favicon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

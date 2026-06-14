@@ -39,7 +39,8 @@
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+  <!-- CSP: permite Google Analytics (GA4), Google Tag Manager y AdSense. frame-ancestors NO se incluye aquí (los navegadores lo ignoran vía <meta>); el anti-clickjacking se aplica con X-Frame-Options desde nginx. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://partner.googleadservices.com https://www.googleadservices.com https://adservice.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google; frame-src https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.googlesyndication.com https://www.google.com https://*.adtrafficquality.google; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -52,6 +53,12 @@
   <meta name="googlebot" content="index, follow" />
   <meta name="theme-color" content="#0a0f1e" />
   <meta name="format-detection" content="telephone=no" />
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="canonical" href="https://fishzone.es/" />
   <meta property="og:site_name" content="FishZone" />
   <meta property="og:title" content="FishZone — El conocimiento que todo pescador merece" />
@@ -60,6 +67,11 @@
   <meta property="og:locale" content="es_ES" />
   <meta property="og:url" content="https://fishzone.es/" />
   <meta property="og:image" content="https://fishzone.es/og-image.jpg" />
+  <meta property="og:image:secure_url" content="https://fishzone.es/og-image.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="FishZone — Guía experta de pesca en Andalucía" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FishZone — El conocimiento que todo pescador merece" />
   <meta name="twitter:description" content="Guía experta de pesca en agua dulce y salada. Técnicas, especies y zonas de Andalucía." />
@@ -71,24 +83,90 @@
   <meta name="color-scheme" content="dark" />
   <link rel="preload" as="image" href="logotipo-150-v3.webp" imagesrcset="logotipo-150-v3.webp 150w, logotipo-512-v3.webp 512w" imagesizes="150px" type="image/webp" fetchpriority="high" media="(max-width:768px)" />
   <link rel="preload" as="image" href="logotipo-512-v3-pc.webp" imagesrcset="logotipo-512-v3-pc.webp 1x, logotipo-1024-v3-pc.webp 2x" type="image/webp" fetchpriority="high" media="(min-width:769px)" />
-  <link rel="preload" as="image" href="logotipo-92-v3.webp" imagesrcset="logotipo-92-v3.webp 1x, logotipo-92-v3-pc.webp 1x" type="image/webp" fetchpriority="high" />
-  <link rel="preload" as="image" href="logotipo-92-v3-pc.webp" type="image/webp" fetchpriority="high" media="(min-width:769px)" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "FishZone",
-    "url": "https://fishzone.es/",
-    "description": "Guía experta de pesca deportiva en agua dulce y salada. Técnicas, especies, cebos y zonas de Andalucía.",
-    "inLanguage": "es-ES",
-    "publisher": {
-      "@type": "Organization",
-      "name": "FishZone",
-      "areaServed": "Andalucía, España"
-    }
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://fishzone.es/#organization",
+        "name": "FishZone",
+        "url": "https://fishzone.es/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://fishzone.es/logotipo-512-v3.webp",
+          "width": 512,
+          "height": 512
+        },
+        "image": "https://fishzone.es/og-image.jpg",
+        "description": "Guía experta de pesca deportiva en agua dulce y salada. Técnicas, especies, cebos, montajes y zonas de Andalucía.",
+        "areaServed": {
+          "@type": "Place",
+          "name": "Andalucía, España"
+        },
+        "sameAs": [
+          "https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://fishzone.es/#website",
+        "name": "FishZone",
+        "url": "https://fishzone.es/",
+        "description": "Guía experta de pesca deportiva en agua dulce y salada. Técnicas, especies, cebos y zonas de Andalucía.",
+        "inLanguage": "es-ES",
+        "publisher": { "@id": "https://fishzone.es/#organization" }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://fishzone.es/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Hace falta licencia para pescar en Andalucía?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sí. La licencia de pesca es obligatoria para mayores de 14 años. Se obtiene online o en oficinas de la Junta de Andalucía y existe en modalidad continental, marítima o combinada. Es válida por año natural."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuándo es la veda de la trucha en Andalucía?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "La trucha tiene veda general desde el 1 de agosto hasta el segundo domingo de marzo. En cotos el cupo máximo suele ser de 5 piezas por día. Conviene consultar siempre la resolución anual vigente de la Junta de Andalucía."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuál es el mejor cebo para la dorada?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El mejillón vivo recién abierto es el cebo rey para la dorada y normalmente supera a cualquier otro. En meses fríos también funcionan muy bien la navaja y el calamar. Muerde mejor con bajamar y en aguas cálidas de 18 a 26 °C."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cuáles son los mejores embalses para pescar carpa en Andalucía?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El embalse de Iznájar (Córdoba-Granada), el mayor de Andalucía, es referencia para carpas de récord. También destacan Malpasillo en Santaella, Bembézar y La Breña II (esta última también para siluro de gran tamaño)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué montaje se usa para carpfishing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El montaje básico y más importante del carpfishing es el Hair Rig, donde el cebo cuelga de un pelo separado del anzuelo. Para fondos difíciles se usa el Chod Rig y para pescar a media agua el Zig Rig."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
   <style>html{-webkit-font-smoothing:antialiased}.fish-swim,.hero-fish-left,.hero-fish-right,.bobber-float,.water-wave,.hook-drop,.line-cast,.ripple,.intro-stars,.intro-water,.intro-water-glow,.intro-water-surface,.intro-ripple,#rod-group,#fishing-line,#bobber-group,#splash-rings,.intro-logo-img,.fade-in,.card,.tech-card,.location-card,.level-card,.sub-card,.embalse-card,.rig-card,.lure-category,.bait-card,.gear-card,nav,#back-top,#scroll-progress,.footer-real-logo{backface-visibility:hidden;-webkit-backface-visibility:hidden}.quick-card{will-change:transform}#cursor-dot,#cursor-ring{-webkit-font-smoothing:antialiased;image-rendering:auto}.anim-paused,.anim-paused *{animation-play-state:paused !important;will-change:auto !important}@media (max-width:768px){*,*::before,*::after{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;mix-blend-mode:normal !important}nav,.mobile-menu{background:rgba(10,18,32,.94) !important}.fish-img:hover,.card:hover .fish-img{filter:none !important}.fish-glow,.hero-caustics,.hero-orb,.hero-orb-ring{filter:none !important}}section[id]{scroll-margin-top:calc(var(--nav-h)+16px)}section[id]:not(#hero):not(#quick-nav){content-visibility:auto;contain-intrinsic-size:1px 900px}.card,.tech-card,.location-card,.level-card,.sub-card,.embalse-card,.rig-card,.lure-category,.bait-card,.gear-card,.quick-card{contain:layout paint style}footer{content-visibility:auto;contain-intrinsic-size:1px 600px}@media (max-width:768px){section[id]:not(#hero):not(#quick-nav){contain-intrinsic-size:1px 700px}.fish-img,.tech-card img,.location-card img,.bait-card img,.gear-card img{content-visibility:auto;contain-intrinsic-size:165px 120px}}.fish-swim,.hero-fish-left,.hero-fish-right,.bobber-float,.water-wave,.hook-drop,.line-cast,.ripple,.intro-stars,.intro-water,.intro-water-glow,.intro-water-surface,.intro-ripple,#rod-group,#fishing-line,#bobber-group,#splash-rings{will-change:transform,opacity}@media (hover:none){.quick-card:hover:not(.clicked),.card:hover,.tech-card:hover,.location-card:hover,.nav-cat:hover:not(.clicked){transform:none !important}body{cursor:auto !important}#cursor-dot,#cursor-ring{display:none !important}}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#060c18;--bg2:#0a1220;--card:#0d1828;--card2:#111e30;--border:rgba(201,168,76,.15);--border-hi:rgba(201,168,76,.4);--gold:#c9a84c;--gold-soft:#e2c97e;--gold-dim:rgba(201,168,76,.08);--teal:#1a9b8a;--white:#f0f4ff;--muted:#6a7d9a;--blue:#1e3a6e;--blue-light:#2d5494;--nav-h:72px;--radius:14px;--radius-lg:22px;--max:1240px;--shadow-gold:0 0 40px rgba(201,168,76,.12),0 8px 32px rgba(0,0,0,.5);--shadow-card:0 4px 24px rgba(0,0,0,.4)}html{font-size:16px;scroll-padding-top:var(--nav-h);-webkit-text-size-adjust:100%;touch-action:manipulation}img,svg,video,canvas{max-width:100%;height:auto}@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--white);line-height:1.7;overflow-x:hidden;cursor:none}#cursor-dot{position:fixed;top:0;left:0;z-index:99999;width:25px;height:25px;margin:-12.5px 0 0 -12.5px;border-radius:50%;background:var(--gold);pointer-events:none;will-change:transform;transition:opacity .2s,background-color .2s;box-shadow:0 0 10px rgba(201,168,76,.6);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform:translate3d(0,0,0)}#cursor-ring{position:fixed;top:0;left:0;z-index:99998;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;border:2px solid rgba(201,168,76,.7);background:transparent;pointer-events:none;will-change:transform;transition:border-color .25s ease,width .25s ease,height .25s ease;-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transform:translate3d(0,0,0);box-sizing:border-box}#cursor-ring.hover{border-color:var(--gold)}::selection{background:var(--gold);color:var(--bg)}a{color:inherit;text-decoration:none}img{display:block;max-width:100%;content-visibility:auto}section{contain:layout style}#intro-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#020608 0%,#060c18 50%,#0e2040 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:opacity 1s cubic-bezier(.7,0,.3,1),transform 1s cubic-bezier(.7,0,.3,1)}#intro-screen.fade-out{opacity:0;transform:scale(1.04);pointer-events:none}.intro-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 15% 25%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 85% 15%,rgba(255,255,255,.3),transparent),radial-gradient(1.5px 1.5px at 35% 70%,rgba(201,168,76,.3),transparent),radial-gradient(1px 1px at 70% 45%,rgba(255,255,255,.25),transparent),radial-gradient(1px 1px at 50% 10%,rgba(255,255,255,.2),transparent),radial-gradient(1px 1px at 90% 80%,rgba(201,168,76,.25),transparent),radial-gradient(1px 1px at 10% 90%,rgba(255,255,255,.2),transparent),radial-gradient(1.5px 1.5px at 60% 85%,rgba(255,255,255,.3),transparent);background-repeat:no-repeat;animation:starsTwinkle 8s ease-in-out infinite alternate}@keyframes starsTwinkle{0%,100%{opacity:.6}50%{opacity:1}}.intro-water-glow{position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(0deg,rgba(14,42,80,.9) 0%,rgba(26,60,110,.5) 40%,transparent 100%);animation:waterGlowPulse 5s ease-in-out infinite;will-change:opacity,transform;transform-origin:bottom}@keyframes waterGlowPulse{0%,100%{opacity:.85}50%{opacity:1}}.intro-water-surface{position:absolute;bottom:42%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(100,160,220,.3) 15%,rgba(201,168,76,.5) 30%,rgba(100,160,220,.4) 45%,rgba(255,255,255,.6) 50%,rgba(100,160,220,.4) 55%,rgba(201,168,76,.5) 70%,rgba(100,160,220,.3) 85%,transparent 100%);animation:surfaceShimmer 4s ease-in-out infinite;will-change:opacity}@keyframes surfaceShimmer{0%,100%{opacity:.6}50%{opacity:1}}.intro-water{position:absolute;inset:0;background:radial-gradient(ellipse 100% 60% at 50% 100%,rgba(45,74,122,.6) 0%,transparent 70%);animation:introWaterPulse 4s ease-in-out infinite;will-change:opacity}@keyframes introWaterPulse{0%,100%{opacity:.8}50%{opacity:1}}.intro-ripple{position:absolute;width:40px;height:40px;border-radius:50%;border:1px solid transparent;animation:introRipple 5s ease-out infinite;will-change:transform,opacity;opacity:0}.intro-ripple:nth-child(1){animation-delay:0s}.intro-ripple:nth-child(2){animation-delay:1.6s}.intro-ripple:nth-child(3){animation-delay:3.2s}@keyframes introRipple{0%{opacity:.5;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(15)}}.intro-rod-wrapper{position:absolute;top:6%;left:50%;margin-left:-170px;width:340px;height:260px;pointer-events:none;will-change:transform,opacity;backface-visibility:hidden;-webkit-backface-visibility:hidden;contain:layout style;overflow:visible}
