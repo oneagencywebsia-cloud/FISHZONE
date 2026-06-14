@@ -1,40 +1,60 @@
 <!DOCTYPE html>
 <html lang="es-ES">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CXTE7RYL06"></script>
+<!-- Google Consent Mode v2 — RGPD/UE: consentimiento DENEGADO por defecto.
+     Analytics y Ads no usan cookies hasta que el usuario acepta en el banner. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage':'denied',
+    'ad_user_data':'denied',
+    'ad_personalization':'denied',
+    'analytics_storage':'denied',
+    'wait_for_update':500
+  });
   gtag('js', new Date());
   gtag('config', 'G-CXTE7RYL06');
 </script>
-<!-- GTM + AdSense: diferidos hasta primer scroll/interacción para no bloquear FCP/LCP -->
+<!-- GA4 (respeta Consent Mode: funciona sin cookies mientras está denegado) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CXTE7RYL06"></script>
+<!-- GTM + AdSense se cargan SOLO tras consentimiento. Banner #fz-cookie al final del body. -->
 <script>
 (function(){
+  var KEY='fz_consent';
   var fired=false;
-  function loadThirdParty(){
+  function loadAds(){
     if(fired)return; fired=true;
-    // GTM
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
     var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
     j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
     f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PTNK3FLD');
-    // GTM-TCCX24P8
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
     var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
     j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
     f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TCCX24P8');
-    // AdSense
     var a=document.createElement('script');a.async=true;
     a.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3453090041384842';
     a.crossOrigin='anonymous';document.head.appendChild(a);
   }
-  ['scroll','mousemove','touchstart','keydown'].forEach(function(e){
-    window.addEventListener(e,loadThirdParty,{once:true,passive:true});
+  function grant(){
+    gtag('consent','update',{
+      'ad_storage':'granted','ad_user_data':'granted',
+      'ad_personalization':'granted','analytics_storage':'granted'
+    });
+    loadAds();
+  }
+  function hide(){var b=document.getElementById('fz-cookie');if(b)b.classList.remove('show');}
+  window.__fzConsent={
+    accept:function(){try{localStorage.setItem(KEY,'granted');}catch(e){}grant();hide();},
+    reject:function(){try{localStorage.setItem(KEY,'denied');}catch(e){}hide();},
+    open:function(){var b=document.getElementById('fz-cookie');if(b)b.classList.add('show');}
+  };
+  document.addEventListener('DOMContentLoaded',function(){
+    var v=null;try{v=localStorage.getItem(KEY);}catch(e){}
+    if(v==='granted'){grant();}
+    else if(v!=='denied'){window.__fzConsent.open();}
   });
-  // Fallback: cargar a los 5s si no hay interacción (bots, lectores)
-  setTimeout(loadThirdParty,5000);
 })();
 </script>
   <meta charset="UTF-8" />
@@ -540,9 +560,35 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .fz-wa-float:hover span{opacity:1}
 @media(max-width:768px){.fz-wa-float{max-width:260px;bottom:2rem;left:1rem;padding:.65rem 1.2rem .65rem .9rem}.fz-wa-float span{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.4)}}
+
+/* ─── COOKIE CONSENT BANNER (RGPD + Consent Mode v2) ─── */
+#fz-cookie{position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:99998;max-width:680px;margin:0 auto;display:none;background:rgba(10,18,34,.97);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;box-shadow:0 12px 48px rgba(0,0,0,.55);backdrop-filter:blur(10px)}
+#fz-cookie.show{display:block;animation:fzcUp .35s cubic-bezier(.22,.9,.3,1)}
+@keyframes fzcUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.fzc-text{color:#cdd9e8;font-size:.85rem;line-height:1.55;margin-bottom:.85rem}
+.fzc-text a{color:var(--gold-soft);text-decoration:underline}
+.fzc-btns{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end;align-items:center}
+.fzc-btn{font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;padding:.55rem 1.2rem;border-radius:50px;cursor:pointer;border:1px solid var(--border);text-decoration:none;display:inline-flex;align-items:center}
+.fzc-btn.ghost{background:transparent;color:#9fb3cc}
+.fzc-btn.ghost:hover{color:#fff;border-color:var(--gold)}
+.fzc-btn.accept{background:linear-gradient(135deg,var(--gold),#a8862f);color:#1a1205;border:none}
+.fzc-btn.accept:hover{filter:brightness(1.07)}
+@media(max-width:520px){.fzc-btns{justify-content:stretch}.fzc-btn{flex:1;justify-content:center}}
 </style>
 </head>
 <body class="intro-active">
+
+<!-- ─── COOKIE CONSENT BANNER ─── -->
+<div id="fz-cookie" role="dialog" aria-label="Aviso de cookies" aria-live="polite">
+  <div class="fzc-text">
+    Usamos cookies propias y de terceros (Google Analytics y AdSense) para medir la audiencia y mostrar publicidad que mantiene el proyecto. Puedes aceptarlas, rechazarlas o leer más en nuestra <a href="/cookies.html">Política de Cookies</a> y <a href="/privacidad.html">Privacidad</a>.
+  </div>
+  <div class="fzc-btns">
+    <button type="button" class="fzc-btn ghost" onclick="window.__fzConsent&&window.__fzConsent.reject()">Rechazar</button>
+    <a class="fzc-btn ghost" href="/cookies.html">Configurar</a>
+    <button type="button" class="fzc-btn accept" onclick="window.__fzConsent&&window.__fzConsent.accept()">Aceptar</button>
+  </div>
+</div>
 
 <!-- Floating WhatsApp -->
 <a href="https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s" target="_blank" rel="noopener" class="fz-wa-float" aria-label="Únete a la comunidad de WhatsApp">
@@ -2505,6 +2551,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="footer-divider"></div>
     <p style="font-size:.75rem;color:#4a5568">© 2026 FishZone — Guía de pesca profesional. Todo el contenido tiene fines educativos.<br>Respeta siempre la normativa vigente de pesca en tu comunidad autónoma.</p>
+    <div class="footer-links" style="flex-wrap:wrap;gap:.6rem 1.5rem;margin-bottom:.6rem;font-size:.82rem">
+      <a href="/sobre-fishzone.html">Sobre FishZone</a>
+      <a href="/contacto.html">Contacto</a>
+      <a href="/privacidad.html">Política de Privacidad</a>
+      <a href="/cookies.html">Política de Cookies</a>
+      <a href="/aviso-legal.html">Aviso Legal</a>
+      <a href="#" onclick="event.preventDefault();window.__fzConsent&&window.__fzConsent.open()">Configurar cookies</a>
+    </div>
     <div class="footer-links" style="flex-wrap:wrap;gap:1rem 2rem">
       <a href="#dulce">Agua Dulce</a>
       <a href="#salada">Agua Salada</a>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contacto | FishZone</title>
+<meta name="description" content="Contacta con FishZone: correo, comunidad de WhatsApp y formulario. Sugerencias, correcciones o colaboraciones sobre pesca en Andalucía." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://fishzone.es/contacto.html" />
+<meta name="theme-color" content="#0a0f1e" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/legal.css" />
+</head>
+<body>
+<nav class="lz-nav">
+  <img src="/logotipo-512-v3.webp" alt="FishZone" width="38" height="38" />
+  <span class="brand">Fish<span>Zone</span></span>
+  <a class="home" href="/">← Volver al inicio</a>
+</nav>
+<main class="lz-wrap">
+  <h1>Contacto</h1>
+  <p class="lz-updated">Estamos a un mensaje de distancia</p>
+
+  <p class="lz-lead">¿Tienes una duda sobre pesca, una sugerencia, una corrección o quieres colaborar con FishZone? Escríbenos por el medio que prefieras. Leemos y respondemos todo lo que llega.</p>
+
+  <h2>Medios directos</h2>
+  <p>
+    <a class="lz-btn" href="mailto:contacto@fishzone.es">✉ contacto@fishzone.es</a>
+    <a class="lz-btn wa" href="https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s" target="_blank" rel="noopener">Comunidad de WhatsApp</a>
+  </p>
+  <ul>
+    <li><strong>Correo:</strong> <a href="mailto:contacto@fishzone.es">contacto@fishzone.es</a></li>
+    <li><strong>Ubicación:</strong> Santaella, Córdoba (Andalucía, España)</li>
+    <li><strong>Comunidad:</strong> grupo de WhatsApp de pescadores de FishZone</li>
+  </ul>
+
+  <h2>Formulario</h2>
+  <p>Rellena el formulario y se abrirá tu aplicación de correo con el mensaje listo para enviar.</p>
+  <form id="fz-contact">
+    <label for="nombre">Nombre</label>
+    <input type="text" id="nombre" name="nombre" required autocomplete="name" />
+    <label for="email">Tu correo</label>
+    <input type="email" id="email" name="email" required autocomplete="email" />
+    <label for="mensaje">Mensaje</label>
+    <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+    <p style="margin-top:1.2rem"><button type="submit" class="lz-btn" style="border:none;cursor:pointer">Enviar mensaje</button></p>
+  </form>
+  <p id="fz-form-note" style="color:var(--muted);font-size:.85rem"></p>
+
+  <h2>Protección de datos</h2>
+  <p>Los datos que nos facilites se usarán únicamente para responder a tu consulta. Consulta nuestra <a href="/privacidad.html">Política de Privacidad</a> para más información sobre el tratamiento de tus datos y tus derechos.</p>
+
+  <p style="margin-top:2rem"><a href="/">Volver al inicio</a> · <a href="/sobre-fishzone.html">Sobre FishZone</a> · <a href="/privacidad.html">Privacidad</a></p>
+</main>
+<footer class="lz-foot">
+  © 2026 FishZone — Santaella · Córdoba · Andalucía
+  <div style="margin-top:.5rem">
+    <a href="/">Inicio</a><a href="/sobre-fishzone.html">Sobre FishZone</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/aviso-legal.html">Aviso Legal</a><a href="/contacto.html">Contacto</a>
+  </div>
+</footer>
+<script>
+  document.getElementById('fz-contact').addEventListener('submit', function(e){
+    e.preventDefault();
+    var n = encodeURIComponent(document.getElementById('nombre').value);
+    var em = encodeURIComponent(document.getElementById('email').value);
+    var m = encodeURIComponent(document.getElementById('mensaje').value);
+    var body = 'Nombre: ' + decodeURIComponent(n) + '%0D%0ACorreo: ' + decodeURIComponent(em) + '%0D%0A%0D%0A' + decodeURIComponent(m);
+    window.location.href = 'mailto:contacto@fishzone.es?subject=' + encodeURIComponent('Contacto FishZone — ' + decodeURIComponent(n)) + '&body=' + body;
+    document.getElementById('fz-form-note').textContent = 'Se ha abierto tu aplicación de correo. Si no se abre, escríbenos directamente a contacto@fishzone.es';
+  });
+</script>
+</body>
+</html>

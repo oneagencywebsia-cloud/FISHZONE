@@ -2,12 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
-  <!-- FishZone es una single-page. Los anclas (#dulce, #cebos, ...) NO son URLs
-       indexables: Google las trata como la misma página y las ignora en sitemap.
-       Por eso el sitemap declara solo la URL canónica. -->
   <url>
     <loc>https://fishzone.es/</loc>
-    <lastmod>2026-06-13</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -15,6 +12,41 @@
       <image:title>FishZone — Guía experta de pesca en Andalucía</image:title>
       <image:caption>Guía experta de pesca en agua dulce y salada de Andalucía.</image:caption>
     </image:image>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/sobre-fishzone.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/contacto.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/privacidad.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/cookies.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/aviso-legal.html</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 
 </urlset>

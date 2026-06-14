@@ -1,6 +1,12 @@
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /usr/share/nginx/html/index.html
+COPY privacidad.html /usr/share/nginx/html/privacidad.html
+COPY cookies.html /usr/share/nginx/html/cookies.html
+COPY aviso-legal.html /usr/share/nginx/html/aviso-legal.html
+COPY sobre-fishzone.html /usr/share/nginx/html/sobre-fishzone.html
+COPY contacto.html /usr/share/nginx/html/contacto.html
+COPY legal.css /usr/share/nginx/html/legal.css
 COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY sitemap.xml /usr/share/nginx/html/sitemap.xml
 COPY site.webmanifest /usr/share/nginx/html/site.webmanifest
