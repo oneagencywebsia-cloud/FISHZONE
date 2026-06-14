@@ -6,7 +6,14 @@ COPY cookies.html /usr/share/nginx/html/cookies.html
 COPY aviso-legal.html /usr/share/nginx/html/aviso-legal.html
 COPY sobre-fishzone.html /usr/share/nginx/html/sobre-fishzone.html
 COPY contacto.html /usr/share/nginx/html/contacto.html
+COPY pesca-en-cordoba.html /usr/share/nginx/html/pesca-en-cordoba.html
+COPY tiendas-de-pesca-en-cordoba.html /usr/share/nginx/html/tiendas-de-pesca-en-cordoba.html
+COPY embalses-de-andalucia.html /usr/share/nginx/html/embalses-de-andalucia.html
+COPY pesca-black-bass-andalucia.html /usr/share/nginx/html/pesca-black-bass-andalucia.html
+COPY carpfishing-andalucia.html /usr/share/nginx/html/carpfishing-andalucia.html
+COPY pesca-a-mosca-truchas-andalucia.html /usr/share/nginx/html/pesca-a-mosca-truchas-andalucia.html
 COPY legal.css /usr/share/nginx/html/legal.css
+COPY guia.css /usr/share/nginx/html/guia.css
 COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY sitemap.xml /usr/share/nginx/html/sitemap.xml
 COPY site.webmanifest /usr/share/nginx/html/site.webmanifest
