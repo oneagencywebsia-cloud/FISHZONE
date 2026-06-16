@@ -2,7 +2,9 @@
 <html lang="es-ES">
 <head>
 <!-- Google Consent Mode v2 — RGPD/UE: consentimiento DENEGADO por defecto.
-     Analytics y Ads no usan cookies hasta que el usuario acepta en el banner. -->
+     El consentimiento lo gestiona el "Mensaje de consentimiento de la UE" de Google
+     (CMP certificado, publicado en AdSense): se entrega con la etiqueta de AdSense y
+     actualiza automáticamente el consentimiento. No usamos banner propio. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -16,51 +18,24 @@
   gtag('js', new Date());
   gtag('config', 'G-CXTE7RYL06');
 </script>
-<!-- GA4 (respeta Consent Mode: funciona sin cookies mientras está denegado) -->
+<!-- GA4 (Consent Mode: sin cookies hasta consentir) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CXTE7RYL06"></script>
-<!-- GTM + AdSense se cargan SOLO tras consentimiento. Banner #fz-cookie al final del body. -->
-<script>
-(function(){
-  var KEY='fz_consent';
-  var fired=false;
-  function loadAds(){
-    if(fired)return; fired=true;
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-    var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-    j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-    f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PTNK3FLD');
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-    var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-    j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-    f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TCCX24P8');
-    var a=document.createElement('script');a.async=true;
-    a.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3453090041384842';
-    a.crossOrigin='anonymous';document.head.appendChild(a);
-  }
-  function grant(){
-    gtag('consent','update',{
-      'ad_storage':'granted','ad_user_data':'granted',
-      'ad_personalization':'granted','analytics_storage':'granted'
-    });
-    loadAds();
-  }
-  function hide(){var b=document.getElementById('fz-cookie');if(b)b.classList.remove('show');}
-  window.__fzConsent={
-    accept:function(){try{localStorage.setItem(KEY,'granted');}catch(e){}grant();hide();},
-    reject:function(){try{localStorage.setItem(KEY,'denied');}catch(e){}hide();},
-    open:function(){var b=document.getElementById('fz-cookie');if(b)b.classList.add('show');}
-  };
-  document.addEventListener('DOMContentLoaded',function(){
-    var v=null;try{v=localStorage.getItem(KEY);}catch(e){}
-    if(v==='granted'){grant();}
-    else if(v!=='denied'){window.__fzConsent.open();}
-  });
-})();
-</script>
+<!-- AdSense (anuncios automáticos). Carga en la página para mostrar el mensaje de
+     consentimiento (CMP) de Google y permitir verificar/servir anuncios. -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3453090041384842" crossorigin="anonymous"></script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PTNK3FLD');
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TCCX24P8');</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <!-- CSP: permite Google Analytics (GA4), Google Tag Manager y AdSense. frame-ancestors NO se incluye aquí (los navegadores lo ignoran vía <meta>); el anti-clickjacking se aplica con X-Frame-Options desde nginx. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://partner.googleadservices.com https://www.googleadservices.com https://adservice.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google; frame-src https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.googlesyndication.com https://www.google.com https://*.adtrafficquality.google; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://partner.googleadservices.com https://www.googleadservices.com https://adservice.google.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; frame-src https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.googlesyndication.com https://www.google.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -578,17 +553,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </head>
 <body class="intro-active">
 
-<!-- ─── COOKIE CONSENT BANNER ─── -->
-<div id="fz-cookie" role="dialog" aria-label="Aviso de cookies" aria-live="polite">
-  <div class="fzc-text">
-    Usamos cookies propias y de terceros (Google Analytics y AdSense) para medir la audiencia y mostrar publicidad que mantiene el proyecto. Puedes aceptarlas, rechazarlas o leer más en nuestra <a href="/cookies.html">Política de Cookies</a> y <a href="/privacidad.html">Privacidad</a>.
-  </div>
-  <div class="fzc-btns">
-    <button type="button" class="fzc-btn ghost" onclick="window.__fzConsent&&window.__fzConsent.reject()">Rechazar</button>
-    <a class="fzc-btn ghost" href="/cookies.html">Configurar</a>
-    <button type="button" class="fzc-btn accept" onclick="window.__fzConsent&&window.__fzConsent.accept()">Aceptar</button>
-  </div>
-</div>
+<!-- Consentimiento gestionado por el Mensaje de consentimiento de la UE de Google (CMP certificado). Banner propio eliminado para evitar duplicidad. -->
 
 <!-- Floating WhatsApp -->
 <a href="https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s" target="_blank" rel="noopener" class="fz-wa-float" aria-label="Únete a la comunidad de WhatsApp">
@@ -2603,7 +2568,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <a href="/privacidad.html">Política de Privacidad</a>
       <a href="/cookies.html">Política de Cookies</a>
       <a href="/aviso-legal.html">Aviso Legal</a>
-      <a href="#" onclick="event.preventDefault();window.__fzConsent&&window.__fzConsent.open()">Configurar cookies</a>
+      <a href="#" onclick="event.preventDefault();try{googlefc.showRevocationMessage()}catch(e){}">Gestionar consentimiento</a>
     </div>
     <div class="footer-links" style="flex-wrap:wrap;gap:1rem 2rem">
       <a href="#dulce">Agua Dulce</a>
