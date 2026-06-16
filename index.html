@@ -18,24 +18,28 @@
   gtag('js', new Date());
   gtag('config', 'G-CXTE7RYL06');
 </script>
-<!-- GA4 (Consent Mode: sin cookies hasta consentir) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CXTE7RYL06"></script>
-<!-- AdSense (anuncios automáticos). Carga en la página para mostrar el mensaje de
-     consentimiento (CMP) de Google y permitir verificar/servir anuncios. -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3453090041384842" crossorigin="anonymous"></script>
-<!-- Google Funding Choices: etiqueta oficial que fuerza la VISUALIZACIÓN del mensaje
-     de consentimiento de la UE (señal googlefcPresent). -->
-<script async src="https://fundingchoicesmessages.google.com/i/pub-3453090041384842?ers=1"></script>
-<script>(function(){function s(){if(!window.frames['googlefcPresent']){if(document.body){var i=document.createElement('iframe');i.style='width:0;height:0;border:none;z-index:-1000;left:-1000px;top:-1000px;';i.style.display='none';i.name='googlefcPresent';document.body.appendChild(i);}else{setTimeout(s,0);}}}s();})();</script>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PTNK3FLD');
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TCCX24P8');</script>
+<!-- GA4 + AdSense + CMP (Funding Choices) + GTM: DIFERIDOS hasta el primer scroll/
+     toque o, como muy tarde, ~3,5s tras cargar. Así no bloquean el render inicial
+     (mejora FCP/LCP/TBT en móvil). El Consent Mode (arriba) sigue denegado por
+     defecto; el mensaje de consentimiento de Google se muestra al cargar estos
+     scripts. Eventos gtag() previos quedan encolados en dataLayer y se procesan. -->
+<script>
+(function(){
+  var loaded=false;
+  function loadThirdParty(){
+    if(loaded)return; loaded=true;
+    function tag(src,cross){var s=document.createElement('script');s.async=true;s.src=src;if(cross)s.crossOrigin='anonymous';document.head.appendChild(s);}
+    tag('https://www.googletagmanager.com/gtag/js?id=G-CXTE7RYL06');
+    tag('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3453090041384842', true);
+    tag('https://fundingchoicesmessages.google.com/i/pub-3453090041384842?ers=1');
+    (function(){function s(){if(!window.frames['googlefcPresent']){if(document.body){var i=document.createElement('iframe');i.style='width:0;height:0;border:none;z-index:-1000;left:-1000px;top:-1000px;';i.style.display='none';i.name='googlefcPresent';document.body.appendChild(i);}else{setTimeout(s,0);}}}s();})();
+    function gtm(id){window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=document.getElementsByTagName('script')[0],j=document.createElement('script');j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+id;f.parentNode.insertBefore(j,f);}
+    gtm('GTM-PTNK3FLD'); gtm('GTM-TCCX24P8');
+  }
+  ['scroll','mousemove','touchstart','keydown','click'].forEach(function(e){window.addEventListener(e,loadThirdParty,{once:true,passive:true});});
+  setTimeout(loadThirdParty, 3500);
+})();
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <!-- CSP por <meta> retirada: con AdSense + el CMP de Google (que cargan decenas de
