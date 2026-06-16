@@ -34,8 +34,11 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
 f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TCCX24P8');</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <!-- CSP: permite Google Analytics (GA4), Google Tag Manager y AdSense. frame-ancestors NO se incluye aquí (los navegadores lo ignoran vía <meta>); el anti-clickjacking se aplica con X-Frame-Options desde nginx. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://partner.googleadservices.com https://www.googleadservices.com https://adservice.google.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; frame-src https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.googlesyndication.com https://www.google.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+  <!-- CSP por <meta> retirada: con AdSense + el CMP de Google (que cargan decenas de
+       subdominios de Google dinámicamente) una CSP estricta bloquea el renderizado de
+       anuncios y del mensaje de consentimiento. Sitio estático sin login ni datos de
+       usuario → riesgo XSS mínimo. El anti-clickjacking y los headers de seguridad se
+       aplican desde nginx (X-Frame-Options, X-Content-Type-Options, Referrer-Policy). -->
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
