@@ -4,7 +4,7 @@
 
   <url>
     <loc>https://fishzone.es/</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -16,77 +16,105 @@
 
   <url>
     <loc>https://fishzone.es/pesca-en-cordoba.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/embalses-de-andalucia.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/carpfishing-andalucia.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/pesca-black-bass-andalucia.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/pesca-del-siluro-en-andalucia.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/pesca-del-barbo-iberico.html</loc>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/pesca-a-mosca-truchas-andalucia.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
+    <loc>https://fishzone.es/licencia-de-pesca-en-andalucia.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/calendario-de-pesca-en-andalucia.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://fishzone.es/tiendas-de-pesca-en-cordoba.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/sobre-fishzone.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/contacto.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/privacidad.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/cookies.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://fishzone.es/aviso-legal.html</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

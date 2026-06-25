@@ -13,6 +13,10 @@ COPY embalses-de-andalucia.html /usr/share/nginx/html/embalses-de-andalucia.html
 COPY pesca-black-bass-andalucia.html /usr/share/nginx/html/pesca-black-bass-andalucia.html
 COPY carpfishing-andalucia.html /usr/share/nginx/html/carpfishing-andalucia.html
 COPY pesca-a-mosca-truchas-andalucia.html /usr/share/nginx/html/pesca-a-mosca-truchas-andalucia.html
+COPY licencia-de-pesca-en-andalucia.html /usr/share/nginx/html/licencia-de-pesca-en-andalucia.html
+COPY pesca-del-siluro-en-andalucia.html /usr/share/nginx/html/pesca-del-siluro-en-andalucia.html
+COPY pesca-del-barbo-iberico.html /usr/share/nginx/html/pesca-del-barbo-iberico.html
+COPY calendario-de-pesca-en-andalucia.html /usr/share/nginx/html/calendario-de-pesca-en-andalucia.html
 COPY legal.css /usr/share/nginx/html/legal.css
 COPY guia.css /usr/share/nginx/html/guia.css
 COPY robots.txt /usr/share/nginx/html/robots.txt
