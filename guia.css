@@ -47,6 +47,18 @@ img{max-width:100%;height:auto}
 .gz-wrap strong{color:var(--white)}
 .gz-lead{font-size:1.12rem;color:var(--text);margin-top:.4rem}
 
+/* AUTHOR / META (E-E-A-T) */
+.gz-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;margin:.2rem 0 1.4rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border);font-size:.83rem;color:var(--muted)}
+.gz-meta .by{color:var(--text)}
+.gz-meta .by strong{color:var(--gold-soft);font-weight:600}
+.gz-meta .dot{opacity:.5}
+.gz-author{display:flex;gap:.9rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.05rem 1.2rem;margin:2.6rem 0 0}
+.gz-author img{width:44px;height:44px;border-radius:50%;object-fit:contain;background:#0a1122;border:1px solid var(--border);flex-shrink:0}
+.gz-author .a-body{font-size:.9rem}
+.gz-author .a-name{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em;font-size:1.15rem;color:var(--white)}
+.gz-author .a-name a{color:var(--gold-soft)}
+.gz-author p{margin:.25rem 0 0;color:var(--muted);font-size:.86rem}
+
 /* CARDS / BOXES */
 .gz-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.35rem;margin:1.2rem 0}
 .gz-card h3{margin-top:0}
