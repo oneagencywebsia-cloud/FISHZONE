@@ -17,6 +17,14 @@ COPY licencia-de-pesca-en-andalucia.html /usr/share/nginx/html/licencia-de-pesca
 COPY pesca-del-siluro-en-andalucia.html /usr/share/nginx/html/pesca-del-siluro-en-andalucia.html
 COPY pesca-del-barbo-iberico.html /usr/share/nginx/html/pesca-del-barbo-iberico.html
 COPY calendario-de-pesca-en-andalucia.html /usr/share/nginx/html/calendario-de-pesca-en-andalucia.html
+COPY guia-principiantes-pesca.html /usr/share/nginx/html/guia-principiantes-pesca.html
+COPY nudos-de-pesca.html /usr/share/nginx/html/nudos-de-pesca.html
+COPY pesca-a-spinning.html /usr/share/nginx/html/pesca-a-spinning.html
+COPY montajes-carpfishing.html /usr/share/nginx/html/montajes-carpfishing.html
+COPY cebos-y-boilies-carpa.html /usr/share/nginx/html/cebos-y-boilies-carpa.html
+COPY canas-y-carretes-guia.html /usr/share/nginx/html/canas-y-carretes-guia.html
+COPY surfcasting-costa-andalucia.html /usr/share/nginx/html/surfcasting-costa-andalucia.html
+COPY pesca-submarina-andalucia.html /usr/share/nginx/html/pesca-submarina-andalucia.html
 COPY legal.css /usr/share/nginx/html/legal.css
 COPY guia.css /usr/share/nginx/html/guia.css
 COPY robots.txt /usr/share/nginx/html/robots.txt
