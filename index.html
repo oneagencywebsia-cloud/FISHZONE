@@ -3392,13 +3392,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     // En cuanto arranca el fade-out, liberamos el bloqueo de scroll ANTES de
     // remover el nodo. Así el usuario gana scroll durante la transición.
+    //
+    // PERF — el "bugueo" de 1s reportado ocurría aquí: quitar .intro-active
+    // reactiva de golpe TODA la página (content-visibility:hidden→auto en
+    // ~3400 líneas de secciones + decenas de animaciones que se despausan a
+    // la vez) exactamente en el mismo frame en que arranca la transición de
+    // opacity/transform del intro. Ese layout+paint masivo competía con la
+    // transición y tiraba frames de forma visible.
+    //
+    // Fix sin tocar ninguna animación: separamos las dos cosas en el tiempo.
+    //   1) Quitamos .intro-active y forzamos el reflow YA, con el intro aún
+    //      100% opaco — el coste se paga oculto detrás de la pantalla llena.
+    //   2) Esperamos a que ESE frame se pinte (doble rAF) y solo entonces
+    //      arrancamos la clase .fade-out. La transición ya no compite con
+    //      el layout masivo: arranca sobre un frame ya "asentado".
     function _startFadeOut() {
-      intro.classList.add('fade-out');
-      intro.style.pointerEvents = 'none';           // libera touch al instante
       document.documentElement.classList.remove('intro-active');
       document.body.classList.remove('intro-active');
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
+      // Fuerza el reflow ahora (intro todavía opaco al 100%, cubre el salto).
+      void document.body.offsetHeight;
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          intro.classList.add('fade-out');
+          intro.style.pointerEvents = 'none';   // libera touch al instante
+        });
+      });
     }
     setTimeout(function() {
       _startFadeOut();
