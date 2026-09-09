@@ -92,6 +92,25 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
+  <script>
+  /* FX-3D — clasifica el dispositivo ANTES del primer paint. Solo los que
+     pasan el corte reciben las animaciones 3D de scroll (.fx-full); el resto
+     (móviles viejos, poca RAM/CPU, ahorro de datos, red 2G, reduced-motion)
+     se quedan en .fx-lite y la web se comporta EXACTAMENTE igual que hoy. */
+  (function(){
+    var lite = false;
+    try {
+      var dm = navigator.deviceMemory, hc = navigator.hardwareConcurrency,
+          c  = navigator.connection || {};
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) lite = true;
+      if (c && c.saveData) lite = true;
+      if (c && /^(slow-)?2g$/.test(c.effectiveType || '')) lite = true;
+      if (typeof dm === 'number' && dm > 0 && dm <= 2) lite = true;
+      if (typeof hc === 'number' && hc > 0 && hc <= 2) lite = true;
+    } catch(e){}
+    document.documentElement.classList.add(lite ? 'fx-lite' : 'fx-full');
+  })();
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -560,6 +579,114 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .fzc-btn.accept{background:linear-gradient(135deg,var(--gold),#a8862f);color:#1a1205;border:none}
 .fzc-btn.accept:hover{filter:brightness(1.07)}
 @media(max-width:520px){.fzc-btns{justify-content:stretch}.fzc-btn{flex:1;justify-content:center}}
+</style>
+<style>
+/* ═══════════════════════════ FX-3D ═══════════════════════════
+   Descubrimiento y desaparición 3D ligadas al scroll + objeto 3D de fondo.
+   - Solo actúa en .fx-full (dispositivos que pasan el corte de capacidad).
+   - .fx-lite NO recibe NADA de esto → web idéntica a la de hoy.
+   - Todo es translate/rotate/opacity puro (compositor GPU): 0 filtros, 0 libs,
+     0 peticiones. Usa propiedades independientes (translate:/rotate:) para NO
+     pisar el `transform` de los :hover de las tarjetas.
+   - El estado "oculto" solo aplica con .fx3d-armed (lo añade el JS); si el JS
+     no llega a correr, las tarjetas se ven con normalidad. */
+
+.fx-full section{ perspective:1600px; perspective-origin:50% 40%; }
+
+.fx-full .fx3d{
+  transition:opacity .7s ease,
+             translate .9s cubic-bezier(.16,.84,.44,1),
+             rotate .9s cubic-bezier(.16,.84,.44,1);
+}
+.fx-full .fx3d.fx3d-armed{            opacity:0;   translate:0 46px;  rotate:x -20deg; }
+.fx-full .fx3d.fx3d-armed.fx3d-in{    opacity:1;   translate:0 0;     rotate:x 0deg;  }
+.fx-full .fx3d.fx3d-armed.fx3d-past{  opacity:.16; translate:0 -26px; rotate:x 13deg; }
+
+/* Scrub continuo ligado al scroll donde el navegador lo soporta → 0 JS en el
+   hilo principal, lo escala el compositor. Cubre entrada (descubrimiento) Y
+   salida (desaparición). Sobrescribe el estado estático de arriba. */
+@supports (animation-timeline:view()){
+  .fx-full .fx3d{
+    transition:none;
+    animation:fx3dScrub linear both;
+    animation-timeline:view();
+    animation-range:entry 4% exit 96%;
+  }
+  @keyframes fx3dScrub{
+    0%   { opacity:0;   translate:0 48px;  rotate:x -20deg; }
+    17%  { opacity:1;   translate:0 0;     rotate:x 0deg;   }
+    83%  { opacity:1;   translate:0 0;     rotate:x 0deg;   }
+    100% { opacity:.13; translate:0 -26px; rotate:x 12deg;  }
+  }
+  /* El hero se hunde hacia atrás en 3D al salir por arriba */
+  .fx-full #hero .hero-content{
+    animation:fx3dHeroDive linear both;
+    animation-timeline:view();
+    animation-range:exit 0% exit 100%;
+  }
+  @keyframes fx3dHeroDive{
+    from { opacity:1;   translate:0 0;     rotate:x 0deg;  }
+    to   { opacity:.25; translate:0 -34px; rotate:x 20deg; }
+  }
+}
+
+/* Objeto 3D de fondo — cubo wireframe que rota con el scroll de la página */
+.fx-full .fx-orb3d{
+  position:absolute; top:10%; right:-50px;
+  width:220px; height:220px; --d:110px;
+  transform-style:preserve-3d; pointer-events:none;
+  z-index:0; opacity:.55; will-change:transform;
+  animation:fx3dOrbSpin 46s linear infinite;
+}
+.fx-full .fx-orb3d i{
+  position:absolute; inset:0; border:1px solid rgba(201,168,76,.26);
+  border-radius:12px; background:rgba(201,168,76,.02);
+}
+.fx-full .fx-orb3d i:nth-child(1){ transform:rotateY(0deg)   translateZ(var(--d)); }
+.fx-full .fx-orb3d i:nth-child(2){ transform:rotateY(90deg)  translateZ(var(--d)); }
+.fx-full .fx-orb3d i:nth-child(3){ transform:rotateY(180deg) translateZ(var(--d)); }
+.fx-full .fx-orb3d i:nth-child(4){ transform:rotateY(270deg) translateZ(var(--d)); }
+.fx-full .fx-orb3d i:nth-child(5){ transform:rotateX(90deg)  translateZ(var(--d)); }
+.fx-full .fx-orb3d i:nth-child(6){ transform:rotateX(-90deg) translateZ(var(--d)); }
+@keyframes fx3dOrbSpin{
+  from { transform:rotateX(0deg)   rotateY(0deg);   }
+  to   { transform:rotateX(360deg) rotateY(360deg); }
+}
+@supports (animation-timeline:scroll()){
+  .fx-full .fx-orb3d{ animation:fx3dOrbSpin linear both; animation-timeline:scroll(root); }
+}
+.fx-full #zona,
+.fx-full #aparejos{ position:relative; overflow:hidden; }
+
+/* ── Móvil: sin cursor y pantalla pequeña → el 3D tiene que NOTARSE MÁS ── */
+@media (max-width:768px){
+  .fx-full section{ perspective:1100px; }
+  .fx-full .fx3d.fx3d-armed{           translate:0 56px;  rotate:x -27deg; }
+  .fx-full .fx3d.fx3d-armed.fx3d-past{ translate:0 -30px; rotate:x 17deg;  }
+  .fx-full .fx-orb3d{ width:140px; height:140px; --d:68px; top:5%; right:-34px; opacity:.42; }
+}
+@supports (animation-timeline:view()){
+  @media (max-width:768px){
+    @keyframes fx3dScrub{
+      0%   { opacity:0;   translate:0 60px;  rotate:x -30deg; }
+      17%  { opacity:1;   translate:0 0;     rotate:x 0deg;   }
+      83%  { opacity:1;   translate:0 0;     rotate:x 0deg;   }
+      100% { opacity:.11; translate:0 -32px; rotate:x 18deg;  }
+    }
+  }
+}
+
+/* ── Failsafe: si el usuario pide menos movimiento, cero 3D ── */
+@media (prefers-reduced-motion:reduce){
+  .fx-full .fx3d,
+  .fx-full .fx3d.fx3d-armed,
+  .fx-full .fx3d.fx3d-armed.fx3d-in,
+  .fx-full .fx3d.fx3d-armed.fx3d-past{
+    opacity:1 !important; translate:none !important; rotate:none !important; animation:none !important;
+  }
+  .fx-full #hero .hero-content{ animation:none !important; }
+  .fx-full .fx-orb3d{ display:none !important; }
+}
 </style>
 </head>
 <body class="intro-active">
@@ -3490,6 +3617,71 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if(href.indexOf('chat.whatsapp.com')!==-1 || href.indexOf('wa.me')!==-1){ track('whatsapp_click', {link_url:href}); }
     else if(href.indexOf('maps.google')!==-1 || href.indexOf('google.com/maps')!==-1){ track('maps_click', {link_url:href}); }
   }, {passive:true, capture:true});
+})();
+</script>
+<script>
+/* FX-3D runtime — SOLO .fx-full. Añade .fx3d a las tarjetas y gestiona su
+   estado (dentro / pasado por arriba) con UN IntersectionObserver (solo
+   conmuta clases; el movimiento lo hace CSS en el compositor). Donde el
+   navegador soporta animation-timeline:view() el scrub es 100% CSS y este JS
+   solo fija el estado inicial. Diferido a idle → nunca compite con la carga
+   ni con la intro. Si este script no corre, la web queda igual que hoy. */
+(function(){
+  var root = document.documentElement;
+  if (!root.classList.contains('fx-full')) return;
+  var SEL = '.card,.tech-card,.location-card,.embalse-card,.rig-card,.bait-card,.gear-card,.level-card,.sub-card,.lure-category';
+
+  function init(){
+    // No pisar el momento sensible del cierre de la intro.
+    if (root.classList.contains('intro-active')) { setTimeout(init, 500); return; }
+
+    var els = [].slice.call(document.querySelectorAll(SEL));
+    if (!els.length || els.length > 600) return;
+    var vh = window.innerHeight || 800;
+
+    els.forEach(function(el){
+      el.classList.add('fx3d', 'fx3d-armed');
+      // Lo que ya está en pantalla arranca en reposo (sin flash ni salto).
+      try {
+        var r = el.getBoundingClientRect();
+        if (r.top < vh * 0.94 && r.bottom > 0) el.classList.add('fx3d-in');
+      } catch(e){ el.classList.add('fx3d-in'); }
+    });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(ents){
+        for (var i = 0; i < ents.length; i++){
+          var e = ents[i], el = e.target;
+          if (e.isIntersecting){
+            el.classList.add('fx3d-in');
+            el.classList.remove('fx3d-past');
+          } else {
+            el.classList.remove('fx3d-in');
+            // salió por arriba → "pasado" (se aleja); por abajo → estado inicial
+            if (e.boundingClientRect.top < 0) el.classList.add('fx3d-past');
+            else el.classList.remove('fx3d-past');
+          }
+        }
+      }, { threshold: 0.12, rootMargin: '-8% 0px -8% 0px' });
+      els.forEach(function(el){ io.observe(el); });
+    } else {
+      els.forEach(function(el){ el.classList.add('fx3d-in'); });
+    }
+
+    // Objeto 3D de fondo en 1-2 secciones de fondo liso.
+    ['zona','aparejos'].forEach(function(id){
+      var s = document.getElementById(id);
+      if (!s || s.querySelector('.fx-orb3d')) return;
+      var o = document.createElement('div');
+      o.className = 'fx-orb3d';
+      o.setAttribute('aria-hidden','true');
+      o.innerHTML = '<i></i><i></i><i></i><i></i><i></i><i></i>';
+      s.insertBefore(o, s.firstChild);
+    });
+  }
+
+  if ('requestIdleCallback' in window) requestIdleCallback(init, { timeout: 2600 });
+  else setTimeout(init, 900);
 })();
 </script>
 </body>
