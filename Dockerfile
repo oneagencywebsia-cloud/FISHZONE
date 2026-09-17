@@ -25,6 +25,8 @@ COPY cebos-y-boilies-carpa.html /usr/share/nginx/html/cebos-y-boilies-carpa.html
 COPY canas-y-carretes-guia.html /usr/share/nginx/html/canas-y-carretes-guia.html
 COPY surfcasting-costa-andalucia.html /usr/share/nginx/html/surfcasting-costa-andalucia.html
 COPY pesca-submarina-andalucia.html /usr/share/nginx/html/pesca-submarina-andalucia.html
+COPY pesca-en-sevilla.html /usr/share/nginx/html/pesca-en-sevilla.html
+COPY pesca-del-lucio-en-andalucia.html /usr/share/nginx/html/pesca-del-lucio-en-andalucia.html
 COPY legal.css /usr/share/nginx/html/legal.css
 COPY guia.css /usr/share/nginx/html/guia.css
 COPY robots.txt /usr/share/nginx/html/robots.txt

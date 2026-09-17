@@ -141,6 +141,20 @@
   </url>
 
   <url>
+    <loc>https://fishzone.es/pesca-en-sevilla.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/pesca-del-lucio-en-andalucia.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://fishzone.es/sobre-fishzone.html</loc>
     <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
