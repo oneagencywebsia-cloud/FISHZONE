@@ -155,6 +155,34 @@
   </url>
 
   <url>
+    <loc>https://fishzone.es/pesca-dorada-andalucia.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/pesca-lubina-andalucia.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/blog/</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/blog/mejor-mes-para-el-siluro-en-cordoba.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
     <loc>https://fishzone.es/sobre-fishzone.html</loc>
     <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
