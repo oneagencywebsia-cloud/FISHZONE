@@ -101,3 +101,15 @@ table.gz-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
 .gz-foot{border-top:1px solid var(--border);color:var(--muted);font-size:.82rem;text-align:center;padding:1.6rem 1.25rem 3rem}
 .gz-foot .links{max-width:880px;margin:.6rem auto 0;display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;justify-content:center}
 .gz-foot a{color:var(--muted)}
+
+/* CTA FLOTANTE — comunidad de WhatsApp (mismo patrón que la home) */
+.fz-wa-float{position:fixed;bottom:1.6rem;left:1.25rem;z-index:30;display:flex;align-items:center;gap:.55rem;background:linear-gradient(135deg,#25D366,#1aab52);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;padding:.7rem 1.4rem .7rem 1rem;border-radius:50px;box-shadow:0 4px 20px rgba(37,211,102,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,max-width .3s;max-width:56px;overflow:hidden;white-space:nowrap}
+.fz-wa-float:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,211,102,.6);max-width:260px;text-decoration:none}
+.fz-wa-float svg{flex-shrink:0;width:26px;height:26px}
+.fz-wa-float span{opacity:0;transition:opacity .2s .1s}
+.fz-wa-float:hover span{opacity:1}
+@media(max-width:768px){
+  .fz-wa-float{max-width:260px;bottom:1.25rem;left:1rem;padding:.65rem 1.2rem .65rem .9rem}
+  .fz-wa-float span{opacity:1}
+  .gz-foot{padding-bottom:6rem}
+}

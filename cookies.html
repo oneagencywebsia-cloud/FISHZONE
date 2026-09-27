@@ -3,6 +3,38 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- FZ-TRACKING: Consent Mode v2 (denegado por defecto) + GA4/AdSense/CMP/GTM
+     diferidos al primer gesto o 3,5 s. Mismo bloque que index.html. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage':'denied',
+    'ad_user_data':'denied',
+    'ad_personalization':'denied',
+    'analytics_storage':'denied',
+    'wait_for_update':500
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-CXTE7RYL06');
+</script>
+<script>
+(function(){
+  var loaded=false;
+  function loadThirdParty(){
+    if(loaded)return; loaded=true;
+    function tag(src,cross){var s=document.createElement('script');s.async=true;s.src=src;if(cross)s.crossOrigin='anonymous';document.head.appendChild(s);}
+    tag('https://www.googletagmanager.com/gtag/js?id=G-CXTE7RYL06');
+    tag('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3453090041384842', true);
+    tag('https://fundingchoicesmessages.google.com/i/pub-3453090041384842?ers=1');
+    (function(){function s(){if(!window.frames['googlefcPresent']){if(document.body){var i=document.createElement('iframe');i.style='width:0;height:0;border:none;z-index:-1000;left:-1000px;top:-1000px;';i.style.display='none';i.name='googlefcPresent';document.body.appendChild(i);}else{setTimeout(s,0);}}}s();})();
+    function gtm(id){window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=document.getElementsByTagName('script')[0],j=document.createElement('script');j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+id;f.parentNode.insertBefore(j,f);}
+    gtm('GTM-PTNK3FLD'); gtm('GTM-TCCX24P8');
+  }
+  ['scroll','mousemove','touchstart','keydown','click'].forEach(function(e){window.addEventListener(e,loadThirdParty,{once:true,passive:true});});
+  setTimeout(loadThirdParty, 3500);
+})();
+</script>
 <title>Política de Cookies | FishZone</title>
 <meta name="description" content="Política de cookies de FishZone: qué cookies usamos (Google Analytics y AdSense), para qué sirven y cómo gestionarlas o retirar tu consentimiento." />
 <meta name="robots" content="index, follow" />
@@ -79,7 +111,19 @@
   © 2026 FishZone — Santaella · Córdoba · Andalucía
   <div style="margin-top:.5rem">
     <a href="/">Inicio</a><a href="/sobre-fishzone.html">Sobre FishZone</a><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/aviso-legal.html">Aviso Legal</a><a href="/contacto.html">Contacto</a>
-  </div>
+  <a href="#" onclick="event.preventDefault();try{googlefc.showRevocationMessage()}catch(e){}">Gestionar consentimiento</a></div>
 </footer>
+<script>
+/* GA4 — conversiones (WhatsApp / Google Maps). Respeta Consent Mode. */
+(function(){
+  function track(n,p){try{if(typeof gtag==='function'){gtag('event',n,p||{});}}catch(e){}}
+  document.addEventListener('click',function(e){
+    var a=e.target&&e.target.closest&&e.target.closest('a[href]'); if(!a)return;
+    var h=a.getAttribute('href')||'';
+    if(h.indexOf('chat.whatsapp.com')!==-1||h.indexOf('wa.me')!==-1){track('whatsapp_click',{link_url:h});}
+    else if(h.indexOf('maps.google')!==-1||h.indexOf('google.com/maps')!==-1){track('maps_click',{link_url:h});}
+  },{passive:true,capture:true});
+})();
+</script>
 </body>
 </html>
