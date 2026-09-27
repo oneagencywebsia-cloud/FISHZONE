@@ -92,6 +92,116 @@
   <div class="gz-meta"><span class="by">Por <strong>Redacción FishZone</strong> · Santaella (Córdoba)</span><span class="dot">•</span><span>Publicado el 12 de junio de 2026</span><span class="dot">•</span><span>Actualizado el 20 de julio de 2026</span></div>
   <p class="gz-lead">Andalucía concentra algunos de los embalses con mejor pesca de interior del país. Carpas que superan los 30 kg, siluros de más de dos metros, black bass agresivos y lucios al acecho. A continuación tienes los seis embalses que de verdad merecen una salida, con sus especies, técnicas y puntos clave.</p>
 
+  <h2 id="buscador">Buscador: ¿qué quieres pescar?</h2>
+  <p>Elige la especie y, si quieres, la provincia. Te decimos en qué embalses andaluces buscarla.</p>
+  <div class="fzf" data-fzf>
+    <div class="fzf-chips" role="group" aria-label="Especie">
+      <button type="button" data-sp="bass" aria-pressed="true">Black bass</button>
+      <button type="button" data-sp="carpa" aria-pressed="false">Carpa</button>
+      <button type="button" data-sp="lucio" aria-pressed="false">Lucio</button>
+      <button type="button" data-sp="siluro" aria-pressed="false">Siluro</button>
+      <button type="button" data-sp="barbo" aria-pressed="false">Barbo</button>
+      <button type="button" data-sp="trucha" aria-pressed="false">Trucha</button>
+    </div>
+    <label class="fzf-prov">Provincia
+      <select>
+        <option value="">Todas</option>
+        <option>Córdoba</option>
+        <option>Granada</option>
+        <option>Jaén</option>
+        <option>Sevilla</option>
+      </select>
+    </label>
+    <p class="fzf-count" aria-live="polite"></p>
+    <div class="fzf-res"></div>
+    <p class="fzf-guide"></p>
+  </div>
+  <noscript><p>El buscador necesita JavaScript. Más abajo tienes la ficha de cada embalse.</p></noscript>
+  <div class="gz-box"><p><strong>Orientativo:</strong> para black bass y lucio solo listamos embalses del anexo de aguas donde su pesca está autorizada en Andalucía. La normativa se revisa cada temporada: compruébala antes de salir.</p></div>
+  <style>
+    .fzf-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 .9rem}
+    .fzf-chips button{font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:50px;padding:.45rem 1rem;transition:background .15s,color .15s,border-color .15s}
+    .fzf-chips button:hover{border-color:var(--gold)}
+    .fzf-chips button[aria-pressed="true"]{background:linear-gradient(135deg,var(--gold),#a8862f);color:#1a1205;border-color:transparent}
+    .fzf-prov{display:inline-flex;align-items:center;gap:.6rem;font-size:.86rem;color:var(--muted)}
+    .fzf-prov select{font:inherit;font-size:.86rem;background:var(--card);color:var(--white);border:1px solid var(--border);border-radius:8px;padding:.4rem .7rem}
+    .fzf-count{font-size:.85rem;color:var(--muted);margin:.9rem 0 .2rem}
+    .fzf-res{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.8rem;margin:.6rem 0}
+    .fzf-res .gz-card{margin:0;padding:1rem 1.1rem}
+    .fzf-res h3{margin:0 0 .15rem;font-size:1.05rem}
+    .fzf-res .p{font-size:.78rem;color:var(--muted);margin:0 0 .5rem}
+    .fzf-res .n{font-size:.84rem;margin:.5rem 0 0}
+    .fzf-res .gz-tag.on{background:var(--gold);color:#1a1205;border-color:var(--gold)}
+  </style>
+  <script>
+  (function(){
+    var root=document.querySelector('[data-fzf]'); if(!root) return;
+    var SP={bass:['Black bass','/pesca-black-bass-andalucia.html'],carpa:['Carpa','/carpfishing-andalucia.html'],lucio:['Lucio','/pesca-del-lucio-en-andalucia.html'],siluro:['Siluro','/pesca-del-siluro-en-andalucia.html'],barbo:['Barbo','/pesca-del-barbo-iberico.html'],trucha:['Trucha','/pesca-a-mosca-truchas-andalucia.html']};
+    var PROV={'Córdoba':'/pesca-en-cordoba.html','Sevilla':'/pesca-en-sevilla.html'};
+    /* Datos: especies según las guías de FishZone; black bass y lucio solo en
+       embalses del anexo de embalses autorizados (orientativo). */
+    var E=[
+      ['La Breña II','Córdoba',['siluro','carpa','lucio','bass'],'Referencia para el siluro de gran tamaño, con pesca nocturna.'],
+      ['Iznájar','Córdoba-Granada',['carpa','siluro','bass'],'El mayor de Andalucía: carpas de más de 30 kg. Black bass con condiciones especiales.'],
+      ['Bembézar','Córdoba',['bass','carpa'],'Destino de basseros; black bass fuera de las zonas de refugio.'],
+      ['Malpasillo / Cordobilla','Córdoba',['carpa','barbo'],'Agua accesible desde la orilla en Santaella; barbo muy activo en otoño.'],
+      ['Guadalmellato','Córdoba',['bass','lucio'],''],
+      ['Puente Nuevo','Córdoba',['bass','lucio'],''],
+      ['San Rafael de Navallana','Córdoba',['bass','lucio'],'Fuera de la zona de refugio.'],
+      ['Yeguas','Córdoba',['bass'],''],
+      ['Martín Gonzalo','Córdoba',['bass'],''],
+      ['Sierra Boyera','Córdoba',['bass'],''],
+      ['Vadomojón','Córdoba',['bass'],''],
+      ['Encinarejo','Jaén',['trucha','bass','barbo'],'Aguas cristalinas de sierra, ideal para spinning ligero.'],
+      ['Guadalmena','Jaén',['bass','lucio'],''],
+      ['La Fernandina','Jaén',['bass','lucio'],''],
+      ['Giribaile','Jaén',['bass','lucio'],''],
+      ['Rumblar','Jaén',['bass','lucio'],''],
+      ['Zocueca','Jaén',['bass','lucio'],''],
+      ['El Tranco de Beas','Jaén',['bass'],''],
+      ['Guadalén','Jaén',['bass'],''],
+      ['Jándula','Jaén',['bass'],''],
+      ['Cubillas','Granada',['bass','lucio'],''],
+      ['Colomera','Granada',['bass'],''],
+      ['Béznar','Granada',['bass'],''],
+      ['Negratín','Granada',['bass'],''],
+      ['Rules','Granada',['carpa'],'Embalse joven con carpfishing prometedor en la zona norte.'],
+      ['El Pintado','Sevilla',['bass'],'Sierra Norte, Cazalla de la Sierra.'],
+      ['Torre del Águila','Sevilla',['bass'],''],
+      ['El Gergal','Sevilla',['bass'],''],
+      ['Huesna','Sevilla',['bass'],''],
+      ['Cala','Sevilla',['bass'],''],
+      ['Puebla de Cazalla','Sevilla',['bass'],''],
+      ['José Torán','Sevilla',['bass'],'']
+    ];
+    var sp='bass', prov='';
+    var btns=root.querySelectorAll('.fzf-chips button'), sel=root.querySelector('select');
+    var out=root.querySelector('.fzf-res'), cnt=root.querySelector('.fzf-count'), guide=root.querySelector('.fzf-guide');
+    function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e;}
+    function render(){
+      out.textContent='';
+      var r=E.filter(function(e){return e[2].indexOf(sp)!==-1&&(!prov||e[1].indexOf(prov)!==-1);});
+      cnt.textContent=r.length?r.length+(r.length===1?' embalse':' embalses')+' para '+SP[sp][0].toLowerCase()+(prov?' en '+prov:' en Andalucía'):'No tenemos embalses de '+SP[sp][0].toLowerCase()+(prov?' en '+prov:'')+' en nuestras guías. Prueba con otra provincia.';
+      r.forEach(function(e){
+        var c=el('div','gz-card'); c.appendChild(el('h3','',e[0])); c.appendChild(el('p','p',e[1]));
+        var tags=el('div'); e[2].forEach(function(s){tags.appendChild(el('span','gz-tag'+(s===sp?' on':''),SP[s][0]));}); c.appendChild(tags);
+        if(e[3]) c.appendChild(el('p','n',e[3]));
+        out.appendChild(c);
+      });
+      guide.textContent='';
+      var a=el('a','',' Guía completa: pesca de '+SP[sp][0].toLowerCase()+' →'); a.href=SP[sp][1]; guide.appendChild(a);
+      if(prov&&PROV[prov]){ guide.appendChild(document.createTextNode(' · ')); var b=el('a','','Pesca en '+prov+' →'); b.href=PROV[prov]; guide.appendChild(b); }
+    }
+    for(var i=0;i<btns.length;i++) btns[i].addEventListener('click',function(){
+      sp=this.getAttribute('data-sp');
+      for(var j=0;j<btns.length;j++) btns[j].setAttribute('aria-pressed',btns[j]===this?'true':'false');
+      render();
+    });
+    sel.addEventListener('change',function(){prov=sel.value;render();});
+    render();
+  })();
+  </script>
+
   <table class="gz-table">
     <thead><tr><th>Embalse</th><th>Provincia</th><th>Capacidad</th><th>Estrella</th></tr></thead>
     <tbody>

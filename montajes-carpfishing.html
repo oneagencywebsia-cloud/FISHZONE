@@ -131,6 +131,80 @@
     </tbody>
   </table>
 
+  <h2 id="recomendador">Recomendador de montaje para carpa</h2>
+  <p>Responde cuatro preguntas sobre tu sesión y te decimos qué montaje y qué cebo llevar.</p>
+  <div class="fzr" data-fzr>
+    <div class="fzr-q"><span class="fzr-l">1. ¿Cómo es el fondo?</span>
+      <div class="fzr-o" data-k="fondo"><button type="button" data-v="limpio" aria-pressed="true">Limpio (grava, arena)</button><button type="button" data-v="lodo" aria-pressed="false">Lodo, hojas o vegetación</button><button type="button" data-v="nose" aria-pressed="false">No lo conozco</button></div></div>
+    <div class="fzr-q"><span class="fzr-l">2. ¿A qué distancia vas a lanzar?</span>
+      <div class="fzr-o" data-k="dist"><button type="button" data-v="normal" aria-pressed="true">Normal</button><button type="button" data-v="lejos" aria-pressed="false">Muy lejos</button></div></div>
+    <div class="fzr-q"><span class="fzr-l">3. ¿Las carpas están muy pescadas?</span>
+      <div class="fzr-o" data-k="pres"><button type="button" data-v="no" aria-pressed="true">No</button><button type="button" data-v="si" aria-pressed="false">Sí, muy recelosas</button></div></div>
+    <div class="fzr-q"><span class="fzr-l">4. ¿Cómo está el agua?</span>
+      <div class="fzr-o" data-k="agua"><button type="button" data-v="calida" aria-pressed="true">Cálida (verano)</button><button type="button" data-v="fria" aria-pressed="false">Fría (invierno)</button></div></div>
+    <div class="fzr-out" aria-live="polite"></div>
+  </div>
+  <noscript><p>El recomendador necesita JavaScript: tienes la misma información en la tabla de arriba.</p></noscript>
+  <style>
+    .fzr{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.25rem;margin:1.2rem 0}
+    .fzr-q{margin:0 0 1rem}
+    .fzr-l{display:block;font-weight:600;color:var(--white);font-size:.92rem;margin-bottom:.45rem}
+    .fzr-o{display:flex;flex-wrap:wrap;gap:.45rem}
+    .fzr-o button{font:inherit;font-size:.84rem;cursor:pointer;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:50px;padding:.42rem .95rem;transition:background .15s,color .15s,border-color .15s}
+    .fzr-o button:hover{border-color:var(--gold)}
+    .fzr-o button[aria-pressed="true"]{background:linear-gradient(135deg,var(--gold),#a8862f);color:#1a1205;border-color:transparent;font-weight:700}
+    .fzr-out{border-top:1px solid var(--border);padding-top:1rem;margin-top:.4rem}
+    .fzr-out .r{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.02em;color:var(--gold-soft);line-height:1.1}
+    .fzr-out p{margin:.45rem 0;font-size:.92rem}
+    .fzr-out ul{margin:.4rem 0 0;padding-left:1.1rem}
+    .fzr-out li{font-size:.88rem;margin:.3rem 0}
+  </style>
+  <script>
+  (function(){
+    var root=document.querySelector('[data-fzr]'); if(!root) return;
+    var st={fondo:'limpio',dist:'normal',pres:'no',agua:'calida'};
+    var out=root.querySelector('.fzr-out');
+    /* Lógica determinista = tabla "Qué montaje usar según la situación" +
+       reglas de cebo de la guía de cebos (verano dulce / invierno proteína). */
+    function rec(){
+      var r, extra=[];
+      if(st.fondo!=='limpio'){
+        r={m:'Chod Rig',c:'Pop-up flotante',w:st.fondo==='lodo'?'Con lodo o vegetación el cebo se hundiría; el Chod Rig lo mantiene siempre por encima del fondo, visible, caiga donde caiga el plomo.':'Es el montaje para pescar "a ciegas" cuando no conoces el fondo: el cebo queda presentado por encima caiga donde caiga.'};
+        if(st.dist==='lejos') extra.push('Para lances muy largos, el montaje helicóptero evita enredos porque el bajo gira libre durante el lance.');
+      } else if(st.dist==='lejos'){
+        r={m:'Montaje helicóptero',c:'Boilie o snowman',w:'El bajo gira libremente alrededor de la línea madre durante el lance, así evitas enredos en lances largos.'};
+      } else if(st.pres==='si'){
+        r={m:'Ronnie Rig',c:'Pop-up pequeño',w:'El anzuelo va sobre un emerillón con giro total: muy eficaz sobre carpas presionadas que ya han visto de todo.'};
+      } else {
+        r={m:'Hair Rig',c:'Boilie hundido',w:'El montaje base: la carpa aspira el boilie sin notar el anzuelo y, al escupirlo, el anzuelo gira y se clava.'};
+      }
+      if(st.pres==='si'&&r.m!=='Ronnie Rig') extra.push('Con carpas muy recelosas, el Ronnie Rig con pop-up pequeño suele marcar la diferencia.');
+      var aroma=st.agua==='calida'
+        ?'Aromas dulces y frutales (fresa, escualina, tutti frutti). Boilie de '+(st.pres==='si'?'10-12 mm, más discreto con carpas recelosas.':'15-20 mm.')
+        :'Proteína animal (pescado, hígado) y aromas especiados o picantes, que estimulan más con el agua fría. Boilie de 10-12 mm o mini-boilies.';
+      out.textContent='';
+      function p(t,cl){var e=document.createElement(cl==='r'?'div':'p');if(cl)e.className=cl;e.textContent=t;out.appendChild(e);return e;}
+      p(r.m,'r');
+      var c=p('');var b=document.createElement('strong');b.textContent='Cebo: ';c.appendChild(b);c.appendChild(document.createTextNode(r.c+'. '+aroma));
+      p(r.w);
+      var ul=document.createElement('ul');
+      extra.concat(['Plomo fijo de al menos 90-100 g para que la carpa se auto-clave al huir.','Antes de lanzar, comprueba que el anzuelo está afilado.']).forEach(function(t){var li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
+      out.appendChild(ul);
+      var g=p('');var a=document.createElement('a');a.href='/cebos-y-boilies-carpa.html';a.textContent='Guía de cebos y boilies para carpa →';g.appendChild(a);
+    }
+    var groups=root.querySelectorAll('.fzr-o');
+    for(var i=0;i<groups.length;i++)(function(gr){
+      var k=gr.getAttribute('data-k'), bs=gr.querySelectorAll('button');
+      for(var j=0;j<bs.length;j++) bs[j].addEventListener('click',function(){
+        st[k]=this.getAttribute('data-v');
+        for(var n=0;n<bs.length;n++) bs[n].setAttribute('aria-pressed',bs[n]===this?'true':'false');
+        rec();
+      });
+    })(groups[i]);
+    rec();
+  })();
+  </script>
+
   <div class="gz-box"><p><strong>Antes de lanzar, comprueba el anzuelo:</strong> apóyalo sobre la uña y arrástralo. Si no se agarra y patina, está romo: cámbialo. Un anzuelo afilado es tan importante como el montaje. La carpa perdona pocos errores.</p></div>
 
   <h2>Errores que espantan la carpa</h2>
