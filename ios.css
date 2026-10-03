@@ -1,0 +1,119 @@
+/* FishZone — estética iOS 27 "Liquid Glass" (todas las páginas).
+   Regla de Apple: el cristal real (backdrop-filter) es solo para controles y navegación;
+   las tarjetas son superficies translúcidas sin desenfoque (baratas). En móvil y en
+   fx-lite el cristal se simula con relleno + brillo especular (cero coste de GPU).
+   Solo usa propiedades baratas: box-shadow, border-radius, scale/translate independientes. */
+:root{
+  --lg-blur:blur(22px) saturate(1.5) brightness(1.06);
+  --lg-paint:
+    radial-gradient(130% 170% at 0% 0%,rgba(63,208,186,.13),transparent 58%),
+    radial-gradient(130% 170% at 100% 100%,rgba(201,168,76,.11),transparent 62%),
+    linear-gradient(rgba(255,255,255,.09),rgba(255,255,255,.04));
+  --lg-edge:
+    0 0 0 1px rgba(3,7,16,.6),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 1px 0 0 rgba(255,255,255,.1),
+    inset 0 -1px 0 rgba(255,255,255,.07),
+    inset 0 0 26px rgba(255,255,255,.04);
+  --lg-lift:0 22px 40px -24px rgba(0,0,0,.85),0 3px 8px rgba(0,0,0,.28);
+  --lg-surface-edge:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 0 0 1px rgba(255,255,255,.035),
+    0 18px 34px -24px rgba(0,0,0,.8);
+  --lg-spring:linear(0,.049,.164,.309,.46,.6,.722,.822,.898,.954,.993,1.017,1.03,1.035,1.036,1.032,1.028,1.022,1.017,1.012,1.008,1.005,1.003,1.001,1);
+  --lg-ease:cubic-bezier(.22,1,.36,1);
+  --lg-r-xl:28px; --lg-r-lg:22px; --lg-r-md:16px;
+}
+
+/* ---------- Navegación: cápsula flotante de cristal ---------- */
+body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav),.gz-nav,.lz-nav{
+  background-image:var(--lg-paint);
+  box-shadow:var(--lg-edge),var(--lg-lift);
+  border:0;
+  border-radius:var(--lg-r-xl);
+}
+body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav){
+  top:max(10px,env(safe-area-inset-top));
+  left:max(10px,env(safe-area-inset-left));
+  right:max(10px,env(safe-area-inset-right));
+  background-color:rgba(8,16,32,.62);
+}
+.gz-nav,.lz-nav{
+  top:max(10px,env(safe-area-inset-top));
+  margin:10px max(10px,env(safe-area-inset-left)) 0;
+  background-color:rgba(8,16,32,.62);
+}
+/* Cristal real solo donde hay GPU de sobra (escritorio con puntero fino) */
+@media (hover:hover) and (min-width:769px){
+  html.fx-full body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav),html.fx-full .gz-nav,html.fx-full .lz-nav{-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur)}
+}
+/* Móvil / equipos modestos: cristal simulado, más opaco para mantener la lectura */
+@media (max-width:768px),(hover:none){
+  body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav),.gz-nav,.lz-nav{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(9,17,34,.96)}
+}
+html.fx-lite body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav),html.fx-lite .gz-nav,html.fx-lite .lz-nav{-webkit-backdrop-filter:none;backdrop-filter:none;background-color:rgba(9,17,34,.92)}
+
+/* ---------- Tarjetas: superficies translúcidas con borde especular ---------- */
+.card,.quick-card,.location-card,.bait-card,.tech-card,.gear-card,.sub-card,.shop-card,
+.rig-card,.norm-card,.level-card,.embalse-card,
+.gz-card,.gz-author,.gz-rel-grid a,.gz-faq details{
+  border-radius:var(--lg-r-lg);
+  border-color:rgba(255,255,255,.07);
+  box-shadow:var(--lg-surface-edge);
+}
+.gz-box{border-radius:var(--lg-r-md);box-shadow:var(--lg-surface-edge)}
+.gz-faq details{border-radius:var(--lg-r-md)}
+
+/* ---------- Píldoras y etiquetas ---------- */
+.spec-pill,.bait-pill,.brand-pill,.gz-tag{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 12px rgba(255,255,255,.04);
+}
+
+/* ---------- Botones / controles flotantes: cápsulas de cristal ---------- */
+.gz-cta,.fz-wa-btn,.fz-wa-float,.maps-btn{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.14),0 10px 24px -12px rgba(0,0,0,.6);
+}
+.gz-cta.ghost{
+  background:var(--lg-paint);
+  box-shadow:var(--lg-edge);
+  border-color:transparent;
+}
+
+/* ---------- Respuesta táctil con muelle (propiedad `scale`, independiente de transform) ---------- */
+.gz-cta,.fz-wa-btn,.fz-wa-float,.maps-btn,.quick-card,.gz-rel-grid a,.card,
+.spec-pill,.bait-pill,.brand-pill,.gz-tag,.gz-faq summary{
+  transition-property:scale,transform,box-shadow,border-color,background-color,filter,max-width;
+}
+.gz-cta,.fz-wa-btn,.fz-wa-float,.maps-btn,.gz-rel-grid a,.quick-card{
+  -webkit-tap-highlight-color:transparent;
+}
+.gz-cta:active,.fz-wa-btn:active,.fz-wa-float:active,.maps-btn:active{scale:.955;transition:scale .12s var(--lg-ease)}
+.gz-rel-grid a:active,.quick-card:active{scale:.975;transition:scale .12s var(--lg-ease)}
+@supports (transition-timing-function:linear(0,1)){
+  .gz-cta:not(:active),.fz-wa-btn:not(:active),.fz-wa-float:not(:active),.maps-btn:not(:active),
+  .gz-rel-grid a:not(:active),.quick-card:not(:active){scale:1;transition-timing-function:var(--lg-spring)}
+}
+
+/* ---------- FAQ: apertura suave (donde el navegador lo soporta) ---------- */
+@supports (interpolate-size:allow-keywords){
+  .gz-faq details{interpolate-size:allow-keywords}
+  .gz-faq details::details-content{
+    block-size:0;overflow:hidden;
+    transition:block-size .4s var(--lg-ease),content-visibility .4s allow-discrete;
+  }
+  .gz-faq details[open]::details-content{block-size:auto}
+}
+.gz-faq summary{border-radius:var(--lg-r-md);-webkit-tap-highlight-color:transparent}
+
+/* ---------- Pie y márgenes seguros (notch / barra de gestos) ---------- */
+.gz-foot{padding-bottom:max(3rem,calc(env(safe-area-inset-bottom) + 2rem))}
+.fz-wa-float{bottom:max(1.25rem,calc(env(safe-area-inset-bottom) + .75rem))}
+
+/* ---------- Accesibilidad: menos transparencia / más contraste ---------- */
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more){
+  body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav),.gz-nav,.lz-nav{-webkit-backdrop-filter:none !important;backdrop-filter:none !important;background-color:#0a1326 !important;background-image:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .gz-cta:active,.fz-wa-btn:active,.fz-wa-float:active,.maps-btn:active,.gz-rel-grid a:active,.quick-card:active{scale:1}
+  .gz-faq details::details-content{transition:none}
+}
