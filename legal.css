@@ -1,3 +1,7 @@
+/* Fallbacks con métricas ajustadas: evitan el salto de layout (CLS) cuando
+   cargan las fuentes web. size-adjust medido contra Bebas Neue / DM Sans. */
+@font-face{font-family:'Bebas Fallback';src:local('Arial'),local('Helvetica');size-adjust:72.4%}
+@font-face{font-family:'DM Sans Fallback';src:local('Arial'),local('Helvetica');size-adjust:103%}
 /* FishZone — estilos compartidos de páginas legales / informativas */
 :root{
   --bg:#0a0f1e; --bg2:#0d1426; --card:#111a30; --border:#1e2c47;
@@ -8,7 +12,7 @@
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--bg); color:var(--text);
-  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-family:'DM Sans','DM Sans Fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   line-height:1.7; font-size:16px;
   background-image:radial-gradient(ellipse 90% 50% at 50% -10%,#0b1e3e 0%,transparent 60%);
 }
@@ -20,12 +24,12 @@ a:hover{text-decoration:underline}
   border-bottom:1px solid var(--border);
 }
 .lz-nav img{width:38px; height:38px; object-fit:contain}
-.lz-nav .brand{font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:.04em; color:var(--white)}
+.lz-nav .brand{font-family:'Bebas Neue','Bebas Fallback',sans-serif; font-size:1.5rem; letter-spacing:.04em; color:var(--white)}
 .lz-nav .brand span{color:var(--gold)}
 .lz-nav .home{margin-left:auto; font-size:.85rem; color:var(--muted)}
 .lz-wrap{max-width:840px; margin:0 auto; padding:2.5rem 1.25rem 4rem}
 .lz-wrap h1{
-  font-family:'Bebas Neue',sans-serif; font-size:clamp(2.1rem,6vw,3rem);
+  font-family:'Bebas Neue','Bebas Fallback',sans-serif; font-size:clamp(2.1rem,6vw,3rem);
   letter-spacing:.02em; color:var(--white); margin:.2rem 0 .3rem; line-height:1.05;
 }
 .lz-updated{color:var(--muted); font-size:.82rem; margin-bottom:1.8rem}
@@ -62,3 +66,7 @@ input,textarea{
   color:var(--white); padding:.7rem .8rem; font:inherit; margin-top:.3rem;
 }
 label{display:block; margin:.9rem 0 0; color:var(--text); font-size:.9rem}
+
+/* Enlaces dentro de texto: subrayados (accesibilidad) */
+.lz-wrap p a,.lz-wrap li a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.lz-wrap .lz-btn{text-decoration:none}

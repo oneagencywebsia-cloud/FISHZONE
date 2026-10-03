@@ -1,3 +1,7 @@
+/* Fallbacks con métricas ajustadas: evitan el salto de layout (CLS) cuando
+   cargan las fuentes web. size-adjust medido contra Bebas Neue / DM Sans. */
+@font-face{font-family:'Bebas Fallback';src:local('Arial'),local('Helvetica');size-adjust:72.4%}
+@font-face{font-family:'DM Sans Fallback';src:local('Arial'),local('Helvetica');size-adjust:103%}
 /* FishZone — estilos de páginas-guía (contenido SEO, diseño de marca) */
 :root{
   --bg:#0a0f1e; --bg2:#0d1426; --card:#111a30; --card2:#0e1730; --border:#1e2c47;
@@ -8,7 +12,7 @@
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
   margin:0;background:var(--bg);color:var(--text);
-  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-family:'DM Sans','DM Sans Fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   line-height:1.7;font-size:16px;
   background-image:radial-gradient(ellipse 100% 45% at 50% -8%,#0b1e3e 0%,transparent 62%);
 }
@@ -19,7 +23,7 @@ img{max-width:100%;height:auto}
 /* NAV */
 .gz-nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:.7rem;padding:.8rem 1.25rem;background:rgba(7,12,24,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
 .gz-nav img{width:36px;height:36px;object-fit:contain}
-.gz-nav .brand{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:.04em;color:var(--white)}
+.gz-nav .brand{font-family:'Bebas Neue','Bebas Fallback',sans-serif;font-size:1.45rem;letter-spacing:.04em;color:var(--white)}
 .gz-nav .brand span{color:var(--gold)}
 .gz-nav .home{margin-left:auto;font-size:.85rem;color:var(--muted)}
 
@@ -27,7 +31,7 @@ img{max-width:100%;height:auto}
 .gz-hero{position:relative;overflow:hidden;padding:3rem 1.25rem 2.4rem;text-align:center;background:radial-gradient(ellipse 80% 70% at 50% 25%,#0b1e3e 0%,#071428 60%,var(--bg) 95%)}
 .gz-hero .wrap{max-width:820px;margin:0 auto;position:relative;z-index:2}
 .gz-eyebrow{color:var(--gold);font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem}
-.gz-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.3rem,7vw,3.6rem);line-height:1.02;letter-spacing:.01em;color:var(--white);margin:.1rem 0 .7rem}
+.gz-hero h1{font-family:'Bebas Neue','Bebas Fallback',sans-serif;font-size:clamp(2.3rem,7vw,3.6rem);line-height:1.02;letter-spacing:.01em;color:var(--white);margin:.1rem 0 .7rem}
 .gz-hero h1 .g{color:var(--gold)}
 .gz-hero .sub{font-size:1.08rem;color:var(--text);max-width:680px;margin:0 auto}
 .gz-gold-line{width:90px;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.1rem auto 0}
@@ -39,7 +43,7 @@ img{max-width:100%;height:auto}
 
 /* LAYOUT */
 .gz-wrap{max-width:880px;margin:0 auto;padding:1.6rem 1.25rem 3rem}
-.gz-wrap h2{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em;color:var(--white);font-size:1.7rem;margin:2.4rem 0 .5rem;padding-top:1.4rem;border-top:1px solid var(--border)}
+.gz-wrap h2{font-family:'Bebas Neue','Bebas Fallback',sans-serif;letter-spacing:.02em;color:var(--white);font-size:1.7rem;margin:2.4rem 0 .5rem;padding-top:1.4rem;border-top:1px solid var(--border)}
 .gz-wrap h3{color:var(--gold-soft);font-size:1.12rem;margin:1.5rem 0 .3rem}
 .gz-wrap p,.gz-wrap li{color:var(--text)}
 .gz-wrap ul,.gz-wrap ol{padding-left:1.2rem}
@@ -55,7 +59,7 @@ img{max-width:100%;height:auto}
 .gz-author{display:flex;gap:.9rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.05rem 1.2rem;margin:2.6rem 0 0}
 .gz-author img{width:44px;height:44px;border-radius:50%;object-fit:contain;background:#0a1122;border:1px solid var(--border);flex-shrink:0}
 .gz-author .a-body{font-size:.9rem}
-.gz-author .a-name{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em;font-size:1.15rem;color:var(--white)}
+.gz-author .a-name{font-family:'Bebas Neue','Bebas Fallback',sans-serif;letter-spacing:.02em;font-size:1.15rem;color:var(--white)}
 .gz-author .a-name a{color:var(--gold-soft)}
 .gz-author p{margin:.25rem 0 0;color:var(--muted);font-size:.86rem}
 
@@ -94,7 +98,7 @@ table.gz-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
 .gz-rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem;margin-top:1rem}
 .gz-rel-grid a{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.15rem;color:var(--white)}
 .gz-rel-grid a:hover{border-color:var(--gold);text-decoration:none;transform:translateY(-2px);transition:.2s}
-.gz-rel-grid .k{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.02em;margin-bottom:.2rem;color:var(--gold-soft)}
+.gz-rel-grid .k{display:block;font-family:'Bebas Neue','Bebas Fallback',sans-serif;font-size:1.15rem;letter-spacing:.02em;margin-bottom:.2rem;color:var(--gold-soft)}
 .gz-rel-grid .d{display:block;font-size:.82rem;color:var(--muted)}
 
 /* FOOTER */
@@ -103,7 +107,7 @@ table.gz-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
 .gz-foot a{color:var(--muted)}
 
 /* CTA FLOTANTE — comunidad de WhatsApp (mismo patrón que la home) */
-.fz-wa-float{position:fixed;bottom:1.6rem;left:1.25rem;z-index:30;display:flex;align-items:center;gap:.55rem;background:linear-gradient(135deg,#25D366,#1aab52);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.05em;padding:.7rem 1.4rem .7rem 1rem;border-radius:50px;box-shadow:0 4px 20px rgba(37,211,102,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,max-width .3s;max-width:56px;overflow:hidden;white-space:nowrap}
+.fz-wa-float{position:fixed;bottom:1.6rem;left:1.25rem;z-index:30;display:flex;align-items:center;gap:.55rem;background:linear-gradient(135deg,#25D366,#1aab52);color:#fff;font-family:'Bebas Neue','Bebas Fallback',sans-serif;font-size:1rem;letter-spacing:.05em;padding:.7rem 1.4rem .7rem 1rem;border-radius:50px;box-shadow:0 4px 20px rgba(37,211,102,.45);transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,max-width .3s;max-width:56px;overflow:hidden;white-space:nowrap}
 .fz-wa-float:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,211,102,.6);max-width:260px;text-decoration:none}
 .fz-wa-float svg{flex-shrink:0;width:26px;height:26px}
 .fz-wa-float span{opacity:0;transition:opacity .2s .1s}
@@ -113,3 +117,7 @@ table.gz-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
   .fz-wa-float span{opacity:1}
   .gz-foot{padding-bottom:6rem}
 }
+
+/* Enlaces dentro de texto: subrayados (accesibilidad: no depender solo del color) */
+.gz-wrap p a,.gz-wrap li a,.gz-wrap td a,.gz-wrap summary a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.gz-wrap .gz-rel-grid a,.gz-wrap .gz-cta,.gz-wrap .gz-card[href]{text-decoration:none}
