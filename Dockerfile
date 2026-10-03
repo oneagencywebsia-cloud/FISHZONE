@@ -34,6 +34,7 @@ COPY legal.css /usr/share/nginx/html/legal.css
 COPY guia.css /usr/share/nginx/html/guia.css
 COPY scenes.css /usr/share/nginx/html/scenes.css
 COPY ios.css /usr/share/nginx/html/ios.css
+COPY ios.js /usr/share/nginx/html/ios.js
 COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY sitemap.xml /usr/share/nginx/html/sitemap.xml
 COPY site.webmanifest /usr/share/nginx/html/site.webmanifest

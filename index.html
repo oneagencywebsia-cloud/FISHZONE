@@ -738,7 +738,7 @@ html.fz-moving .water-wave{animation-play-state:paused !important}
    pantalla, el fondo cambia al instante (invisible) en vez de fundirse 1,2 s. */
 .fz-scene.snap .sc{transition:none !important}
 </style>
-<link rel="stylesheet" href="/scenes.css?v=20261006" /><link rel="stylesheet" href="/ios.css?v=20261008" />
+<link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261009" /><script src="/ios.js?v=20261009" defer></script>
 </head>
 <body class="intro-active">
 
@@ -3781,12 +3781,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var A=document.createElement('div'),B=document.createElement('div'); A.className=B.className='sc';
     scene.appendChild(A); scene.appendChild(B);
     document.body.insertBefore(scene,document.body.firstChild);
-    var cur=A,other=B,key='';
+    var cur=A,other=B,key='',lastY=0;
     function setScene(k){
       if(k===key)return; key=k;
       var snap=root.classList.contains('fz-revealing');
       if(snap)scene.classList.add('snap');
       other.setAttribute('data-scene',k); other.classList.add('on'); cur.classList.remove('on');
+      /* Traslación: la escena entrante desliza desde la dirección del scroll y la saliente se va en sentido contrario */
+      var y=window.pageYOffset||0,dir=y>=lastY?1:-1; lastY=y;
+      if(!snap&&other.animate&&!root.classList.contains('fx-lite')&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+        var ease='cubic-bezier(.22,1,.36,1)';
+        other.animate([{transform:'translate3d('+(dir*2.5)+'vw,'+(dir*7)+'vh,0)'},{transform:'translate3d(0,0,0)'}],{duration:1400,easing:ease});
+        cur.animate([{transform:'translate3d(0,0,0)'},{transform:'translate3d('+(-dir*2.5)+'vw,'+(-dir*7)+'vh,0)'}],{duration:1400,easing:ease});
+      }
       var t=cur; cur=other; other=t;
       if(snap)requestAnimationFrame(function(){requestAnimationFrame(function(){scene.classList.remove('snap');});});
     }

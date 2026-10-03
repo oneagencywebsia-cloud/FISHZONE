@@ -117,3 +117,37 @@ html.fx-lite body>nav:not(.gz-crumb):not(.gz-nav):not(.lz-nav),html.fx-lite .gz-
   .gz-cta:active,.fz-wa-btn:active,.fz-wa-float:active,.maps-btn:active,.gz-rel-grid a:active,.quick-card:active{scale:1}
   .gz-faq details::details-content{transition:none}
 }
+
+/* ---------- Barra de progreso de scroll: por encima de la cápsula de navegación ---------- */
+#scroll-progress{top:0;z-index:101;height:3px;border-radius:0 3px 3px 0;box-shadow:0 0 10px rgba(201,168,76,.55),0 0 2px rgba(63,208,186,.8)}
+
+/* ---------- Cuadros de información: cristal translúcido + luz que sigue al puntero ---------- */
+.card,.location-card,.bait-card,.tech-card,.gear-card,.sub-card,.shop-card,.rig-card,
+.norm-card,.level-card,.embalse-card,.quick-card,.gz-card,.gz-author,.gz-rel-grid a,.gz-box{
+  --mx:50%;--my:0%;--lit:0;
+  background-color:rgba(10,20,40,.34);
+  background-image:
+    radial-gradient(260px circle at var(--mx) var(--my),rgba(255,255,255,calc(.11*var(--lit))),transparent 62%),
+    radial-gradient(120% 140% at 0% 0%,rgba(63,208,186,.075),transparent 55%),
+    radial-gradient(120% 140% at 100% 100%,rgba(201,168,76,.06),transparent 60%),
+    linear-gradient(165deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+  border-color:rgba(255,255,255,.085);
+  transition-property:translate,scale,transform,border-color,box-shadow,background-color;
+  transition-duration:.45s;
+  transition-timing-function:var(--lg-ease);
+}
+.location-header,.card-header{background:rgba(255,255,255,.025);border-bottom-color:rgba(255,255,255,.07)}
+@media (hover:hover){
+  .card:hover,.location-card:hover,.bait-card:hover,.tech-card:hover,.gear-card:hover,.sub-card:hover,
+  .shop-card:hover,.rig-card:hover,.norm-card:hover,.level-card:hover,.embalse-card:hover,.quick-card:hover,
+  .gz-card:hover,.gz-rel-grid a:hover,.gz-box:hover,.gz-author:hover{
+    --lit:1;
+    translate:0 -5px;
+    border-color:rgba(226,201,126,.55);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 28px rgba(255,255,255,.035),0 0 0 1px rgba(201,168,76,.18),0 26px 44px -22px rgba(0,0,0,.9),0 0 36px -8px rgba(201,168,76,.28);
+  }
+}
+/* táctil: la pulsación hunde la tarjeta como un botón de iOS */
+.card:active,.location-card:active,.bait-card:active,.tech-card:active,.gear-card:active,.rig-card:active,
+.level-card:active,.embalse-card:active,.gz-card:active{scale:.985;transition-duration:.12s}
+@media (prefers-reduced-motion:reduce){.card:hover,.location-card:hover,.gz-rel-grid a:hover{translate:none}}
