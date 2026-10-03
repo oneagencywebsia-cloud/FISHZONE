@@ -720,6 +720,23 @@ html.fz-moving .gold-line::after,
 html.fz-moving .section-title,
 html.fz-moving .fish-img,
 html.fz-moving .water-wave{animation-play-state:paused !important}
+
+/* Táctil: el MISMO desvelado con la mitad de radio de desenfoque. En un móvil real
+   (DPR 3) el blur a pantalla completa es lo más caro de la animación. */
+@media (pointer:coarse){
+  @keyframes hookSetReel{
+    0%{opacity:0;transform:translate3d(0,80px,0) scale(.78);filter:blur(7px)}
+    15%{opacity:.3;transform:translate3d(0,50px,0) scale(.86);filter:blur(4.5px)}
+    35%{opacity:.85;transform:translate3d(0,18px,0) scale(.96);filter:blur(1.5px)}
+    55%{opacity:1;transform:translate3d(0,-14px,0) scale(1.035);filter:blur(0)}
+    72%{opacity:1;transform:translate3d(0,4px,0) scale(.993);filter:blur(0)}
+    88%{opacity:1;transform:translate3d(0,-2px,0) scale(1.002);filter:blur(0)}
+    100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+  }
+}
+/* El cruce de escena de fondo no compite con el desvelado: mientras el velo tapa la
+   pantalla, el fondo cambia al instante (invisible) en vez de fundirse 1,2 s. */
+.fz-scene.snap .sc{transition:none !important}
 </style>
 <link rel="stylesheet" href="/scenes.css?v=20261006" />
 </head>
@@ -3767,8 +3784,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var cur=A,other=B,key='';
     function setScene(k){
       if(k===key)return; key=k;
+      var snap=root.classList.contains('fz-revealing');
+      if(snap)scene.classList.add('snap');
       other.setAttribute('data-scene',k); other.classList.add('on'); cur.classList.remove('on');
       var t=cur; cur=other; other=t;
+      if(snap)requestAnimationFrame(function(){requestAnimationFrame(function(){scene.classList.remove('snap');});});
     }
     root.classList.add('fz-scene-on');
     setScene('hero');
