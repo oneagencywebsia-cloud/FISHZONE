@@ -726,6 +726,16 @@ html.perf-low .section-title{background-position:0 center}
 @keyframes fzOrbPop{0%{opacity:.95;transform:scale(.4)}100%{opacity:0;transform:scale(3.2)}}
 html:not(.fx-full) #scroll-orb{display:none}
 @media (prefers-reduced-motion:reduce){#scroll-orb{display:none !important}}
+
+/* WhatsApp flotante en móvil: etiqueta visible 5 s y después se pliega a icono,
+   para no tapar contenido (CSS puro, sin JS). */
+@media(max-width:768px){
+  .fz-wa-float{animation:fzWaFold .45s ease 5s forwards}
+  .fz-wa-float span{animation:fzWaTxt .25s ease 5s forwards}
+}
+@keyframes fzWaFold{to{max-width:56px}}
+@keyframes fzWaTxt{to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.fz-wa-float,.fz-wa-float span{animation:none !important}}
 </style>
 </head>
 <body class="intro-active">
@@ -1186,7 +1196,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li>Montajes: Hair Rig, Method Feeder, Chod Rig, Zig Rig</li>
           <li>Equipo: caña 3,00–3,60 m · 2,75–3,5 lb · carrete big pit</li>
           <li>Mejor hora: amanecer y noche cerrada en verano</li>
-          <li>Vedas: espacio de captura; consultar normativa autonómica</li>
+          <li>Normativa: solo en las áreas delimitadas por la Junta; consulta la orden vigente</li>
         </ul>
         <div class="fish-record">
           <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--gold)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -3093,10 +3103,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           try { dImg.fetchPriority = 'high'; } catch(_) {}
           if (typeof dImg.decode === 'function') { dImg.decode().catch(function(){}); }
         }
-        if (hydroTarget) {
-          hydroTarget.classList.remove('hydro-reveal-active');
-          hydroTarget.classList.add('hydro-arming');
-        }
         // Un único reflujo forzado: la geometría real post-expansión.
         void document.body.offsetHeight;
         var headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;
@@ -3109,15 +3115,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         void document.body.offsetHeight;
         document.documentElement.style.scrollBehavior = prevBh;
       }
+      // REVELADO: antes se hacía un fundido de opacidad sobre el contenedor
+      // ENTERO de la sección (miles de px de alto): en móviles flojos obligaba a
+      // crear una capa gigante de golpe y el efecto iba a tirones. Ahora se
+      // revelan solo las piezas que están en pantalla (≈8-10), con un ascenso
+      // escalonado en capas pequeñas (WAAPI: transform+opacity, fill backwards,
+      // así no deja estado residual ni pisa los hover/3D de las tarjetas).
       function _fireHydro() {
-        if (!hydroTarget) return;
-        hydroTarget.classList.remove('hydro-arming');
-        hydroTarget.classList.remove('hydro-reveal-active');
-        void hydroTarget.offsetWidth;
-        // Doble rAF: Safari/iOS necesita commitear el estado inicial antes de animar.
-        requestAnimationFrame(function() {
-          requestAnimationFrame(function() { hydroTarget.classList.add('hydro-reveal-active'); });
-        });
+        if (!destino.animate || window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+        var vh = window.innerHeight, list = [];
+        var q = destino.querySelectorAll('.tag,.section-title,.gold-line,.section-sub,.card,.tech-card,.location-card,.level-card,.sub-card,.embalse-card,.rig-card,.lure-category,.bait-card,.gear-card,.norm-card');
+        for (var i = 0; i < q.length; i++) {
+          var r = q[i].getBoundingClientRect();
+          if (r.height > 0 && r.top < vh && r.bottom > 60) list.push({ el: q[i], top: r.top });
+        }
+        list.sort(function(a, b) { return a.top - b.top; });
+        list = list.slice(0, 10);
+        for (var k = 0; k < list.length; k++) {
+          try {
+            list[k].el.animate(
+              [{ opacity: 0, transform: 'translate3d(0,26px,0)' }, { opacity: 1, transform: 'translate3d(0,0,0)' }],
+              { duration: 560, delay: k * 55, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' }
+            );
+          } catch (_) {}
+        }
       }
       function _dwvEmerge() {
         var delta = Math.abs((window.scrollY || window.pageYOffset || 0) - finalY);

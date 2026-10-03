@@ -121,3 +121,13 @@ table.gz-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
 /* Enlaces dentro de texto: subrayados (accesibilidad: no depender solo del color) */
 .gz-wrap p a,.gz-wrap li a,.gz-wrap td a,.gz-wrap summary a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
 .gz-wrap .gz-rel-grid a,.gz-wrap .gz-cta,.gz-wrap .gz-card[href]{text-decoration:none}
+
+/* WhatsApp flotante en móvil: etiqueta visible 5 s y después se pliega a icono,
+   para no tapar contenido (CSS puro, sin JS). */
+@media(max-width:768px){
+  .fz-wa-float{animation:fzWaFold .45s ease 5s forwards}
+  .fz-wa-float span{animation:fzWaTxt .25s ease 5s forwards}
+}
+@keyframes fzWaFold{to{max-width:56px}}
+@keyframes fzWaTxt{to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.fz-wa-float,.fz-wa-float span{animation:none !important}}

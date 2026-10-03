@@ -51,7 +51,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/guia.css?v=20261004" />
+<link rel="stylesheet" href="/guia.css?v=20261005" />
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -130,6 +130,8 @@
     .fzf-res h3{margin:0 0 .15rem;font-size:1.05rem}
     .fzf-res .p{font-size:.78rem;color:var(--muted);margin:0 0 .5rem}
     .fzf-res .n{font-size:.84rem;margin:.5rem 0 0}
+    .fzf-more{font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;background:transparent;color:var(--gold-soft);border:1px solid var(--gold);border-radius:50px;padding:.6rem 1.4rem}
+    .fzf-more:hover{background:rgba(201,168,76,.12)}
     .fzf-res .gz-tag.on{background:var(--gold);color:#1a1205;border-color:var(--gold)}
   </style>
   <script>
@@ -173,7 +175,7 @@
       ['Puebla de Cazalla','Sevilla',['bass'],''],
       ['José Torán','Sevilla',['bass'],'']
     ];
-    var sp='bass', prov='';
+    var sp='bass', prov='', expanded=false;
     var btns=root.querySelectorAll('.fzf-chips button'), sel=root.querySelector('select');
     var out=root.querySelector('.fzf-res'), cnt=root.querySelector('.fzf-count'), guide=root.querySelector('.fzf-guide');
     function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e;}
@@ -181,22 +183,29 @@
       out.textContent='';
       var r=E.filter(function(e){return e[2].indexOf(sp)!==-1&&(!prov||e[1].indexOf(prov)!==-1);});
       cnt.textContent=r.length?r.length+(r.length===1?' embalse':' embalses')+' para '+SP[sp][0].toLowerCase()+(prov?' en '+prov:' en Andalucía'):'No tenemos embalses de '+SP[sp][0].toLowerCase()+(prov?' en '+prov:'')+' en nuestras guías. Prueba con otra provincia.';
-      r.forEach(function(e){
+      var shown=expanded?r:r.slice(0,6);
+      shown.forEach(function(e){
         var c=el('div','gz-card'); c.appendChild(el('h3','',e[0])); c.appendChild(el('p','p',e[1]));
         var tags=el('div'); e[2].forEach(function(s){tags.appendChild(el('span','gz-tag'+(s===sp?' on':''),SP[s][0]));}); c.appendChild(tags);
         if(e[3]) c.appendChild(el('p','n',e[3]));
         out.appendChild(c);
       });
+      if(!expanded&&r.length>6){
+        var wrap=el('div'); wrap.style.gridColumn='1 / -1'; wrap.style.textAlign='center';
+        var more=el('button','fzf-more','Mostrar los '+r.length+' embalses'); more.type='button';
+        more.addEventListener('click',function(){expanded=true;render();});
+        wrap.appendChild(more); out.appendChild(wrap);
+      }
       guide.textContent='';
       var a=el('a','',' Guía completa: pesca de '+SP[sp][0].toLowerCase()+' →'); a.href=SP[sp][1]; guide.appendChild(a);
       if(prov&&PROV[prov]){ guide.appendChild(document.createTextNode(' · ')); var b=el('a','','Pesca en '+prov+' →'); b.href=PROV[prov]; guide.appendChild(b); }
     }
     for(var i=0;i<btns.length;i++) btns[i].addEventListener('click',function(){
-      sp=this.getAttribute('data-sp');
+      sp=this.getAttribute('data-sp'); expanded=false;
       for(var j=0;j<btns.length;j++) btns[j].setAttribute('aria-pressed',btns[j]===this?'true':'false');
       render();
     });
-    sel.addEventListener('change',function(){prov=sel.value;render();});
+    sel.addEventListener('change',function(){prov=sel.value;expanded=false;render();});
     render();
   })();
   </script>
