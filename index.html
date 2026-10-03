@@ -738,7 +738,7 @@ html.fz-moving .water-wave{animation-play-state:paused !important}
    pantalla, el fondo cambia al instante (invisible) en vez de fundirse 1,2 s. */
 .fz-scene.snap .sc{transition:none !important}
 </style>
-<link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261009" /><script src="/ios.js?v=20261009" defer></script>
+<link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261012" /><script src="/ios.js?v=20261009" defer></script>
 </head>
 <body class="intro-active">
 
@@ -3185,12 +3185,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const observer = new IntersectionObserver((entries) => {
     if (window.__silkTraveling) return;   // V12: mutismo durante viaje
     entries.forEach(el => {
-      if (el.isIntersecting) {
+      /* También se revelan los que el scroll rápido ya dejó por encima del viewport
+         (isIntersecting=false pero top<0): nunca quedan invisibles al volver. */
+      if (el.isIntersecting || el.boundingClientRect.top < 0) {
         el.target.classList.add('visible');
         observer.unobserve(el.target);
       }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  }, { threshold: 0.08, rootMargin: '0px 0px 12% 0px' });
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
@@ -3781,7 +3783,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var A=document.createElement('div'),B=document.createElement('div'); A.className=B.className='sc';
     scene.appendChild(A); scene.appendChild(B);
     document.body.insertBefore(scene,document.body.firstChild);
-    var cur=A,other=B,key='',lastY=0;
+    var cur=A,other=B,key='',lastY=0,anims=[],pend='',tm=0;
     function setScene(k){
       if(k===key)return; key=k;
       var snap=root.classList.contains('fz-revealing');
@@ -3789,10 +3791,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       other.setAttribute('data-scene',k); other.classList.add('on'); cur.classList.remove('on');
       /* Traslación: la escena entrante desliza desde la dirección del scroll y la saliente se va en sentido contrario */
       var y=window.pageYOffset||0,dir=y>=lastY?1:-1; lastY=y;
+      for(var q=0;q<anims.length;q++){try{anims[q].cancel()}catch(e){}} anims=[];
       if(!snap&&other.animate&&!root.classList.contains('fx-lite')&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
         var ease='cubic-bezier(.22,1,.36,1)';
-        other.animate([{transform:'translate3d('+(dir*2.5)+'vw,'+(dir*7)+'vh,0)'},{transform:'translate3d(0,0,0)'}],{duration:1400,easing:ease});
-        cur.animate([{transform:'translate3d(0,0,0)'},{transform:'translate3d('+(-dir*2.5)+'vw,'+(-dir*7)+'vh,0)'}],{duration:1400,easing:ease});
+        anims.push(other.animate([{transform:'translate3d('+(dir*2.5)+'vw,'+(dir*7)+'vh,0)'},{transform:'translate3d(0,0,0)'}],{duration:1400,easing:ease}));
+        anims.push(cur.animate([{transform:'translate3d(0,0,0)'},{transform:'translate3d('+(-dir*2.5)+'vw,'+(-dir*7)+'vh,0)'}],{duration:1400,easing:ease}));
       }
       var t=cur; cur=other; other=t;
       if(snap)requestAnimationFrame(function(){requestAnimationFrame(function(){scene.classList.remove('snap');});});
@@ -3800,7 +3803,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     root.classList.add('fz-scene-on');
     setScene('hero');
     var io=new IntersectionObserver(function(es){
-      for(var i=0;i<es.length;i++){ if(es[i].isIntersecting&&MAP[es[i].target.id])setScene(MAP[es[i].target.id]); }
+      for(var i=0;i<es.length;i++){ if(es[i].isIntersecting&&MAP[es[i].target.id])pend=MAP[es[i].target.id]; }
+      /* Con scroll muy rápido solo se aplica la escena donde se aterriza (no una por sección que se cruza) */
+      clearTimeout(tm); tm=setTimeout(function(){if(pend)setScene(pend);},root.classList.contains('fz-fast')?200:90);
     },{rootMargin:'-50% 0px -49% 0px'});
     document.querySelectorAll('section[id]').forEach(function(sec){io.observe(sec);});
   }
