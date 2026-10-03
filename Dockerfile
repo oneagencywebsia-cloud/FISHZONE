@@ -32,6 +32,7 @@ COPY pesca-lubina-andalucia.html /usr/share/nginx/html/pesca-lubina-andalucia.ht
 COPY blog/ /usr/share/nginx/html/blog/
 COPY legal.css /usr/share/nginx/html/legal.css
 COPY guia.css /usr/share/nginx/html/guia.css
+COPY scenes.css /usr/share/nginx/html/scenes.css
 COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY sitemap.xml /usr/share/nginx/html/sitemap.xml
 COPY site.webmanifest /usr/share/nginx/html/site.webmanifest
