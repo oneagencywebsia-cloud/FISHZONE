@@ -25,6 +25,8 @@ COPY cebos-y-boilies-carpa.html /usr/share/nginx/html/cebos-y-boilies-carpa.html
 COPY canas-y-carretes-guia.html /usr/share/nginx/html/canas-y-carretes-guia.html
 COPY equipo-basico-para-empezar-a-pescar.html /usr/share/nginx/html/equipo-basico-para-empezar-a-pescar.html
 COPY canas-para-carpfishing.html /usr/share/nginx/html/canas-para-carpfishing.html
+COPY que-comprar-para-surfcasting.html /usr/share/nginx/html/que-comprar-para-surfcasting.html
+COPY que-comprar-para-pesca-a-spinning.html /usr/share/nginx/html/que-comprar-para-pesca-a-spinning.html
 COPY surfcasting-costa-andalucia.html /usr/share/nginx/html/surfcasting-costa-andalucia.html
 COPY pesca-submarina-andalucia.html /usr/share/nginx/html/pesca-submarina-andalucia.html
 COPY pesca-en-sevilla.html /usr/share/nginx/html/pesca-en-sevilla.html
