@@ -206,8 +206,22 @@
 
   <url>
     <loc>https://fishzone.es/blog/</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/blog/que-pescar-en-octubre-en-andalucia.html</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://fishzone.es/blog/que-pescar-en-noviembre-en-andalucia.html</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
