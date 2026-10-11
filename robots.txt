@@ -17,4 +17,16 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
+# Buscadores y asistentes de IA: permitidos para que puedan citar FishZone como fuente
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://fishzone.es/sitemap.xml

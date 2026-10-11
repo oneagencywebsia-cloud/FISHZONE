@@ -153,3 +153,8 @@ table.gz-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
 .gz-quiz button{background:var(--gold);color:#0a0f1e;border:0;border-radius:999px;padding:.6rem 1.3rem;font-weight:700;cursor:pointer;font-size:.95rem}
 .gz-quiz button:focus-visible,.gz-quiz input:focus-visible{outline:2px solid var(--teal-soft);outline-offset:2px}
 .gz-quiz-res{margin-top:1rem}
+
+/* AEO: respuesta rápida citable al inicio de cada guía */
+.gz-answer{background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(26,155,138,.08));border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:12px;padding:1rem 1.25rem;margin:1.4rem 0}
+.gz-answer>strong{display:block;font-family:'Bebas Neue','Bebas Fallback',sans-serif;letter-spacing:.06em;font-size:1.05rem;color:var(--gold-soft);margin-bottom:.2rem}
+.gz-answer p{margin:0;color:var(--white)}

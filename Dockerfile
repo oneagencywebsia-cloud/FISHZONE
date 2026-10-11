@@ -42,6 +42,7 @@ COPY scenes.css /usr/share/nginx/html/scenes.css
 COPY ios.css /usr/share/nginx/html/ios.css
 COPY ios.js /usr/share/nginx/html/ios.js
 COPY robots.txt /usr/share/nginx/html/robots.txt
+COPY llms.txt /usr/share/nginx/html/llms.txt
 COPY sitemap.xml /usr/share/nginx/html/sitemap.xml
 COPY site.webmanifest /usr/share/nginx/html/site.webmanifest
 COPY og-image.jpg /usr/share/nginx/html/og-image.jpg
