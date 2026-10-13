@@ -43,6 +43,7 @@ COPY guia.css /usr/share/nginx/html/guia.css
 COPY scenes.css /usr/share/nginx/html/scenes.css
 COPY ios.css /usr/share/nginx/html/ios.css
 COPY ios.js /usr/share/nginx/html/ios.js
+COPY engage.js /usr/share/nginx/html/engage.js
 COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY llms.txt /usr/share/nginx/html/llms.txt
 COPY sitemap.xml /usr/share/nginx/html/sitemap.xml
