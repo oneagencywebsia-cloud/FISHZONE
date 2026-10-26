@@ -55,7 +55,7 @@ function itemCard(it, csrf, tab) {
   const edit = '<form method="post" action="' + BASE + '/accion" class="adm-edit"><input type="hidden" name="csrf" value="' + csrf + '"><input type="hidden" name="id" value="' + it.id + '">' +
     '<div class="adm-grid"><label>Alias<input name="alias" value="' + esc(it.alias) + '" maxlength="24"></label>' +
     '<label>Especie<select name="especie">' + speciesOpts + '</select></label>' +
-    '<label>Provincia<select name="provincia">' + provOpts + '</select></label>' +
+    '<label>Si es «otra»: ¿cuál?<input name="otra" value="' + esc(it.speciesOther || '') + '" maxlength="40"></label><label>Provincia<select name="provincia">' + provOpts + '</select></label>' +
     '<label>Zona<input name="zona" value="' + esc(it.zone) + '" maxlength="60"></label>' +
     '<label>Peso kg<input name="peso" value="' + esc(it.weightKg || '') + '" maxlength="5"></label>' +
     '<label>Longitud cm<input name="longitud" value="' + esc(it.lengthCm || '') + '" maxlength="5"></label></div>' +
@@ -181,11 +181,11 @@ async function handle(req, res, url, readForm, ip) {
       await store.put(it); return redirect(res, BASE + '/?tab=approved&ok=retirada');
     }
     if ((op === 'approve' && it.status === 'pending') || (op === 'save' && it.status === 'approved')) {
-      const v = validate({ alias: f.alias, especie: f.especie, provincia: f.provincia, zona: f.zona, peso: f.peso, longitud: f.longitud, suelta: f.suelta, comentario: f.comentario, consent: 'on', legal: 'on' });
+      const v = validate({ alias: f.alias, especie: f.especie, provincia: f.provincia, zona: f.zona, peso: f.peso, longitud: f.longitud, suelta: f.suelta, comentario: f.comentario, otra: f.otra, consent: 'on', legal: 'on' });
       if (!v.ok) return send(res, 400, shell('Error', '<h1>Datos no válidos</h1><ul>' + v.errors.map(e => '<li>' + esc(e) + '</li>').join('') + '</ul><p><a href="' + BASE + '/">Volver</a></p>'));
       if (op === 'approve' && !(f.c1 && f.c2 && f.c3)) return send(res, 400, shell('Error', '<h1>Falta la comprobación</h1><p>Marca los tres puntos de la lista antes de aprobar.</p><p><a href="' + BASE + '/">Volver</a></p>'));
       const x = v.value;
-      Object.assign(it, { alias: x.alias, species: x.species, province: x.province, zone: x.zone, weightKg: x.weightKg, lengthCm: x.lengthCm, released: x.released, comment: x.comment, updatedAt: Date.now() });
+      Object.assign(it, { alias: x.alias, species: x.species, speciesOther: x.other, province: x.province, zone: x.zone, weightKg: x.weightKg, lengthCm: x.lengthCm, released: x.released, comment: x.comment, updatedAt: Date.now() });
       if (op === 'approve') approve(it);
       await store.put(it);
       return redirect(res, BASE + '/?tab=' + (op === 'approve' ? 'pending' : 'approved') + '&ok=' + (op === 'approve' ? 'aprobada y publicada' : 'guardada'));

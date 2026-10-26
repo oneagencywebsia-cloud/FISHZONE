@@ -24,6 +24,12 @@ function validate(f) {
   if (!/^[\p{L}\p{N} ._-]{2,24}$/u.test(v.alias) || URLISH.test(v.alias)) errors.push('Indica un alias de 2 a 24 caracteres (letras, números, espacio, punto, guion). No uses enlaces ni contactos.');
   const sp = SPECIES_BY_ID[clean(f.especie, 30)];
   if (!sp) errors.push('Elige la especie.'); else v.species = sp.id;
+  v.other = '';
+  if (sp && /^otra-/.test(sp.id)) {
+    v.other = clean(f.otra, 40);
+    if (!/^[\p{L} .'-]{3,40}$/u.test(v.other) || URLISH.test(v.other)) errors.push('Indica qué especie es (por ejemplo: tenca, sargo, anguila…).');
+    else v.other = v.other.charAt(0).toUpperCase() + v.other.slice(1);
+  }
   v.province = clean(f.provincia, 20);
   if (PROVINCES.indexOf(v.province) < 0) errors.push('Elige la provincia.');
   v.zone = clean(f.zona, 60);
