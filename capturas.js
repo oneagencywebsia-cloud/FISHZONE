@@ -30,7 +30,7 @@
   if (!f) return;
   var file = f.querySelector('input[type=file]'), prev = f.querySelector('.cap-preview'), pimg = prev && prev.querySelector('img');
   var other = f.querySelector('.cap-other');
-  function toggleOther() { var c = f.querySelector('input[name=especie]:checked'); var on = c && /^otra-/.test(c.value); if (other) other.hidden = !on; }
+  function toggleOther() { var c = f.querySelector('input[name=especie]:checked'); var on = c && /^otra-/.test(c.value); if (other) { other.hidden = !on; var i = other.querySelector('input'); if (!on && i) i.value = ''; } }
   f.querySelectorAll('input[name=especie]').forEach(function (r) { r.addEventListener('change', toggleOther); }); toggleOther();
   var btn = f.querySelector('button[type=submit]'), blob = null, MAX = 2000;
 
