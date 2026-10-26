@@ -46,7 +46,7 @@
     blob = null; var fl = file.files && file.files[0];
     if (!fl) { if (prev) prev.hidden = true; return; }
     if (prev && pimg) { pimg.src = URL.createObjectURL(fl); prev.hidden = false; }
-    downscale(fl).then(function (b) { blob = b; });
+    downscale(fl).then(function (b) { if (file.files[0] === fl) blob = b; });
   });
 
   function show(html, cls) {

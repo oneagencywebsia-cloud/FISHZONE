@@ -127,9 +127,9 @@ function gallery(ctx) {
   const canonical = url(path_ + (page > 1 ? '?p=' + page : ''));
   const title = sp ? 'Capturas de ' + sp.label.toLowerCase() + ' en Andalucía: fotos de la comunidad' : 'Capturas de pesca en Andalucía: galería de la comunidad';
   const desc = sp
-    ? 'Fotos reales de ' + sp.label.toLowerCase() + ' capturados en Andalucía por pescadores de FishZone, con zona y datos. Revisadas por la redacción. Sube la tuya.'
+    ? 'Fotos reales de ' + sp.label.toLowerCase() + (sp.f ? ' capturadas' : ' capturados') + ' en Andalucía por pescadores de FishZone, con zona y datos. Revisadas por la redacción. Sube la tuya.'
     : 'Galería de capturas reales de pescadores en Andalucía: black bass, carpa, barbo, lubina y más. Fotos revisadas por la redacción. Sube la tuya.';
-  const robots = indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow';
+  const robots = (indexable && !(sp && /^otra-/.test(sp.id))) ? 'index, follow, max-image-preview:large' : 'noindex, follow';
   const first = items[0];
   const crumbLd = { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Inicio', item: url('/') }, { '@type': 'ListItem', position: 2, name: 'Capturas de la comunidad', item: url('/capturas/') }].concat(sp ? [{ '@type': 'ListItem', position: 3, name: sp.label, item: canonical }] : []) };
   const graph = [crumbLd];
@@ -144,7 +144,7 @@ function gallery(ctx) {
       }))
     });
   }
-  if (!sp) graph.push({ '@type': 'FAQPage', mainEntity: FAQ.map(q => ({ '@type': 'Question', name: q[0], acceptedAnswer: { '@type': 'Answer', text: q[1] } })) });
+  if (!sp && page === 1) graph.push({ '@type': 'FAQPage', mainEntity: FAQ.map(q => ({ '@type': 'Question', name: q[0], acceptedAnswer: { '@type': 'Answer', text: q[1] } })) });
 
   const topSpecies = SPECIES.filter(s => counts[s.id]).sort((a, b) => counts[b.id] - counts[a.id]).slice(0, 3).map(s => s.label.toLowerCase());
   const intro = sp
@@ -159,7 +159,7 @@ function gallery(ctx) {
     '<span>Página ' + page + ' de ' + pages + '</span>' +
     (page < pages ? '<a rel="next" href="' + path_ + '?p=' + (page + 1) + '">Siguientes →</a>' : '') + '</nav>' : '';
   const stats = approvedTotal ? '<p class="cap-stats"><strong>' + approvedTotal + '</strong> captura' + (approvedTotal === 1 ? '' : 's') + ' publicada' + (approvedTotal === 1 ? '' : 's') + ' por la comunidad' + (sp ? ' · ' + total + ' de ' + esc(sp.label.toLowerCase()) : '') + '</p>' : '';
-  const faq = sp ? '' : '<section class="gz-faq">\n<h2 id="preguntas-frecuentes">Preguntas frecuentes</h2>\n' + FAQ.map(q => '<details><summary>' + esc(q[0]) + '</summary><p>' + esc(q[1]) + '</p></details>').join('\n') + '\n</section>';
+  const faq = (sp || page > 1) ? '' : '<section class="gz-faq">\n<h2 id="preguntas-frecuentes">Preguntas frecuentes</h2>\n' + FAQ.map(q => '<details><summary>' + esc(q[0]) + '</summary><p>' + esc(q[1]) + '</p></details>').join('\n') + '\n</section>';
   const rules = '<h2 id="normas">Qué capturas publicamos</h2>\n<ul class="cap-rules"><li><strong>Legales:</strong> especie, talla y periodo conformes a la <a href="/normativa-pesca-continental-andalucia.html">Orden de 13 de enero de 2023</a> (agua dulce) o al Decreto 205/2023 (mar).</li><li><strong>Respetuosas con el pez:</strong> manipulación cuidadosa y, cuando proceda, captura y suelta.</li><li><strong>Sin datos sensibles:</strong> sin coordenadas, enlaces, matrículas ni teléfonos, y sin personas reconocibles sin su permiso.</li><li><strong>Tuyas:</strong> solo fotos que hayas hecho tú.</li></ul>' +
     '<p>¿Dudas sobre qué puedes pescar? Consulta la <a href="/licencia-de-pesca-en-andalucia.html">guía de la licencia</a> y el <a href="/calendario-de-pesca-en-andalucia.html">calendario de pesca</a>.</p>';
 

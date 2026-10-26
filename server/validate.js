@@ -2,6 +2,9 @@
 const { SPECIES_BY_ID, PROVINCES } = require('./species');
 
 const URLISH = /(https?:|www\.|\b[\w-]+\.(com|es|net|org|io|me|ly|info|xyz|ru|cn|tk|shop|site|online)\b|@\w|\b\d{9}\b|t\.me|wa\.me|bit\.ly)/i;
+const COORD = /(\d{1,3}\s*[º°]\s*\d|\d{1,3}[.,]\d{3,}\s*[,;]?\s*-?\d|\b\d{1,2}\s+\d{1,2}\s+\d{1,2}\s*[nsewo]\b)/i;
+const squash = s => String(s).toLowerCase().replace(/[\s.\-_(),/]+/g, '').replace(/arroba|punto|guion/g, m => ({ arroba: '@', punto: '.', guion: '-' }[m]));
+const hasContact = s => URLISH.test(s) || /\d{9}/.test(squash(s).replace(/[^\d]/g, '')) || /@|\.(com|es|net|org|me|ly)\b|tme|wame|bitly/.test(squash(s));
 const clean = (s, max) => String(s == null ? '' : s).normalize('NFKC')
   .replace(/[\u0000-\u001f\u007f​-‏‪-‮⁦-⁩﻿]/g, ' ')
   .replace(/\s+/g, ' ').trim().slice(0, max);
@@ -24,14 +27,14 @@ function validate(f) {
   v.province = clean(f.provincia, 20);
   if (PROVINCES.indexOf(v.province) < 0) errors.push('Elige la provincia.');
   v.zone = clean(f.zona, 60);
-  if (v.zone && (!/^[\p{L}\p{N} .,'()/\-ºª]{1,60}$/u.test(v.zone) || URLISH.test(v.zone) || /\d{1,2}[.,]\d{3,}/.test(v.zone))) errors.push('La zona solo admite el nombre del embalse, río o playa (sin coordenadas ni enlaces).');
+  if (v.zone && (!/^[\p{L}\p{N} .,'()/\-ºª]{1,60}$/u.test(v.zone) || hasContact(v.zone) || COORD.test(v.zone))) errors.push('La zona solo admite el nombre del embalse, río o playa (sin coordenadas ni enlaces).');
   v.weightKg = num(f.peso, 0.1, 80, 10);
   if (Number.isNaN(v.weightKg)) errors.push('El peso debe estar entre 0,1 y 80 kg.');
   v.lengthCm = num(f.longitud, 5, 250, 1);
   if (Number.isNaN(v.lengthCm)) errors.push('La longitud debe estar entre 5 y 250 cm.');
   v.released = f.suelta === 'on' || f.suelta === '1';
   v.comment = clean(f.comentario, 240);
-  if (v.comment && URLISH.test(v.comment)) errors.push('El comentario no puede incluir enlaces, correos ni teléfonos.');
+  if (v.comment && (hasContact(v.comment) || COORD.test(v.comment))) errors.push('El comentario no puede incluir enlaces, correos, teléfonos ni coordenadas.');
   if (f.consent !== 'on') errors.push('Debes aceptar la publicación de la foto en FishZone.');
   if (f.legal !== 'on') errors.push('Debes confirmar que la foto es tuya y la captura es legal.');
   return { ok: errors.length === 0, errors, value: v };

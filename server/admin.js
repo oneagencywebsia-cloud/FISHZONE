@@ -71,7 +71,7 @@ function itemCard(it, csrf, tab) {
     (it.status === 'rejected' ? '<span class="adm-muted">Rechazada: ' + esc(it.reason || 'sin motivo') + '</span>' : '') +
     '</div></form>';
   return '<article class="adm-card' + (it.status !== 'pending' ? ' adm-done' : '') + '"><div class="adm-media">' +
-    (it.status === 'rejected' ? '<div class="adm-noimg">Foto eliminada</div>' : '<a href="' + img + '" target="_blank" rel="noopener"><img src="' + img + '" alt="' + esc(altOf(it)) + '" width="' + (it.tw || 480) + '" height="' + (it.th || 320) + '" loading="lazy"></a>') +
+    (it.status === 'rejected' ? '<div class="adm-noimg">Foto eliminada</div>' : '<a href="' + img + '" target="_blank" rel="noopener"><img src="' + img + '?t=1" alt="' + esc(altOf(it)) + '" width="' + (it.tw || 480) + '" height="' + (it.th || 320) + '" loading="lazy"></a>') +
     '</div><div class="adm-body"><p class="adm-meta">' + new Date(it.createdAt).toISOString().replace('T', ' ').slice(0, 16) + ' UTC · ' + esc(placeOf(it)) + '</p>' + edit + '</div></article>';
 }
 
@@ -107,6 +107,7 @@ function approve(it) {
   fs.chmodSync(store.publicPath(full), 0o644); fs.chmodSync(store.publicPath(thumb), 0o644);
   it.pub = { full, thumb };
   it.status = 'approved'; it.approvedAt = Date.now(); it.updatedAt = Date.now();
+  it.pioneer = store.all().filter(x => x.status === 'approved' && x.pioneer).length < 10; // se fija al aprobar
   fs.unlinkSync(store.pendingPath(it.id)); fs.unlinkSync(store.pendingPath(it.id, true));
 }
 
@@ -117,10 +118,11 @@ async function handle(req, res, url, readForm, ip) {
   if (p === BASE + '/login' && req.method === 'POST') {
     if (!cfg.ADMIN_PASSWORD) return send(res, 503, loginPage());
     if (!sameOrigin(req)) return send(res, 403, loginPage('Solicitud no válida.'));
-    if (loginLimit.peek(ip) >= 5 || loginGlobal.peek('g') >= 30) return send(res, 429, loginPage('Demasiados intentos. Espera 15 minutos.'));
+    if (!loginLimit.take(ip)) return send(res, 429, loginPage('Demasiados intentos. Espera 15 minutos.'));
     const f = await readForm(req);
-    await new Promise(r => setTimeout(r, 400)); // frena la fuerza bruta incluso dentro del límite
-    if (!sec.checkPassword(f.password || '')) { loginLimit.take(ip); loginGlobal.take('g'); return send(res, 401, loginPage('Contraseña incorrecta.')); }
+    // Fuerza bruta distribuida: retardo creciente (nunca bloquea una contraseña correcta).
+    await new Promise(r => setTimeout(r, 400 + Math.min(4000, loginGlobal.peek('g') * 150)));
+    if (!sec.checkPassword(f.password || '')) { loginGlobal.take('g'); return send(res, 401, loginPage('Contraseña incorrecta.')); }
     loginLimit.clear(ip);
     const nonce = sec.rand(8);
     sessions.add(nonce); if (sessions.size > 20) sessions.delete(sessions.values().next().value);
@@ -144,7 +146,8 @@ async function handle(req, res, url, readForm, ip) {
     const id = p.slice((BASE + '/img/').length).replace(/\.webp$/, '');
     const it = /^[a-f0-9]{20}$/.test(id) ? store.get(id) : null;
     if (!it || it.status === 'rejected') return send(res, 404, shell('No encontrada', '<p>No encontrada.</p>'));
-    const file = it.status === 'approved' ? store.publicPath(it.pub.full) : store.pendingPath(it.id);
+    const th = url.searchParams.get('t') === '1';
+    const file = it.status === 'approved' ? store.publicPath(th ? it.pub.thumb : it.pub.full) : store.pendingPath(it.id, th);
     fs.readFile(file, (err, buf) => {
       if (err) return send(res, 404, shell('No encontrada', '<p>No encontrada.</p>'));
       res.writeHead(200, { 'Content-Type': 'image/webp', 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex', 'Content-Security-Policy': "default-src 'none'" });
