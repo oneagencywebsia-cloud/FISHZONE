@@ -35,6 +35,7 @@
     ['/pesca-en-cordoba.html','Pescar en Córdoba','Dónde pescar'],
     ['/pesca-en-sevilla.html','Pescar en Sevilla','Dónde pescar'],
     ['/tiendas-de-pesca-en-cordoba.html','Tiendas de pesca en Córdoba','Dónde pescar'],
+    ['/capturas/','Capturas de la comunidad','Comunidad'],
     ['/blog/que-pescar-en-octubre-en-andalucia.html','Qué pescar en octubre','Blog'],
     ['/blog/que-pescar-en-noviembre-en-andalucia.html','Qué pescar en noviembre','Blog'],
     ['/blog/que-pescar-en-diciembre-en-andalucia.html','Qué pescar en diciembre','Blog'],
@@ -75,11 +76,12 @@
   function today(d){d=d||new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
   function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.on)return s}catch(e){}return{on:false,read:{},ok:{},streak:0,last:''}}
   var S=load(), MEM={read:{},ok:{}};
+  if(S.on&&!S.bonus)S.bonus={};
   function save(){if(!S.on)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
   function ev(n,p){try{if(typeof gtag==='function')gtag('event',n,p||{})}catch(e){}}
   function cnt(o){var n=0,k;for(k in o)if(o.hasOwnProperty(k))n++;return n}
   function readN(){return cnt(S.on?S.read:MEM.read)}
-  function xp(){return cnt(S.read)*10+cnt(S.ok)*5}
+  function xp(){var b=0,k;for(k in (S.bonus||{}))b+=S.bonus[k];return cnt(S.read)*10+cnt(S.ok)*5+b}
   function lvl(x){var l=0,j;for(j=0;j<LV.length;j++)if(x>=LV[j][1])l=j;return l}
   function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
 
@@ -97,7 +99,7 @@
   '.fz-sec{margin-top:.9rem;padding-top:.8rem;border-top:1px solid #1e2c47}.fz-sec h4{margin:0 0 .35rem;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#e2c97e}.fz-list{list-style:none;margin:0;padding:0}.fz-list li{margin:.3rem 0}.fz-list a{color:#e2c97e}.fz-list .d a{color:#8aa0bb}.fz-pan details summary{cursor:pointer;color:#8aa0bb}'+
   '.fz-q{margin-top:.2rem}.fz-q strong{display:block;color:#f5f8fc;margin-bottom:.45rem}.fz-q .o{display:block;width:100%;text-align:left;margin:.3rem 0;padding:.55rem .75rem;border-radius:10px;border:1px solid #1e2c47;background:#111a30;color:#cdd9e8;cursor:pointer}.fz-q .o:hover{border-color:#c9a84c}.fz-q .o.ok{border-color:#3fd0ba;background:rgba(26,155,138,.18);color:#f5f8fc}.fz-q .o.no{border-color:#a8584a;background:rgba(168,88,74,.15)}.fz-q .ex{margin-top:.55rem}'+
   '.fz-reto{background:#111a30;border:1px solid #1e2c47;border-radius:14px;padding:1.1rem 1.25rem;margin:1.8rem 0;color:#cdd9e8}.fz-reto h3{margin:0 0 .5rem;font:400 1.5rem/1.1 "Bebas Neue",Impact,sans-serif;letter-spacing:.03em;color:#f5f8fc}'+
-  '.fz-toast{position:fixed;left:50%;bottom:5.2rem;transform:translateX(-50%);z-index:70;max-width:min(92vw,420px);background:#0d1426;border:1px solid #c9a84c;border-radius:14px;padding:.75rem 1rem;color:#f5f8fc;font:500 .9rem/1.4 "DM Sans",system-ui,sans-serif;box-shadow:0 12px 36px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s}.fz-toast.on{opacity:1;pointer-events:auto}.fz-toast button{margin-left:.6rem}'+
+  '.fz-toast{position:fixed;left:50%;bottom:5.2rem;transform:translateX(-50%);z-index:70;max-width:min(92vw,420px);background:#0d1426;border:1px solid #c9a84c;border-radius:14px;padding:.75rem 1rem;color:#f5f8fc;font:500 .9rem/1.4 "DM Sans",system-ui,sans-serif;box-shadow:0 12px 36px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s}.fz-toast.on{opacity:1;pointer-events:auto}.fz-toast button,.fz-toast .fz-tbtn{margin-left:.6rem}.fz-tbtn{display:inline-block;background:#c9a84c;color:#0a0f1e!important;border-radius:999px;padding:.35rem .85rem;font-weight:700;text-decoration:none!important}'+
   '@media(prefers-reduced-motion:reduce){.fz-chip.pulse{animation:none}.fz-toast{transition:none}}body.fz-home .fz-chip{bottom:5.6rem}body.fz-home .fz-pan{bottom:8.8rem}body.fz-home .fz-toast{bottom:9rem}@media print{.fz-bar,.fz-chip,.fz-pan,.fz-toast,.fz-reto{display:none}}'+
   '@media(max-width:640px){.fz-chip{bottom:5.2rem;right:.75rem}.fz-pan{right:.75rem;bottom:8.4rem}.fz-toast{bottom:9rem}}';
   var st=el('style');st.id='fz-eng-css';st.textContent=css;document.head.appendChild(st);
@@ -224,19 +226,32 @@
         if(S.on){save();say('📖 <b>Guía descubierta</b> · '+readN()+'/'+CAT.length+' · +10 XP');var n=lvl(xp());if(n>before)setTimeout(function(){lvlCheck(before)},1800)}
         else if(!flag('fz_prompt')){say('📖 Has terminado esta guía. <button type="button" class="fz-btn">Activar pasaporte</button>',true);setTimeout(function(){toast.classList.remove('on')},9000)}
         paintChip();
+        var cc=document.querySelector('.gz-cta-cap');
+        if(cc&&!flag('fz_cta')){var ca=cc.querySelector('a.btn'),ct=cc.querySelector('.t');
+          if(ca&&ct)setTimeout(function(){say('📸 <b>'+ct.textContent.replace(/ Muéstranoslo$/,'')+'</b> <a class="fz-tbtn" href="'+ca.getAttribute('href')+'" data-cta="toast">Subir captura</a>',true);setTimeout(function(){toast.classList.remove('on')},9000)},s_delay())}
       }
     }
   },1000);
+  function s_delay(){return S.on?6500:10500}
   function flag(k){try{if(sessionStorage.getItem(k))return true;sessionStorage.setItem(k,'1')}catch(e){}return false}
 
-  /* Home: últimas capturas aprobadas (solo si hay suficientes; si no, no se muestra nada) */
+  /* Home: prueba social real (solo datos reales del servicio; si no responde, no se muestra nada) */
   if(HOME&&window.fetch){
-    var tz=document.getElementById('fz-cap-teaser'),tg=document.getElementById('fz-cap-teaser-grid');
-    if(tz&&tg){fetch('/api/capturas/ultimas?n=6',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(j){
-      if(!j||!j.items||j.items.length<4)return;
-      j.items.forEach(function(it){var a=document.createElement('a');a.href='/capturas/';var im=document.createElement('img');im.src=it.thumb;im.alt=it.alt;im.width=it.w;im.height=it.h;im.loading='lazy';im.decoding='async';a.appendChild(im);tg.appendChild(a)});
-      tz.hidden=false}).catch(function(){})}
+    var pf=document.getElementById('fz-cap-proof'),th=document.getElementById('fz-cap-banner-thumbs');
+    if(pf){fetch('/api/capturas/ultimas?n=4',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(j){
+      if(!j)return;
+      pf.textContent=j.total>=3?('🎣 '+j.total+' capturas publicadas por la comunidad'):(j.total>0?'🎣 Ya hay '+j.total+' captura'+(j.total===1?'':'s')+' publicada'+(j.total===1?'':'s')+'. La tuya puede ser la siguiente.':'🎣 Todavía no hay capturas publicadas: la tuya puede ser la primera.');
+      pf.hidden=false;
+      if(th&&j.items&&j.items.length>=4){j.items.slice(0,4).forEach(function(it){var a=document.createElement('a');a.href='/capturas/';var im=document.createElement('img');im.src=it.thumb;im.alt=it.alt;im.width=it.w;im.height=it.h;im.loading='lazy';im.decoding='async';a.appendChild(im);th.appendChild(a)});th.hidden=false}
+    }).catch(function(){})}
   }
+  /* API para otras piezas (p. ej. el formulario de capturas) */
+  window.FZ={award:function(k,pts,msg){
+    if(S.on){S.bonus=S.bonus||{};if(S.bonus[k])return;var before=lvl(xp());S.bonus[k]=pts;save();paintChip();say((msg||'🎣 Logro')+' · <b>+'+pts+' XP</b>');var n=lvl(xp());if(n>before)setTimeout(function(){lvlCheck(before)},2000)}
+    else{say((msg||'🎣 Logro')+' <button type="button" class="fz-btn">Activar pasaporte para guardar +'+pts+' XP</button>',true);setTimeout(function(){toast.classList.remove('on')},9000)}
+  }};
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[data-cta]');if(a)ev('fz_cta_click',{cta:a.getAttribute('data-cta'),pagina:BASE})},{passive:true,capture:true});
+
   paintChip();
   if(!S.on&&!flag('fz_pulse')){chip.classList.add('pulse')}
 })();

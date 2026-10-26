@@ -738,7 +738,7 @@ html.fz-moving .water-wave{animation-play-state:paused !important}
    pantalla, el fondo cambia al instante (invisible) en vez de fundirse 1,2 s. */
 .fz-scene.snap .sc{transition:none !important}
 </style>
-<link rel="stylesheet" href="/capturas.css?v=20261026" /><link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261012" /><script src="/ios.js?v=20261009" defer></script><script src="/engage.js?v=20261026" defer></script>
+<link rel="stylesheet" href="/capturas.css?v=20261026" /><link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261012" /><script src="/ios.js?v=20261009" defer></script><script src="/engage.js?v=20261026b" defer></script>
 </head>
 <body class="intro-active">
 
@@ -864,6 +864,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       Fish<span>Zone</span>
     </div>
     <ul class="nav-categories">
+      <li><a class="nav-cat nav-cta-cap" href="/capturas/#enviar" data-cta="nav">📸 Sube tu captura</a></li>
       <li><a class="nav-cat" href="#dulce"><svg viewBox="0 0 24 24"><path d="M1.5 6.5C4 6.5 4 8 6.5 8S9 6.5 11.5 6.5 12 8 14.5 8s2.5-1.5 5-1.5S22 8 22 8v10s-2.5-1.5-5-1.5S14.5 18 12 18s-2.5-1.5-5-1.5S4 18 1.5 18z"/></svg>Dulce</a></li>
       <li><a class="nav-cat" href="#cebos"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Cebos</a></li>
       <li><a class="nav-cat" href="#salada"><svg viewBox="0 0 24 24"><path d="M1.5 6.5C4 6.5 4 8 6.5 8S9 6.5 11.5 6.5 12 8 14.5 8s2.5-1.5 5-1.5S22 8 22 8v10s-2.5-1.5-5-1.5S14.5 18 12 18s-2.5-1.5-5-1.5S4 18 1.5 18z"/></svg>Salada</a></li>
@@ -889,6 +890,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- ─── MOBILE MENU (CATEGORIZED) ─── -->
 <div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-cat-group">
+    <div class="mobile-cat-title">Comunidad</div>
+    <a href="/capturas/#enviar" data-cta="menu">📸 Sube tu captura</a>
+    <a href="/capturas/">Galería de capturas</a>
+  </div>
   <div class="mobile-cat-group">
     <div class="mobile-cat-title">Especies y Aguas</div>
     <a href="#dulce">Agua Dulce</a>
@@ -982,6 +988,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       Explorar
     </a>
+    <a href="/capturas/#enviar" class="hero-cta hero-cta-2" data-cta="hero">📸 Sube tu captura</a>
     <div class="hero-stats">
       <div class="hero-stat"><strong>+16</strong><span>Especies cubiertas</span></div>
       <div class="hero-stat"><strong>8</strong><span>Técnicas avanzadas</span></div>
@@ -993,6 +1000,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60" preserveAspectRatio="none" style="height:60px;width:100%">
       <path fill="var(--bg2)" d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z"/>
     </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ CAPTURAS (CTA) ═══ -->
+<section id="capturas-cta" class="cap-banner" aria-label="Capturas de la comunidad">
+  <div class="container">
+    <div class="cap-banner-in">
+      <div class="cap-banner-txt">
+        <div class="tag">Comunidad FishZone</div>
+        <h2>📸 ¿Qué ha picado hoy?</h2>
+        <p>Sube la foto de tu captura en 30 segundos, sin registro. La revisamos y aparece con tu alias en la galería de la comunidad. Las 10 primeras capturas aprobadas llevan la insignia <strong>Pionero</strong>.</p>
+        <div class="cap-banner-cta"><a class="cap-btn" href="/capturas/#enviar" data-cta="home-banner">Subir mi captura</a><a class="cap-alt" href="/capturas/">Ver la galería</a></div>
+        <p class="cap-proof" id="fz-cap-proof" hidden></p>
+      </div>
+      <div class="cap-banner-thumbs" id="fz-cap-banner-thumbs" hidden></div>
+    </div>
   </div>
 </section>
 
@@ -1197,11 +1220,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
         <div><div class="quick-label">Capturas de la comunidad</div><div class="quick-sub">Sube la tuya y mira las de otros</div></div>
       </a>
-    </div>
-    <div id="fz-cap-teaser" hidden>
-      <h3 style="font-size:1.3rem;margin:1.6rem 0 .3rem;color:var(--gold-soft)">Últimas capturas de la comunidad</h3>
-      <div class="cap-teaser" id="fz-cap-teaser-grid"></div>
-      <p style="margin:.4rem 0 0"><a href="/capturas/">Ver todas las capturas</a> · <a href="/capturas/#enviar">Subir la mía</a></p>
     </div>
   </div>
 </section>

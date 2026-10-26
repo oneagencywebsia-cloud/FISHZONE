@@ -13,6 +13,8 @@ const esc = sec.esc;
 const BASE = '/admin/capturas';
 const SESSION_MS = 12 * 3600 * 1000;
 const loginLimit = sec.limiter(5, 15 * 60 * 1000);
+const loginGlobal = sec.limiter(30, 3600 * 1000); // fuerza bruta distribuida
+const sessions = new Set(); // sesiones activas: permite revocar al salir
 const SECURE = process.env.NODE_ENV === 'production';
 const COOKIE = SECURE ? '__Host-fz_adm' : 'fz_adm';
 
@@ -26,7 +28,7 @@ function shell(title, inner, flash) {
 function session(req) {
   const c = sec.parseCookies(req.headers.cookie)[COOKIE];
   const s = sec.verify(c);
-  if (!s || s.k !== 'adm' || typeof s.exp !== 'number' || s.exp < Date.now()) return null;
+  if (!s || s.k !== 'adm' || typeof s.exp !== 'number' || s.exp < Date.now() || !sessions.has(s.n)) return null;
   return s;
 }
 const csrfOf = s => sec.hmac('csrf:' + s.n).slice(0, 32);
@@ -65,7 +67,7 @@ function itemCard(it, csrf, tab) {
       '<label><input type="checkbox" name="c3" value="1"> Trato correcto del pez y foto de calidad</label></fieldset>' : '') +
     '<div class="adm-actions">' +
     (it.status === 'pending' ? '<button name="op" value="approve" class="ok">Aprobar y publicar</button><input name="reason" placeholder="Motivo (opcional)" maxlength="120"><button name="op" value="reject" class="no">Rechazar y borrar foto</button>' : '') +
-    (it.status === 'approved' ? '<button name="op" value="save" class="ok">Guardar cambios</button><button name="op" value="remove" class="no">Retirar de la web</button>' : '') +
+    (it.status === 'approved' ? '<button name="op" value="save" class="ok">Guardar cambios</button><button name="op" value="' + (it.featured ? 'unfeature' : 'feature') + '">' + (it.featured ? '★ Quitar destacada' : '☆ Destacar (captura de la semana)') + '</button><button name="op" value="remove" class="no">Retirar de la web</button>' : '') +
     (it.status === 'rejected' ? '<span class="adm-muted">Rechazada: ' + esc(it.reason || 'sin motivo') + '</span>' : '') +
     '</div></form>';
   return '<article class="adm-card' + (it.status !== 'pending' ? ' adm-done' : '') + '"><div class="adm-media">' +
@@ -115,12 +117,14 @@ async function handle(req, res, url, readForm, ip) {
   if (p === BASE + '/login' && req.method === 'POST') {
     if (!cfg.ADMIN_PASSWORD) return send(res, 503, loginPage());
     if (!sameOrigin(req)) return send(res, 403, loginPage('Solicitud no válida.'));
-    if (loginLimit.peek(ip) >= 5) return send(res, 429, loginPage('Demasiados intentos. Espera 15 minutos.'));
+    if (loginLimit.peek(ip) >= 5 || loginGlobal.peek('g') >= 30) return send(res, 429, loginPage('Demasiados intentos. Espera 15 minutos.'));
     const f = await readForm(req);
     await new Promise(r => setTimeout(r, 400)); // frena la fuerza bruta incluso dentro del límite
-    if (!sec.checkPassword(f.password || '')) { loginLimit.take(ip); return send(res, 401, loginPage('Contraseña incorrecta.')); }
+    if (!sec.checkPassword(f.password || '')) { loginLimit.take(ip); loginGlobal.take('g'); return send(res, 401, loginPage('Contraseña incorrecta.')); }
     loginLimit.clear(ip);
-    const tok = sec.sign({ k: 'adm', exp: Date.now() + SESSION_MS, n: sec.rand(8) });
+    const nonce = sec.rand(8);
+    sessions.add(nonce); if (sessions.size > 20) sessions.delete(sessions.values().next().value);
+    const tok = sec.sign({ k: 'adm', exp: Date.now() + SESSION_MS, n: nonce });
     return redirect(res, BASE + '/', { 'Set-Cookie': cookieHeader(tok, SESSION_MS / 1000) });
   }
 
@@ -132,6 +136,7 @@ async function handle(req, res, url, readForm, ip) {
   if (p === BASE + '/logout' && req.method === 'POST') {
     const f = await readForm(req);
     if (!sameOrigin(req) || !sec.safeEq(f.csrf || '', csrfOf(s))) return send(res, 403, shell('Error', '<p>Solicitud no válida.</p>'));
+    sessions.delete(s.n);
     return redirect(res, BASE + '/', { 'Set-Cookie': cookieHeader('', 0) });
   }
 
@@ -162,6 +167,11 @@ async function handle(req, res, url, readForm, ip) {
     if (op === 'reject' && it.status === 'pending') {
       store.removeFiles(it); it.status = 'rejected'; it.reason = require('./validate').clean(f.reason, 120); it.updatedAt = Date.now();
       await store.put(it); return redirect(res, BASE + '/?tab=pending&ok=rechazada');
+    }
+    if ((op === 'feature' || op === 'unfeature') && it.status === 'approved') {
+      store.all().forEach(x => { if (x.featured && x.id !== it.id) { x.featured = false; } });
+      it.featured = op === 'feature'; it.updatedAt = Date.now();
+      await store.put(it); return redirect(res, BASE + '/?tab=approved&ok=' + (op === 'feature' ? 'destacada' : 'destacada quitada'));
     }
     if (op === 'remove' && it.status === 'approved') {
       store.removeFiles(it); it.status = 'rejected'; it.reason = 'retirada'; it.updatedAt = Date.now(); it.pub = null;
