@@ -93,7 +93,7 @@ function formHtml(token, errors, values, pioneerLeft) {
     '<input type="hidden" name="t" value="' + esc(token) + '" />\n' +
     '<div class="cap-hp" aria-hidden="true"><label>No rellenar este campo<input type="text" name="web" tabindex="-1" autocomplete="off" /></label></div>\n' +
     '<fieldset class="cap-step"><legend><span class="n">1</span> ¿Qué has pescado?</legend><div class="cap-sp-grid">' + chips + '</div></fieldset>\n' +
-    '<label class="cap-other" hidden>¿Cuál? <small>(indica la especie)</small><input type="text" name="otra" maxlength="40" value="' + v('otra') + '" placeholder="Ej.: tenca, sargo, anguila…" /></label>\n' +
+    '<label class="cap-other">¿Cuál? <small>(indica la especie)</small><input type="text" name="otra" maxlength="40" value="' + v('otra') + '" placeholder="Ej.: tenca, sargo, anguila…" /></label>\n' +
     '<fieldset class="cap-step"><legend><span class="n">2</span> Tu foto</legend>' +
     '<label class="cap-file"><span class="cap-drop">📷 Elegir o hacer una foto <small>(JPG, PNG o WebP · máx. 8 MB)</small></span><input type="file" name="foto" accept="image/jpeg,image/png,image/webp" required /></label>\n' +
     '<div class="cap-preview" hidden><img alt="Vista previa de tu foto" /><p>Así se verá tu captura. Eliminamos la ubicación GPS de la foto.</p></div></fieldset>\n' +
