@@ -4,8 +4,8 @@ const path = require('path');
 
 const env = process.env;
 module.exports = {
-  PORT: parseInt(env.PORT || '3000', 10),
-  HOST: env.HOST || '127.0.0.1',
+  PORT: parseInt(env.CAPTURAS_PORT || '3000', 10),
+  HOST: env.CAPTURAS_HOST || '127.0.0.1',
   DATA_DIR: env.DATA_DIR || path.join(__dirname, 'data'),
   SITE_URL: (env.SITE_URL || 'https://fishzone.es').replace(/\/$/, ''),
   ADMIN_PASSWORD: env.ADMIN_PASSWORD || '',
