@@ -9,6 +9,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY server/config.js server/security.js server/store.js server/images.js server/validate.js server/species.js server/render.js server/admin.js server/server.js server/shell-head.html server/shell-tail.html ./
 COPY fz-proxy.conf /etc/nginx/fz-proxy.conf
 COPY docker-entrypoint.sh /docker-entrypoint-fz.sh
+RUN chmod +x /docker-entrypoint-fz.sh
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /usr/share/nginx/html/index.html
 COPY 404.html /usr/share/nginx/html/404.html
