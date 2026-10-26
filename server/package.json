@@ -1,0 +1,14 @@
+{
+  "name": "fishzone-capturas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servicio de capturas de la comunidad de FishZone (subida, moderación y galería)",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "busboy": "1.6.0",
+    "sharp": "0.35.5"
+  }
+}

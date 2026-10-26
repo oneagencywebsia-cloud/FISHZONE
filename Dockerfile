@@ -1,4 +1,15 @@
 FROM nginx:alpine
+# Servicio de capturas de la comunidad (Node) junto a nginx. Los datos viven en /data (volumen persistente).
+RUN apk add --no-cache nodejs npm su-exec \
+ && addgroup -S app && adduser -S -G app -H -s /sbin/nologin app
+ENV NODE_ENV=production DATA_DIR=/data PORT=3000 HOST=127.0.0.1
+WORKDIR /app
+COPY server/package.json server/package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+COPY server/config.js server/security.js server/store.js server/images.js server/validate.js server/species.js server/render.js server/admin.js server/server.js server/shell-head.html server/shell-tail.html ./
+COPY fz-proxy.conf /etc/nginx/fz-proxy.conf
+COPY docker-entrypoint.sh /docker-entrypoint-fz.sh
+RUN chmod +x /docker-entrypoint-fz.sh
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /usr/share/nginx/html/index.html
 COPY 404.html /usr/share/nginx/html/404.html
@@ -43,6 +54,8 @@ COPY guia.css /usr/share/nginx/html/guia.css
 COPY scenes.css /usr/share/nginx/html/scenes.css
 COPY ios.css /usr/share/nginx/html/ios.css
 COPY ios.js /usr/share/nginx/html/ios.js
+COPY capturas.css /usr/share/nginx/html/capturas.css
+COPY capturas.js /usr/share/nginx/html/capturas.js
 COPY engage.js /usr/share/nginx/html/engage.js
 COPY robots.txt /usr/share/nginx/html/robots.txt
 COPY llms.txt /usr/share/nginx/html/llms.txt
@@ -63,4 +76,4 @@ COPY logotipo-1024-v3.webp /usr/share/nginx/html/logotipo-1024-v3.webp
 COPY logotipo-1024-v3-pc.webp /usr/share/nginx/html/logotipo-1024-v3-pc.webp
 COPY img/ /usr/share/nginx/html/img/
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/docker-entrypoint-fz.sh"]

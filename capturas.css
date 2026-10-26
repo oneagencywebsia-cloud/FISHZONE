@@ -1,0 +1,75 @@
+/* Capturas de la comunidad: galería, formulario y panel de moderación. */
+.cap-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.2rem 0}
+.cap-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:.9rem}
+.cap-chip span{color:var(--muted);font-size:.8rem}
+.cap-chip.on,.cap-chip:hover{border-color:var(--gold);color:var(--white);text-decoration:none}
+.cap-stats{color:var(--muted);margin:.6rem 0 0}
+.cap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin:1rem 0 1.6rem}
+.cap-card{margin:0;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.cap-card img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:#0b1428}
+.cap-card figcaption{padding:.8rem .95rem 1rem;font-size:.92rem;line-height:1.5}
+.cap-card strong{color:var(--white)}
+.cap-where{display:block;color:var(--muted)}
+.cap-tag{display:inline-block;margin:.3rem 0;padding:.1rem .55rem;border-radius:999px;font-size:.75rem;background:rgba(26,155,138,.18);border:1px solid rgba(26,155,138,.4);color:var(--teal-soft)}
+.cap-note{margin:.35rem 0;color:var(--text)}
+.cap-by{display:block;color:var(--muted);font-size:.82rem}
+.cap-guide{font-size:.85rem}
+.cap-empty{padding:1.2rem;border:1px dashed var(--border);border-radius:14px;color:var(--muted)}
+.cap-pager{display:flex;gap:1rem;align-items:center;justify-content:center;margin:1rem 0}
+.cap-cta{text-align:center;margin:1.4rem 0}
+.cap-btn{display:inline-block;background:var(--gold);color:#0a0f1e;border:0;border-radius:999px;padding:.7rem 1.5rem;font-weight:700;cursor:pointer;font-size:1rem;font-family:inherit}
+.cap-btn:hover{text-decoration:none;filter:brightness(1.08)}
+.cap-btn:focus-visible,.cap-form input:focus-visible,.cap-form select:focus-visible,.cap-form textarea:focus-visible,.cap-chip:focus-visible{outline:2px solid var(--teal-soft);outline-offset:2px}
+.cap-form-wrap{margin:2rem 0;padding:1.3rem 1.4rem;background:var(--card);border:1px solid var(--border);border-radius:16px}
+.cap-form{display:grid;gap:.9rem}
+.cap-form label{display:grid;gap:.3rem;color:var(--white);font-weight:600;font-size:.92rem}
+.cap-form small{color:var(--muted);font-weight:400}
+.cap-form input[type=text],.cap-form select,.cap-form textarea,.cap-form input[type=file]{width:100%;background:#0b1428;border:1px solid var(--border);border-radius:10px;padding:.65rem .75rem;color:var(--text);font:inherit}
+.cap-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@media(max-width:560px){.cap-row{grid-template-columns:1fr}}
+.cap-check{display:flex!important;gap:.6rem;align-items:flex-start;font-weight:400!important;color:var(--text)!important}
+.cap-check input{margin-top:.25rem}
+.cap-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cap-fine{color:var(--muted);font-size:.8rem;margin:0}
+.cap-errors{background:rgba(168,88,74,.14);border:1px solid #a8584a;border-radius:12px;padding:.8rem 1rem;margin:0 0 1rem}
+.cap-errors ul{margin:.4rem 0 0 1.1rem}
+.cap-preview{max-width:360px}.cap-preview img{width:100%;height:auto;border-radius:12px;border:1px solid var(--border)}
+.cap-rules{line-height:1.7}
+.cap-ok{background:rgba(26,155,138,.15);border:1px solid rgba(26,155,138,.5);border-radius:12px;padding:.9rem 1rem}
+.cap-lb{border:0;padding:0;background:transparent;max-width:min(96vw,1100px);max-height:92vh;color:var(--white)}
+.cap-lb::backdrop{background:rgba(3,7,15,.88)}
+.cap-lb img{max-width:100%;max-height:84vh;border-radius:10px;display:block;margin:0 auto}
+.cap-lb p{text-align:center;margin:.6rem 0 0}
+.cap-lb button{position:absolute;top:.4rem;right:.4rem;background:#0d1426;color:#fff;border:1px solid var(--border);border-radius:999px;padding:.35rem .8rem;cursor:pointer}
+/* Teaser de la home */
+.cap-teaser{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin:1rem 0}
+.cap-teaser a{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.cap-teaser img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+/* Panel de administración */
+body.adm{background:#0a0f1e;color:#cdd9e8;font:16px/1.55 system-ui,sans-serif;margin:0}
+.adm-top{padding:1rem 1.2rem;border-bottom:1px solid #1e2c47;background:#0d1426}
+.adm-main{max-width:1000px;margin:0 auto;padding:1.2rem}
+.adm a{color:#e2c97e}
+.adm-tabs{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.adm-tab{padding:.45rem .9rem;border:1px solid #1e2c47;border-radius:999px;color:#cdd9e8}
+.adm-tab.on{border-color:#c9a84c;color:#fff}
+.adm-logout{margin-left:auto}
+.adm button{font:inherit;cursor:pointer;border:1px solid #1e2c47;background:#111a30;color:#fff;border-radius:10px;padding:.5rem .9rem}
+.adm button.ok{background:#1a9b8a;border-color:#1a9b8a}
+.adm button.no{background:#7a3a2f;border-color:#a8584a}
+.adm-card{display:grid;grid-template-columns:260px 1fr;gap:1rem;border:1px solid #1e2c47;border-radius:14px;padding:1rem;margin:1rem 0;background:#0d1426}
+@media(max-width:700px){.adm-card{grid-template-columns:1fr}}
+.adm-media img{width:100%;height:auto;border-radius:10px;display:block}
+.adm-noimg{padding:2rem 1rem;text-align:center;color:#8aa0bb;border:1px dashed #1e2c47;border-radius:10px}
+.adm-meta,.adm-muted{color:#8aa0bb;font-size:.85rem;margin:.1rem 0 .6rem}
+.adm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem}
+.adm label{display:grid;gap:.2rem;font-size:.82rem;color:#8aa0bb}
+.adm input,.adm select,.adm textarea{background:#0b1428;border:1px solid #1e2c47;border-radius:8px;color:#fff;padding:.45rem .55rem;font:inherit}
+.adm-chk,.adm-check label{display:flex!important;gap:.5rem;align-items:flex-start;color:#cdd9e8!important;font-size:.88rem!important}
+.adm-check{border:1px solid #1e2c47;border-radius:10px;margin:.7rem 0}
+.adm-actions{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.8rem}
+.adm-flash{background:rgba(26,155,138,.18);border:1px solid #1a9b8a;border-radius:10px;padding:.6rem .9rem}
+.adm-warn{font-size:.82rem;color:#8aa0bb}
+.adm-err{color:#ff9d8a}
+.adm-login{display:grid;gap:.8rem;max-width:340px}
+.adm-done{opacity:.85}

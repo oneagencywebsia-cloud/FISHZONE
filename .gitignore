@@ -5,3 +5,4 @@ realesr-x4v3.pth
 logo_realesrgan_raw.png
 logo_edsr_max.png
 backup_*.zip
+server/node_modules/

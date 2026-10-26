@@ -2,6 +2,8 @@
 
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 Crawl-delay: 1
 
 # Bloquear bots de scraping SEO agresivos
@@ -28,5 +30,8 @@ User-agent: Claude-User
 User-agent: Google-Extended
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
 Sitemap: https://fishzone.es/sitemap.xml
+Sitemap: https://fishzone.es/sitemap-capturas.xml
