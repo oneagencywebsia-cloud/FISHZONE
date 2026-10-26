@@ -114,3 +114,5 @@ body.adm{background:#0a0f1e;color:#cdd9e8;font:16px/1.55 system-ui,sans-serif;ma
 .adm-err{color:#ff9d8a}
 .adm-login{display:grid;gap:.8rem;max-width:340px}
 .adm-done{opacity:.85}
+
+.cap-form [hidden],.cap-other[hidden]{display:none!important}

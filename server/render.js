@@ -8,7 +8,7 @@ const { SPECIES, SPECIES_BY_ID, PROVINCES } = require('./species');
 
 const HEAD = fs.readFileSync(path.join(__dirname, 'shell-head.html'), 'utf8');
 const TAIL = fs.readFileSync(path.join(__dirname, 'shell-tail.html'), 'utf8');
-const CSS_V = { guia: '20261026', ios: '20261012', scenes: '20261011', capturas: '20261026' };
+const CSS_V = { guia: '20261026', ios: '20261012', scenes: '20261011', capturas: '20261027' };
 const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const fmtDate = t => { const d = new Date(t); return d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); };
 const isoDate = t => new Date(t).toISOString().slice(0, 10);
