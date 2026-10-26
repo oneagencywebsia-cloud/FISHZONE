@@ -229,6 +229,14 @@
   },1000);
   function flag(k){try{if(sessionStorage.getItem(k))return true;sessionStorage.setItem(k,'1')}catch(e){}return false}
 
+  /* Home: últimas capturas aprobadas (solo si hay suficientes; si no, no se muestra nada) */
+  if(HOME&&window.fetch){
+    var tz=document.getElementById('fz-cap-teaser'),tg=document.getElementById('fz-cap-teaser-grid');
+    if(tz&&tg){fetch('/api/capturas/ultimas?n=6',{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(j){
+      if(!j||!j.items||j.items.length<4)return;
+      j.items.forEach(function(it){var a=document.createElement('a');a.href='/capturas/';var im=document.createElement('img');im.src=it.thumb;im.alt=it.alt;im.width=it.w;im.height=it.h;im.loading='lazy';im.decoding='async';a.appendChild(im);tg.appendChild(a)});
+      tz.hidden=false}).catch(function(){})}
+  }
   paintChip();
   if(!S.on&&!flag('fz_pulse')){chip.classList.add('pulse')}
 })();
