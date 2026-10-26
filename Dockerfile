@@ -2,7 +2,7 @@ FROM nginx:alpine
 # Servicio de capturas de la comunidad (Node) junto a nginx. Los datos viven en /data (volumen persistente).
 RUN apk add --no-cache nodejs npm su-exec \
  && addgroup -S app && adduser -S -G app -H -s /sbin/nologin app
-ENV NODE_ENV=production DATA_DIR=/data PORT=3000 HOST=127.0.0.1
+ENV NODE_ENV=production DATA_DIR=/data CAPTURAS_PORT=3000 CAPTURAS_HOST=127.0.0.1
 WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
