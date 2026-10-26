@@ -46,7 +46,7 @@
     blob = null; var fl = file.files && file.files[0];
     if (!fl) { if (prev) prev.hidden = true; return; }
     if (prev && pimg) { pimg.src = URL.createObjectURL(fl); prev.hidden = false; }
-    downscale(fl).then(function (b) { blob = b; });
+    downscale(fl).then(function (b) { if (file.files[0] === fl) blob = b; });
   });
 
   function show(html, cls) {
@@ -64,8 +64,19 @@
       .then(function (r) { return r.json().catch(function () { return { ok: false, errors: ['Error de red. Inténtalo de nuevo.'] }; }); })
       .then(function (j) {
         if (j.ok) {
-          ev('fz_captura_enviada', { especie: f.especie && f.especie.value });
-          f.outerHTML = '<div class="cap-ok" role="status"><strong>¡Gracias!</strong> Hemos recibido tu captura. La revisaremos en unos días y, si cumple las normas, aparecerá en la galería.</div>';
+          var sel = f.querySelector('input[name=especie]:checked');
+          ev('fz_captura_enviada', { especie: sel && sel.value });
+          var wa = 'https://wa.me/?text=' + encodeURIComponent('Acabo de enviar mi captura a FishZone 🎣 https://fishzone.es/capturas/');
+          var guide = sel && sel.getAttribute('data-guide');
+          var box = document.createElement('div'); box.className = 'cap-ok'; box.setAttribute('role', 'status');
+          box.innerHTML = '<strong>🎉 ¡Captura enviada!</strong> La revisaremos en unos días y, si cumple las normas, aparecerá en la galería con tu alias.' +
+            '<div class="cap-next"><a class="cap-btn" target="_blank" rel="noopener" data-cta="share"></a>' +
+            '<a class="cap-alt" href="/capturas/"></a>' + (guide ? '<a class="cap-alt" data-guide></a>' : '') + '</div>';
+          var ws = box.querySelector('a.cap-btn'); ws.href = wa; ws.textContent = 'Compartir por WhatsApp';
+          box.querySelectorAll('a.cap-alt')[0].textContent = 'Ver capturas de otros pescadores';
+          var g = box.querySelector('a[data-guide]'); if (g) { g.href = guide; g.textContent = 'Leer la guía de ' + sel.getAttribute('data-label').toLowerCase(); }
+          f.parentNode.replaceChild(box, f); box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          try { if (window.FZ && FZ.award) FZ.award('captura', 20, '📸 ¡Captura enviada!'); } catch (e2) {}
         } else {
           var li = (j.errors || ['No se ha podido enviar.']).map(function (t) { var s = document.createElement('li'); s.textContent = t; return s.outerHTML; }).join('');
           show('<strong>Revisa esto:</strong><ul>' + li + '</ul>');

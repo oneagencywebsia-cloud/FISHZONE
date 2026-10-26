@@ -17,7 +17,8 @@ function init() {
   fs.mkdirSync(cfg.DATA_DIR, { recursive: true, mode: 0o755 });
   fs.mkdirSync(PENDING, { recursive: true, mode: 0o700 });
   fs.mkdirSync(PUBLIC, { recursive: true, mode: 0o755 });
-  try { db = JSON.parse(fs.readFileSync(DB, 'utf8')); if (!db.items) db.items = {}; } catch (e) { db = { items: {} }; }
+  try { db = JSON.parse(fs.readFileSync(DB, 'utf8')); if (!db.items) db.items = {}; fs.copyFileSync(DB, DB + '.bak'); }
+  catch (e) { if (e.code !== 'ENOENT') { console.error('[store] db.json ilegible: no se arranca para no perder datos', e); process.exit(1); } db = { items: {} }; }
 }
 function save() {
   writing = writing.then(() => {

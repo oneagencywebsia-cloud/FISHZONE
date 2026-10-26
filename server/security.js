@@ -46,6 +46,7 @@ function limiter(max, windowMs) {
       if (hits.size > 5000) for (const [k, v] of hits) if (!v.some(t => now - t < windowMs)) hits.delete(k);
       return true;
     },
+    pop(key) { const a = hits.get(key); if (a && a.length) a.pop(); },
     peek(key) { const now = Date.now(); return (hits.get(key) || []).filter(t => now - t < windowMs).length; },
     clear(key) { hits.delete(key); }
   };
@@ -53,7 +54,7 @@ function limiter(max, windowMs) {
 
 function parseCookies(h) {
   const out = {};
-  String(h || '').split(';').forEach(c => { const i = c.indexOf('='); if (i > 0) out[c.slice(0, i).trim()] = decodeURIComponent(c.slice(i + 1).trim()); });
+  String(h || '').split(';').forEach(c => { const i = c.indexOf('='); if (i > 0) { try { out[c.slice(0, i).trim()] = decodeURIComponent(c.slice(i + 1).trim()); } catch (e) { /* cookie mal formada: se ignora */ } } });
   return out;
 }
 function esc(s) {
