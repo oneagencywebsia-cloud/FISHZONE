@@ -20,10 +20,11 @@ function slugify(s) {
 }
 function placeOf(it) { return (it.zone ? it.zone + ' (' + it.province + ')' : it.province); }
 /* alt generado SOLO con campos controlados (especie, peso, zona saneada): nunca con el comentario libre. */
+function nameOf(it) { return it.speciesOther || SPECIES_BY_ID[it.species].label; }
 function altOf(it) {
   const sp = SPECIES_BY_ID[it.species];
   const f = !!sp.f;
-  return sp.label + (it.weightKg ? ' de ' + num(it.weightKg) + ' kg' : '') + (f ? ' capturada en ' : ' capturado en ') + placeOf(it) + (it.released ? (f ? ', devuelta al agua' : ', devuelto al agua') : '');
+  return nameOf(it) + (it.weightKg ? ' de ' + num(it.weightKg) + ' kg' : '') + (f ? ' capturada en ' : ' capturado en ') + placeOf(it) + (it.released ? (f ? ', devuelta al agua' : ', devuelto al agua') : '');
 }
 
 function layout(o) {
@@ -71,7 +72,7 @@ function card(it, eager) {
   return '<figure class="cap-card"><a href="' + esc(full) + '" class="cap-open" data-full="' + esc(full) + '" data-alt="' + esc(altOf(it)) + '">' +
     '<img src="' + esc(thumb) + '" srcset="' + esc(thumb) + ' ' + it.tw + 'w, ' + esc(full) + ' ' + it.fw + 'w" sizes="(max-width:640px) 92vw, 360px" width="' + it.tw + '" height="' + it.th + '" alt="' + esc(altOf(it)) + '" ' +
     (eager ? 'fetchpriority="high"' : 'loading="lazy"') + ' decoding="async" /></a>' +
-    '<figcaption><strong>' + esc(sp.label) + '</strong>' + (bits.length ? ' · ' + bits.join(' · ') : '') +
+    '<figcaption><strong>' + esc(nameOf(it)) + '</strong>' + (bits.length ? ' · ' + bits.join(' · ') : '') +
     '<span class="cap-where">' + esc(placeOf(it)) + '</span>' +
     (it.pioneer ? '<span class="cap-tag cap-tag-gold">🏅 Pionero</span> ' : '') + (it.released ? '<span class="cap-tag">Devuelta al agua</span>' : '') +
     (it.comment ? '<p class="cap-note">' + esc(it.comment) + '</p>' : '') +
@@ -92,6 +93,7 @@ function formHtml(token, errors, values, pioneerLeft) {
     '<input type="hidden" name="t" value="' + esc(token) + '" />\n' +
     '<div class="cap-hp" aria-hidden="true"><label>No rellenar este campo<input type="text" name="web" tabindex="-1" autocomplete="off" /></label></div>\n' +
     '<fieldset class="cap-step"><legend><span class="n">1</span> ¿Qué has pescado?</legend><div class="cap-sp-grid">' + chips + '</div></fieldset>\n' +
+    '<label class="cap-other" hidden>¿Cuál? <small>(indica la especie)</small><input type="text" name="otra" maxlength="40" value="' + v('otra') + '" placeholder="Ej.: tenca, sargo, anguila…" /></label>\n' +
     '<fieldset class="cap-step"><legend><span class="n">2</span> Tu foto</legend>' +
     '<label class="cap-file"><span class="cap-drop">📷 Elegir o hacer una foto <small>(JPG, PNG o WebP · máx. 8 MB)</small></span><input type="file" name="foto" accept="image/jpeg,image/png,image/webp" required /></label>\n' +
     '<div class="cap-preview" hidden><img alt="Vista previa de tu foto" /><p>Así se verá tu captura. Eliminamos la ubicación GPS de la foto.</p></div></fieldset>\n' +

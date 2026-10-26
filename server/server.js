@@ -137,7 +137,7 @@ function handleUpload(req, res) {
       if (age > 3 * 3600 * 1000) return fail(400, ['El formulario ha caducado. Recarga la página e inténtalo de nuevo.']);
 
       const v = validate(fields);
-      const echo = { especie: fields.especie, provincia: fields.provincia, zona: fields.zona, peso: fields.peso, longitud: fields.longitud, alias: fields.alias, comentario: fields.comentario, suelta: fields.suelta };
+      const echo = { especie: fields.especie, otra: fields.otra, provincia: fields.provincia, zona: fields.zona, peso: fields.peso, longitud: fields.longitud, alias: fields.alias, comentario: fields.comentario, suelta: fields.suelta };
       if (!gotFile || !chunks.length) v.errors.push('Adjunta la foto de la captura.');
       if (truncated) v.errors.push('La foto supera los 8 MB. Reduce su tamaño e inténtalo de nuevo.');
       if (v.errors.length) return fail(400, v.errors, echo);
@@ -160,7 +160,7 @@ function handleUpload(req, res) {
       fs.writeFileSync(store.pendingPath(id), img.full, { mode: 0o600 });
       fs.writeFileSync(store.pendingPath(id, true), img.thumb, { mode: 0o600 });
       const x = v.value;
-      const it = { id, status: 'pending', createdAt: Date.now(), updatedAt: Date.now(), alias: x.alias, species: x.species, province: x.province, zone: x.zone, weightKg: x.weightKg, lengthCm: x.lengthCm, released: x.released, comment: x.comment, fw: img.fw, fh: img.fh, tw: img.tw, th: img.th, ipHash: hash, imgHash };
+      const it = { id, status: 'pending', createdAt: Date.now(), updatedAt: Date.now(), alias: x.alias, species: x.species, speciesOther: x.other, province: x.province, zone: x.zone, weightKg: x.weightKg, lengthCm: x.lengthCm, released: x.released, comment: x.comment, fw: img.fw, fh: img.fh, tw: img.tw, th: img.th, ipHash: hash, imgHash };
       await store.put(it);
       notify(it);
       return okDone();
