@@ -24,7 +24,7 @@ function sniff(buf) {
 /* Valida (firma real, no la extensión ni el Content-Type), reorienta, elimina TODOS los metadatos
    (EXIF/GPS, miniaturas, perfil de cámara) y reencoda a WebP. Devuelve versión completa y miniatura. */
 async function process(buf) {
-  if (!sniff(buf)) { const e = new Error('Formato no válido. Sube una foto JPG, PNG o WebP.'); e.user = true; throw e; }
+  if (!sniff(buf)) { const e = new Error('No reconocemos este formato. Sube una foto JPG, PNG o WebP (si es de un iPhone, en Ajustes → Cámara → Formatos elige «Más compatible»).'); e.user = true; throw e; }
   await slot();
   try {
     const base = () => sharp(buf, { limitInputPixels: 40e6, failOn: 'error', animated: false });

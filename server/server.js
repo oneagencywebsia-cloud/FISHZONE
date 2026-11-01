@@ -18,8 +18,8 @@ sec.loadSecret();
 store.maintenance();
 setInterval(store.maintenance, 6 * 3600 * 1000).unref();
 
-const submitHour = sec.limiter(3, 3600 * 1000);
-const submitDay = sec.limiter(8, 24 * 3600 * 1000);
+const submitHour = sec.limiter(5, 3600 * 1000);
+const submitDay = sec.limiter(12, 24 * 3600 * 1000);
 const globalDay = sec.limiter(80, 24 * 3600 * 1000);
 const attempts = sec.limiter(20, 3600 * 1000); // intentos (válidos o no) que llegan a procesar imagen: acota el uso de CPU
 
@@ -133,7 +133,7 @@ function handleUpload(req, res) {
       const tok = sec.verify(fields.t || '');
       if (!tok || typeof tok.t !== 'number') return fail(400, ['El formulario ha caducado. Recarga la página e inténtalo de nuevo.']);
       const age = Date.now() - tok.t;
-      if (age < 3000) return okDone();
+      if (age < 2000) return okDone();
       if (age > 3 * 3600 * 1000) return fail(400, ['El formulario ha caducado. Recarga la página e inténtalo de nuevo.']);
 
       const v = validate(fields);
@@ -184,6 +184,9 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && p === '/capturas/enviar') return handleUpload(req, res);
 
+    /* Token nuevo para el formulario ya abierto (caducidad / reintentos). Se "envejece" 4 s para que el envío inmediato no caiga en la trampa anti-bot. */
+    if (req.method === 'GET' && p === '/capturas/token') return json(res, 200, { t: sec.sign({ t: Date.now() - 4000 }) });
+
     if ((req.method === 'GET' || req.method === 'HEAD') && p === '/api/capturas/ultimas') {
       const n = Math.min(12, Math.max(1, parseInt(url.searchParams.get('n') || '6', 10) || 6));
       const items = approvedSorted().slice(0, n).map(it => ({ thumb: '/u/' + it.pub.thumb, w: it.tw, h: it.th, alt: render.altOf(it), especie: SPECIES_BY_ID[it.species].label, lugar: render.placeOf(it), alias: it.alias }));
@@ -217,7 +220,7 @@ const server = http.createServer(async (req, res) => {
     if (!res.headersSent) send(res, 500, 'Error interno', { 'Content-Type': 'text/plain; charset=utf-8' });
   }
 });
-server.requestTimeout = 60000;
+server.requestTimeout = 180000; // subidas lentas desde móvil
 server.headersTimeout = 15000;
 server.listen(cfg.PORT, cfg.HOST, () => console.log('[capturas] escuchando en ' + cfg.HOST + ':' + cfg.PORT + ' · panel ' + (cfg.ADMIN_PASSWORD ? 'activo' : 'DESACTIVADO (falta ADMIN_PASSWORD)')));
 process.on('unhandledRejection', e => console.error('[unhandledRejection]', e));

@@ -8,7 +8,7 @@ const { SPECIES, SPECIES_BY_ID, PROVINCES } = require('./species');
 
 const HEAD = fs.readFileSync(path.join(__dirname, 'shell-head.html'), 'utf8');
 const TAIL = fs.readFileSync(path.join(__dirname, 'shell-tail.html'), 'utf8');
-const CSS_V = { guia: '20261026', ios: '20261012', scenes: '20261011', capturas: '20261027' };
+const CSS_V = { guia: '20261026', ios: '20261012', scenes: '20261011', capturas: '20261101' };
 const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const fmtDate = t => { const d = new Date(t); return d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); };
 const isoDate = t => new Date(t).toISOString().slice(0, 10);
@@ -90,24 +90,29 @@ function formHtml(token, errors, values, pioneerLeft) {
     (pioneerLeft > 0 ? '<p class="cap-pioneer">🏅 <strong>Quedan ' + pioneerLeft + ' insignias Pionero</strong> para las primeras capturas aprobadas de la comunidad.</p>\n' : '') +
     (errors && errors.length ? '<div class="cap-errors" role="alert"><strong>Revisa esto:</strong><ul>' + errors.map(e => '<li>' + esc(e) + '</li>').join('') + '</ul></div>\n' : '') +
     '<form class="cap-form" method="post" action="/capturas/enviar" enctype="multipart/form-data" novalidate>\n' +
+    '<div class="cap-prog" aria-hidden="true"><span class="cap-prog-bar"><i></i></span><span class="cap-prog-txt">0 de 3 pasos</span></div>\n' +
     '<input type="hidden" name="t" value="' + esc(token) + '" />\n' +
     '<div class="cap-hp" aria-hidden="true"><label>No rellenar este campo<input type="text" name="web" tabindex="-1" autocomplete="off" /></label></div>\n' +
-    '<fieldset class="cap-step"><legend><span class="n">1</span> ¿Qué has pescado?</legend><div class="cap-sp-grid">' + chips + '</div></fieldset>\n' +
+    '<fieldset class="cap-step" data-step="1"><legend><span class="n">1</span> ¿Qué has pescado?</legend><div class="cap-sp-grid">' + chips + '</div></fieldset>\n' +
     '<label class="cap-other">¿Cuál? <small>(indica la especie)</small><input type="text" name="otra" maxlength="40" value="' + v('otra') + '" placeholder="Ej.: tenca, sargo, anguila…" /></label>\n' +
-    '<fieldset class="cap-step"><legend><span class="n">2</span> Tu foto</legend>' +
-    '<label class="cap-file"><span class="cap-drop">📷 Elegir o hacer una foto <small>(JPG, PNG o WebP · máx. 8 MB)</small></span><input type="file" name="foto" accept="image/jpeg,image/png,image/webp" required /></label>\n' +
-    '<div class="cap-preview" hidden><img alt="Vista previa de tu foto" /><p>Así se verá tu captura. Eliminamos la ubicación GPS de la foto.</p></div></fieldset>\n' +
-    '<fieldset class="cap-step"><legend><span class="n">3</span> Cuéntanos un poco</legend>' +
+    '<fieldset class="cap-step" data-step="2"><legend><span class="n">2</span> Tu foto</legend>' +
+    '<div class="cap-dz"><input type="file" id="cap-foto" class="cap-file-input" name="foto" accept="image/jpeg,image/png,image/webp" required />' +
+    '<label for="cap-foto" class="cap-drop"><span class="cap-drop-ic" aria-hidden="true">📷</span><strong>Toca para elegir o hacer una foto</strong><small>o arrástrala aquí · JPG, PNG o WebP</small></label></div>\n' +
+    '<div class="cap-preview" hidden><div class="cap-pv-img"><img alt="Vista previa de tu foto" /><span class="cap-pv-busy" hidden><i></i></span></div>' +
+    '<div class="cap-pv-meta"><strong class="cap-pv-name"></strong><span class="cap-pv-size"></span><span class="cap-pv-note">Reducimos el peso automáticamente y quitamos la ubicación GPS.</span><button type="button" class="cap-pv-clear">Cambiar foto</button></div></div></fieldset>\n' +
+    '<fieldset class="cap-step" data-step="3"><legend><span class="n">3</span> Cuéntanos un poco</legend>' +
     '<div class="cap-row"><label>Provincia<select name="provincia" required><option value="">Elige…</option>' + prov + '</select></label>' +
     '<label>Tu alias <small>(se publica con la foto)</small><input type="text" name="alias" required minlength="2" maxlength="24" value="' + v('alias') + '" autocomplete="nickname" /></label></div>\n' +
     '<label>Embalse, río o playa <small>(opcional, sin coordenadas)</small><input type="text" name="zona" maxlength="60" value="' + v('zona') + '" placeholder="Ej.: Embalse de Iznájar" /></label>\n' +
     '<div class="cap-row"><label>Peso (kg) <small>(opcional)</small><input type="text" inputmode="decimal" name="peso" maxlength="5" value="' + v('peso') + '" /></label>' +
     '<label>Longitud (cm) <small>(opcional)</small><input type="text" inputmode="decimal" name="longitud" maxlength="5" value="' + v('longitud') + '" /></label></div>\n' +
     '<label>Comentario <small>(opcional · máx. 240 caracteres · sin enlaces)</small><textarea name="comentario" rows="3" maxlength="240" placeholder="Cebo, montaje, cómo fue la pelea…">' + v('comentario') + '</textarea></label>\n' +
-    '<label class="cap-check"><input type="checkbox" name="suelta" value="on"' + (values.suelta === 'on' ? ' checked' : '') + ' /> La devolví al agua</label></fieldset>\n' +
-    '<label class="cap-check"><input type="checkbox" name="legal" value="on" required /> La foto es mía, la captura es legal (especie, talla y periodo) y no aparecen personas reconocibles sin su permiso.</label>\n' +
-    '<label class="cap-check"><input type="checkbox" name="consent" value="on" required /> Acepto que FishZone publique la foto y mi alias en esta web. He leído la <a href="/privacidad.html">política de privacidad</a>.</label>\n' +
-    '<button type="submit" class="cap-btn cap-btn-lg">📸 Enviar mi captura</button>\n' +
+    '<label class="cap-check"><input type="checkbox" name="suelta" value="on"' + (values.suelta === 'on' ? ' checked' : '') + ' /><span>La devolví al agua</span></label></fieldset>\n' +
+    '<label class="cap-check"><input type="checkbox" name="legal" value="on" required /><span>La foto es mía, la captura es legal (especie, talla y periodo) y no aparecen personas reconocibles sin su permiso.</span></label>\n' +
+    '<label class="cap-check"><input type="checkbox" name="consent" value="on" required /><span>Acepto que FishZone publique la foto y mi alias en esta web. He leído la <a href="/privacidad.html">política de privacidad</a>.</span></label>\n' +
+    '<div class="cap-missing" role="alert" hidden></div>\n' +
+    '<div class="cap-progress" hidden><div class="cap-pbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><div class="cap-ptxt" aria-live="polite">Subiendo…</div><button type="button" class="cap-cancel">Cancelar</button></div>\n' +
+    '<button type="submit" class="cap-btn cap-btn-lg cap-send">📸 Enviar mi captura</button>\n' +
     '<ul class="cap-trust"><li>✔ Sin registro</li><li>✔ Revisión humana en pocos días</li><li>✔ Tu ubicación exacta nunca se publica</li></ul>\n' +
     '<p class="cap-fine">Tratamiento: FishZone. Finalidad: publicar tu captura previa revisión. Base legal: tu consentimiento. Conservamos la foto mientras esté publicada; puedes pedir su retirada en <a href="mailto:contacto@fishzone.es">contacto@fishzone.es</a>.</p>\n' +
     '</form>\n</section>';

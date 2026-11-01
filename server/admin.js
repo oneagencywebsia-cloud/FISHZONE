@@ -20,7 +20,7 @@ const COOKIE = SECURE ? '__Host-fz_adm' : 'fz_adm';
 
 function shell(title, inner, flash) {
   return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<meta name="robots" content="noindex, nofollow, noarchive"><title>' + esc(title) + '</title><link rel="stylesheet" href="/capturas.css?v=20261026"></head>' +
+    '<meta name="robots" content="noindex, nofollow, noarchive"><title>' + esc(title) + '</title><link rel="stylesheet" href="/capturas.css?v=20261101"></head>' +
     '<body class="adm"><header class="adm-top"><strong>FishZone · Moderación de capturas</strong></header><main class="adm-main">' +
     (flash ? '<p class="adm-flash" role="status">' + esc(flash) + '</p>' : '') + inner + '</main></body></html>';
 }
