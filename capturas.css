@@ -116,3 +116,82 @@ body.adm{background:#0a0f1e;color:#cdd9e8;font:16px/1.55 system-ui,sans-serif;ma
 .adm-done{opacity:.85}
 
 .cap-form [hidden],.cap-other[hidden]{display:none!important}
+
+/* ═════════ Formulario de capturas · Liquid Glass (iOS 27) ═════════
+   Mismo sistema que ios.css: superficies translúcidas con borde especular; el desenfoque real
+   solo en escritorio con GPU (html.fx-full); en móvil el cristal se simula sin coste. */
+.cap-form-wrap{background-color:rgba(10,18,36,.72);background-image:var(--lg-paint,none);border:0;border-radius:var(--lg-r-xl,28px);padding:1.5rem 1.4rem;box-shadow:var(--lg-edge,none),var(--lg-lift,none)}
+@media (hover:hover) and (min-width:769px){html.fx-full .cap-form-wrap{-webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur)}}
+.cap-prog{display:flex;align-items:center;gap:.8rem;margin:.2rem 0 .2rem}
+.cap-prog-bar{flex:1;height:10px;border-radius:99px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.5);overflow:hidden}
+.cap-prog-bar i{display:block;height:100%;transform:scaleX(0);transform-origin:0 50%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--gold));box-shadow:0 0 12px rgba(201,168,76,.5);transition:transform .5s var(--lg-spring,ease)}
+.cap-prog-txt{font-size:.82rem;color:var(--muted);min-width:7.5rem;text-align:right}
+.cap-step{border:0;border-radius:var(--lg-r-lg,22px);background:linear-gradient(rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:var(--lg-surface-edge,none);transition:box-shadow .3s,background .3s}
+.cap-step.done{box-shadow:var(--lg-surface-edge,none),0 0 0 1px rgba(63,208,186,.55)}
+.cap-step .n{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 10px -4px rgba(201,168,76,.7);transition:background .3s,color .3s}
+.cap-step.done .n{background:var(--teal-soft);font-size:0}
+.cap-step.done .n::after{content:"✓";font-size:.95rem}
+.cap-sp-opt span{border-color:transparent;background:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.04));box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 10px rgba(255,255,255,.03);transition:scale .2s var(--lg-ease,ease),background .25s,box-shadow .25s}
+.cap-sp-opt:active span{scale:.94}
+.cap-sp-opt input:checked+span{background:linear-gradient(#e2c97e,#c9a84c);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 18px -8px rgba(201,168,76,.8)}
+.cap-form input[type=text],.cap-form select,.cap-form textarea{background:rgba(6,12,26,.55);border:0;border-radius:var(--lg-r-md,16px);box-shadow:inset 0 1px 3px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08);font-size:1rem;transition:box-shadow .2s}
+.cap-form input[type=text]:focus,.cap-form select:focus,.cap-form textarea:focus{box-shadow:inset 0 1px 3px rgba(0,0,0,.55),0 0 0 2px var(--teal-soft)}
+.has-err input[type=text],.has-err select,.has-err textarea{box-shadow:inset 0 1px 3px rgba(0,0,0,.55),0 0 0 2px #e0705c}
+.cap-ferr{margin:.25rem 0 0;color:#ff9d8a;font-size:.85rem}
+.cap-step.has-err,.cap-dz.has-err .cap-drop{box-shadow:var(--lg-surface-edge,none),0 0 0 2px #e0705c}
+.shake{animation:capShake .45s}
+@keyframes capShake{20%{translate:-6px}40%{translate:6px}60%{translate:-4px}80%{translate:3px}}
+/* Zona de foto */
+.cap-dz{position:relative}
+.cap-file-input{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden}
+.cap-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;min-height:150px;padding:1.4rem 1rem;border:0;border-radius:var(--lg-r-lg,22px);background:radial-gradient(120% 140% at 50% 0%,rgba(201,168,76,.2),transparent 60%),linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.03));box-shadow:var(--lg-edge,none);cursor:pointer;text-align:center;transition:scale .25s var(--lg-ease,ease),box-shadow .25s}
+.cap-drop strong{color:var(--white);font-size:1.05rem}
+.cap-drop small{color:var(--muted)}
+.cap-drop-ic{font-size:2.2rem;line-height:1}
+.cap-dz.over .cap-drop,.cap-drop:hover{scale:1.015;box-shadow:var(--lg-edge,none),0 0 0 2px var(--gold)}
+.cap-file-input:focus-visible+.cap-drop{outline:2px solid var(--teal-soft);outline-offset:3px}
+.cap-drop:active{scale:.97}
+.cap-preview{display:grid;grid-template-columns:150px 1fr;gap:1rem;align-items:center;max-width:none;padding:.7rem;border-radius:var(--lg-r-lg,22px);background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.03));box-shadow:var(--lg-edge,none)}
+.cap-preview[hidden]{display:none}
+.cap-pv-img{position:relative;border-radius:var(--lg-r-md,16px);overflow:hidden;background:#0b1428;aspect-ratio:4/3}
+.cap-pv-img img{width:100%;height:100%;object-fit:cover;border:0;border-radius:0;display:block}
+.cap-pv-busy{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,12,26,.6)}
+.cap-pv-busy[hidden]{display:none}
+.cap-pv-busy i{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.2);border-top-color:var(--gold);animation:capSpin .8s linear infinite}
+@keyframes capSpin{to{rotate:360deg}}
+.cap-pv-meta{display:grid;gap:.15rem;min-width:0}
+.cap-pv-name{color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cap-pv-size{color:var(--teal-soft);font-size:.9rem}
+.cap-pv-note{color:var(--muted);font-size:.8rem}
+.cap-pv-clear{justify-self:start;margin-top:.4rem;background:rgba(255,255,255,.1);color:var(--white);border:0;border-radius:99px;padding:.45rem 1rem;cursor:pointer;font:inherit;font-size:.88rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+@media(max-width:520px){.cap-preview{grid-template-columns:110px 1fr}}
+/* Envío y progreso */
+.cap-missing{padding:.7rem .95rem;border-radius:var(--lg-r-md,16px);background:rgba(224,112,92,.14);box-shadow:inset 0 0 0 1px rgba(224,112,92,.5);color:var(--white);font-size:.92rem}
+.cap-missing[hidden]{display:none}
+.cap-missing span{display:inline-block;margin:.15rem .3rem 0 0;padding:.1rem .6rem;border-radius:99px;background:rgba(255,255,255,.12)}
+.cap-progress{display:grid;gap:.5rem;padding:.9rem 1rem;border-radius:var(--lg-r-lg,22px);background:linear-gradient(rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:var(--lg-edge,none)}
+.cap-progress[hidden]{display:none}
+.cap-pbar{height:12px;border-radius:99px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.5);overflow:hidden}
+.cap-pbar i{display:block;height:100%;transform:scaleX(0);transform-origin:0 50%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:transform .25s linear;box-shadow:0 0 14px rgba(63,208,186,.55)}
+.cap-ptxt{color:var(--white);font-weight:600}
+.cap-progress[data-kind=err] .cap-ptxt{color:#ff9d8a}
+.cap-cancel{justify-self:start;background:rgba(255,255,255,.1);color:var(--white);border:0;border-radius:99px;padding:.4rem 1rem;cursor:pointer;font:inherit;font-size:.88rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.cap-send{border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.18),0 14px 28px -14px rgba(201,168,76,.9);transition:scale .25s var(--lg-ease,ease),filter .25s,opacity .25s;background:linear-gradient(#e2c97e,#c9a84c)}
+.cap-send:active{scale:.96}
+.cap-send.ready{animation:capReady 2.2s ease .2s 2}
+@keyframes capReady{50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 0 8px rgba(201,168,76,.25),0 14px 28px -14px rgba(201,168,76,.9)}}
+.cap-send.busy,.cap-send:disabled{opacity:.55;pointer-events:none}
+/* Éxito */
+.cap-ok{text-align:center;padding:1.6rem 1.2rem;border-radius:var(--lg-r-xl,28px);background:radial-gradient(120% 140% at 50% 0%,rgba(63,208,186,.22),transparent 60%),linear-gradient(rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:var(--lg-edge,none),var(--lg-lift,none);border:0}
+.cap-ok strong{display:block;font-size:1.3rem;color:var(--white)}
+.cap-ok .cap-next{justify-content:center}
+.cap-check-ic{width:68px;margin:0 auto .6rem}
+.cap-check-ic svg{display:block;width:100%}
+.cap-check-ic circle{fill:rgba(63,208,186,.18);stroke:var(--teal-soft);stroke-width:2;stroke-dasharray:152;stroke-dashoffset:152;animation:capDraw .7s ease forwards}
+.cap-check-ic path{fill:none;stroke:var(--white);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:44;stroke-dashoffset:44;animation:capDraw .5s ease .5s forwards}
+@keyframes capDraw{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.shake,.cap-send.ready,.cap-pv-busy i{animation:none}.cap-check-ic circle,.cap-check-ic path{animation:none;stroke-dashoffset:0}.cap-prog-bar i,.cap-pbar i{transition:none}}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.cap-form-wrap{background-color:#0d1426}}
+
+.cap-trust li{margin:0}
+.cap-check span{flex:1}
