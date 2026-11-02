@@ -81,7 +81,7 @@ function list(s, tab, flash) {
   const label = { pending: 'Pendientes', approved: 'Aprobadas', rejected: 'Rechazadas' };
   const tabs = Object.keys(label).map(k => '<a class="adm-tab' + (k === tab ? ' on' : '') + '" href="' + BASE + '/?tab=' + k + '">' + label[k] + ' (' + counts[k] + ')</a>').join('');
   const items = store.byStatus(tab).sort((a, b) => (tab === 'pending' ? a.createdAt - b.createdAt : (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt))).slice(0, 60);
-  const warn = '<p class="adm-warn">Las fotos y la base de datos se guardan en <code>' + esc(cfg.DATA_DIR) + '</code>. Comprueba en EasyPanel que ese directorio es un <strong>volumen persistente</strong>; si no, se perderán al redesplegar.</p>';
+  const warn = store.persistent() ? '<p class="adm-warn">Datos en <code>' + esc(cfg.DATA_DIR) + '</code> (volumen persistente detectado).</p>' : '<p class="adm-err" role="alert"><strong>⚠ Atención:</strong> <code>' + esc(cfg.DATA_DIR) + '</code> NO está en un volumen persistente. Las capturas se perderán en el próximo despliegue. En EasyPanel añade un montaje de volumen en <code>/data</code>.</p>';
   return shell('Moderación', '<nav class="adm-tabs">' + tabs + '<form method="post" action="' + BASE + '/logout" class="adm-logout"><input type="hidden" name="csrf" value="' + csrf + '"><button>Salir</button></form></nav>' + warn +
     (items.length ? items.map(i => itemCard(i, csrf, tab)).join('') : '<p class="adm-muted">No hay capturas en esta pestaña.</p>'), flash);
 }

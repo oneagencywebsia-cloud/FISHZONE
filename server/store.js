@@ -13,6 +13,10 @@ const PUBLIC = path.join(cfg.DATA_DIR, 'public');
 let db = { items: {} };
 let writing = Promise.resolve();
 
+/* ¿Está DATA_DIR en un volumen propio? Si comparte dispositivo con la raíz del contenedor, se borrará al redesplegar. */
+function persistent() {
+  try { return fs.statSync(cfg.DATA_DIR).dev !== fs.statSync('/').dev; } catch (e) { return true; }
+}
 function init() {
   fs.mkdirSync(cfg.DATA_DIR, { recursive: true, mode: 0o755 });
   fs.mkdirSync(PENDING, { recursive: true, mode: 0o700 });
@@ -51,4 +55,4 @@ function maintenance() {
   }
   if (dirty) save();
 }
-module.exports = { init, save, all, get, put, del, byStatus, pendingPath, publicPath, removeFiles, maintenance, PENDING, PUBLIC };
+module.exports = { persistent, init, save, all, get, put, del, byStatus, pendingPath, publicPath, removeFiles, maintenance, PENDING, PUBLIC };

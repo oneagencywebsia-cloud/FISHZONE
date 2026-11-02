@@ -14,6 +14,7 @@ const { validate } = require('./validate');
 const { SPECIES, SPECIES_BY_ID } = require('./species');
 
 store.init();
+if (!store.persistent()) console.error('[capturas] AVISO: ' + cfg.DATA_DIR + ' NO es un volumen persistente: las capturas se perderán al redesplegar.');
 sec.loadSecret();
 store.maintenance();
 setInterval(store.maintenance, 6 * 3600 * 1000).unref();
