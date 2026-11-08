@@ -2,7 +2,7 @@
    1) Pausa las animaciones infinitas (brillos, olas, peces, burbujas...) de lo que está fuera
       de la pantalla y les quita will-change (cada una era una capa de GPU). Al volver a verse
       se reanudan solas.
-   2) Los peces del hero se movían animando left/right (fuerza recalcular el layout en cada
+   2) Las ondas animaban width/height y los peces del hero left/right (fuerzan recalcular el layout en cada
       frame); ahora van con transform, que va por la GPU. Mismo movimiento y mismas duraciones. */
 (function () {
   var css =
@@ -10,6 +10,8 @@
     'animation-play-state:paused !important;will-change:auto !important}' +
     '.hero-fish-swim.f1,.hero-fish-swim.f3,.hero-fish-swim.f5,.hero-fish-swim.f7{left:0}' +
     '.hero-fish-swim.f2,.hero-fish-swim.f4,.hero-fish-swim.f6{right:0}' +
+    '.ripple{width:200px;height:200px;margin:-100px 0 0 -100px}' +
+    '@keyframes rippleExpand{0%{opacity:.15;transform:scale(.05)}100%{opacity:0;transform:scale(1)}}' +
     '@keyframes heroFishCrossR{0%{opacity:0;transform:translate3d(-8vw,0,0)}5%{opacity:.65}' +
     '25%{transform:translate3d(21vw,-20px,0)}50%{transform:translate3d(50vw,-8px,0)}' +
     '75%{transform:translate3d(79vw,-25px,0)}95%{opacity:.65}100%{opacity:0;transform:translate3d(108vw,0,0)}}' +
