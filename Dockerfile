@@ -54,6 +54,7 @@ COPY guia.css /usr/share/nginx/html/guia.css
 COPY scenes.css /usr/share/nginx/html/scenes.css
 COPY ios.css /usr/share/nginx/html/ios.css
 COPY ios.js /usr/share/nginx/html/ios.js
+COPY consent.js /usr/share/nginx/html/consent.js
 COPY capturas.css /usr/share/nginx/html/capturas.css
 COPY capturas.js /usr/share/nginx/html/capturas.js
 COPY engage.js /usr/share/nginx/html/engage.js

@@ -75,6 +75,7 @@
 }
 </script>
 <link rel="stylesheet" href="/scenes.css?v=20261011" />
+<script src="/consent.js?v=1" defer></script>
 </head>
 <body>
 <div class="fz-scene" aria-hidden="true"><div class="sc on" data-scene="galeria"></div></div>
@@ -203,7 +204,7 @@
   © 2026 FishZone — Santaella · Córdoba · Andalucía
   <div class="links">
     <a href="/">Inicio</a><a href="/blog/">Blog</a><a href="/capturas/">Capturas</a><a href="/normativa-pesca-continental-andalucia.html">Normativa</a><a href="/sobre-fishzone.html">Sobre FishZone</a><a href="/contacto.html">Contacto</a><a href="/privacidad.html">Privacidad</a><a href="/aviso-legal.html">Aviso Legal</a>
-  <a href="#" onclick="event.preventDefault();try{googlefc.showRevocationMessage()}catch(e){}">Gestionar consentimiento</a></div>
+  <a href="#" onclick="event.preventDefault();window.fzConsent?fzConsent.manage():0">Gestionar consentimiento</a></div>
 </footer>
 <script>
 /* GA4 — conversiones (WhatsApp / Google Maps). Respeta Consent Mode. */
