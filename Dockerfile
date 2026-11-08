@@ -33,6 +33,9 @@ COPY guia-principiantes-pesca.html /usr/share/nginx/html/guia-principiantes-pesc
 COPY nudos-de-pesca.html /usr/share/nginx/html/nudos-de-pesca.html
 COPY pesca-a-spinning.html /usr/share/nginx/html/pesca-a-spinning.html
 COPY montajes-carpfishing.html /usr/share/nginx/html/montajes-carpfishing.html
+COPY montaje-hair-rig-carpfishing.html /usr/share/nginx/html/montaje-hair-rig-carpfishing.html
+COPY montaje-chod-rig-carpfishing.html /usr/share/nginx/html/montaje-chod-rig-carpfishing.html
+COPY montaje-helicoptero-carpfishing.html /usr/share/nginx/html/montaje-helicoptero-carpfishing.html
 COPY cebos-y-boilies-carpa.html /usr/share/nginx/html/cebos-y-boilies-carpa.html
 COPY canas-y-carretes-guia.html /usr/share/nginx/html/canas-y-carretes-guia.html
 COPY equipo-basico-para-empezar-a-pescar.html /usr/share/nginx/html/equipo-basico-para-empezar-a-pescar.html
