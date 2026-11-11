@@ -41,7 +41,7 @@ function layout(o) {
     '<meta name="theme-color" content="#0a0f1e" />\n<link rel="icon" href="/favicon.ico" sizes="any" />\n<link rel="apple-touch-icon" href="/apple-touch-icon.png" />\n' + og +
     '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n' +
     '<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />\n' +
-    '<link rel="stylesheet" href="/guia.css?v=' + CSS_V.guia + '" /><link rel="stylesheet" href="/capturas.css?v=' + CSS_V.capturas + '" /><link rel="stylesheet" href="/ios.css?v=' + CSS_V.ios + '" /><script src="/ios.js?v=20261009" defer></script><script src="/engage.js?v=20261026b" defer></script>\n' +
+    '<link rel="stylesheet" href="/guia.css?v=' + CSS_V.guia + '" /><link rel="stylesheet" href="/capturas.css?v=' + CSS_V.capturas + '" /><link rel="stylesheet" href="/ios.css?v=' + CSS_V.ios + '" /><script src="/ios.js?v=20261112" defer></script><script src="/engage.js?v=20261026b" defer></script>\n' +
     (o.ld ? '<script type="application/ld+json">\n' + jsonLd(o.ld) + '\n</script>\n' : '') +
     '<link rel="stylesheet" href="/scenes.css?v=' + CSS_V.scenes + '" />\n</head>\n<body>\n' +
     '<div class="fz-scene" aria-hidden="true"><div class="sc on" data-scene="zona"></div></div>\n' +

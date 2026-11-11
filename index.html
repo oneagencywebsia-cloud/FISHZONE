@@ -738,10 +738,34 @@ html.fz-moving .water-wave{animation-play-state:paused !important}
    pantalla, el fondo cambia al instante (invisible) en vez de fundirse 1,2 s. */
 .fz-scene.snap .sc{transition:none !important}
 </style>
-<link rel="stylesheet" href="/capturas.css?v=20261101" /><link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261012" /><script src="/ios.js?v=20261009" defer></script><script src="/engage.js?v=20261026b" defer></script>
+<link rel="stylesheet" href="/capturas.css?v=20261101" /><link rel="stylesheet" href="/scenes.css?v=20261011" /><link rel="stylesheet" href="/ios.css?v=20261012" /><script src="/ios.js?v=20261112" defer></script><script src="/engage.js?v=20261026b" defer></script>
 <script src="/consent.js?v=1" defer></script>
-<script src="/perf.js?v=3" defer></script>
-</head>
+<script src="/perf.js?v=4" defer></script>
+<style id="fz-gpu-anims">
+/* Rendimiento en escritorio sin quitar efectos: animaciones decorativas infinitas que animaban
+   box-shadow / border-color / background-position (recalculo en el hilo principal en CADA fotograma)
+   pasan a animar opacity en una capa propia, que la GPU compone sola. Mismo ritmo y mismo aspecto. */
+/* Destello periódico de los accesos rápidos (antes quickCardGlow sobre la tarjeta) */
+.quick-card.visible{animation-name:cardSlideUp,none}
+.quick-card .qc-glow{position:absolute;inset:0;border-radius:inherit;border:1px solid rgba(201,168,76,.35);box-shadow:inset 0 0 20px rgba(201,168,76,.08),0 0 20px rgba(201,168,76,.08);opacity:0;pointer-events:none}
+.quick-card.visible .qc-glow{animation:qcGlow 8s ease-in-out infinite;animation-delay:calc(var(--delay,0s) + 1s)}
+@keyframes qcGlow{0%,90%,100%{opacity:0}95%{opacity:1}}
+/* Pulso del botón "subir" (antes backTopPulse sobre box-shadow) */
+@keyframes backTopGlowGpu{0%,100%{opacity:0}50%{opacity:1}}
+#back-top.visible{animation:none}
+#back-top::after{content:'';position:absolute;inset:-1px;border-radius:50%;box-shadow:0 0 20px rgba(201,168,76,.25);opacity:0;pointer-events:none}
+#back-top.visible::after{animation:backTopGlowGpu 2s ease-in-out infinite}
+/* El brillo del borde de .card solo se ve con el ratón encima (opacity 0 si no): solo corre entonces. */
+.card:not(:hover)::before{animation-play-state:paused}
+/* La entrada 'hook set' de las secciones terminaba reteniendo filter:blur(0) y una transform (fill forwards):
+   un filtro que no se ve pero obliga a la GPU a redibujar TODA la sección en cada fotograma de scroll.
+   El estilo base ya es idéntico al fotograma final (opacity 1, sin transform, sin filtro): no hace falta retenerlo. */
+body .hydro-reveal.hydro-reveal-active{animation-fill-mode:none !important}
+/* Hero: el resplandor de fondo, los rayos y las cáusticas ya son degradados difusos; sus filter:blur se
+   recalculaban a pantalla completa en cada fotograma. Comparado píxel a píxel con las animaciones congeladas:
+   diferencia media 0,6/255 (máx. 8) = invisible. El blur de las olas SÍ se nota y se mantiene. */
+.hero-bg-scene::before,.hero-bg-scene::after,.hero-rays,.hero-caustics{filter:none}
+</style></head>
 <body class="intro-active">
 
 <!-- Consentimiento gestionado por el Mensaje de consentimiento de la UE de Google (CMP certificado). Banner propio eliminado para evitar duplicidad. -->
@@ -1030,19 +1054,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="gold-line"></div>
     </div>
     <div class="quick-grid stagger">
-      <a href="/guia-principiantes-pesca.html" class="quick-card fade-in" style="--delay:0s">
+      <a href="/guia-principiantes-pesca.html" class="quick-card fade-in" style="--delay:0s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M12 3v18M5 10l7-7 7 7"/></svg></div>
         <div><div class="quick-label">Quiero empezar</div><div class="quick-sub">Guía de 0 a 100 paso a paso</div></div>
       </a>
-      <a href="/pesca-en-cordoba.html" class="quick-card fade-in" style="--delay:0.05s">
+      <a href="/pesca-en-cordoba.html" class="quick-card fade-in" style="--delay:0.05s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
         <div><div class="quick-label">Dónde pescar en Córdoba</div><div class="quick-sub">Genil, embalses y zonas</div></div>
       </a>
-      <a href="/calendario-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:.1s">
+      <a href="/calendario-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:.1s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div>
         <div><div class="quick-label">Qué pescar este mes</div><div class="quick-sub">Calendario por especie y temporada</div></div>
       </a>
-      <a href="/licencia-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:0.15s">
+      <a href="/licencia-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:0.15s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/></svg></div>
         <div><div class="quick-label">Licencia y normativa</div><div class="quick-sub">Cómo sacarla y qué respetar</div></div>
       </a>
@@ -1064,67 +1088,67 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="section-sub">Navega directamente a la sección que necesitas. Todo el conocimiento de pesca organizado para ti.</p>
     </div>
     <div class="quick-grid stagger">
-      <a href="#dulce" class="quick-card fade-in" style="--delay:0s">
+      <a href="#dulce" class="quick-card fade-in" style="--delay:0s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M2 8c0-1.1.9-2 2-2h5l2-3h6l2 3h1a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V8zm10 9a4 4 0 100-8 4 4 0 000 8zm0-2a2 2 0 110-4 2 2 0 010 4z"/></svg></div>
         <div><div class="quick-label">01 · Agua Dulce</div><div class="quick-sub">Carpa · Trucha · Bass · Barbo</div></div>
       </a>
-      <a href="#cebos" class="quick-card fade-in" style="--delay:.05s">
+      <a href="#cebos" class="quick-card fade-in" style="--delay:.05s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
         <div><div class="quick-label">02 · Cebos</div><div class="quick-sub">Boilies · Pastas · Naturales</div></div>
       </a>
-      <a href="#salada" class="quick-card fade-in" style="--delay:.1s">
+      <a href="#salada" class="quick-card fade-in" style="--delay:.1s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M1.5 7C4 7 4 8.5 6.5 8.5S9 7 11.5 7 12 8.5 14.5 8.5s2.5-1.5 5-1.5S22 8.5 22 8.5M1.5 12C4 12 4 13.5 6.5 13.5S9 12 11.5 12 12 13.5 14.5 13.5s2.5-1.5 5-1.5S22 13.5 22 13.5M1.5 17C4 17 4 18.5 6.5 18.5S9 17 11.5 17 12 18.5 14.5 18.5s2.5-1.5 5-1.5S22 18.5 22 18.5"/></svg></div>
         <div><div class="quick-label">03 · Agua Salada</div><div class="quick-sub">Lubina · Dorada · Atún</div></div>
       </a>
-      <a href="#tecnicas" class="quick-card fade-in" style="--delay:.15s">
+      <a href="#tecnicas" class="quick-card fade-in" style="--delay:.15s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zm-9 7H6v-2h5v2zm7-4h-2V8h2v2z"/></svg></div>
         <div><div class="quick-label">04 · Técnicas</div><div class="quick-sub">Carpfishing · Spinning · Mosca</div></div>
       </a>
-      <a href="#zona" class="quick-card fade-in" style="--delay:.2s">
+      <a href="#zona" class="quick-card fade-in" style="--delay:.2s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div>
         <div><div class="quick-label">05 · Zonas Andaluza</div><div class="quick-sub">Santaella · Córdoba · Costa</div></div>
       </a>
-      <a href="#embalses" class="quick-card fade-in" style="--delay:.25s">
+      <a href="#embalses" class="quick-card fade-in" style="--delay:.25s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></div>
         <div><div class="quick-label">06 · Embalses</div><div class="quick-sub">10 embalses de Andalucía</div></div>
       </a>
-      <a href="#rios" class="quick-card fade-in" style="--delay:.3s">
+      <a href="#rios" class="quick-card fade-in" style="--delay:.3s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0M2 17c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg></div>
         <div><div class="quick-label">07 · Ríos</div><div class="quick-sub">Guadalquivir · Genil · Borosa</div></div>
       </a>
-      <a href="#submarina" class="quick-card fade-in" style="--delay:.35s">
+      <a href="#submarina" class="quick-card fade-in" style="--delay:.35s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 14.93V15a1 1 0 00-2 0v1.93A8.001 8.001 0 014.07 11H6a1 1 0 000-2H4.07A8.001 8.001 0 0111 3.07V5a1 1 0 002 0V3.07A8.001 8.001 0 0119.93 9H18a1 1 0 000 2h1.93A8.001 8.001 0 0113 16.93z"/></svg></div>
         <div><div class="quick-label">08 · Submarina</div><div class="quick-sub">Apnea · Fusil · Equipo</div></div>
       </a>
-      <a href="#flotabilidad" class="quick-card fade-in" style="--delay:.4s">
+      <a href="#flotabilidad" class="quick-card fade-in" style="--delay:.4s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M22 18H2a2 2 0 002 2h16a2 2 0 002-2zM4 15l4-4 4 4 5-6 3 6H4z"/></svg></div>
         <div><div class="quick-label">09 · Flotabilidad</div><div class="quick-sub">Kayak · Float tube · Barca</div></div>
       </a>
-      <a href="#progresion" class="quick-card fade-in" style="--delay:.45s">
+      <a href="#progresion" class="quick-card fade-in" style="--delay:.45s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
         <div><div class="quick-label">10 · Guía 0→100</div><div class="quick-sub">De principiante a experto</div></div>
       </a>
-      <a href="#galeria" class="quick-card fade-in" style="--delay:.5s">
+      <a href="#galeria" class="quick-card fade-in" style="--delay:.5s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
         <div><div class="quick-label">11 · Equipamiento</div><div class="quick-sub">Nudos · Sedales · Cañas</div></div>
       </a>
-      <a href="#aparejos" class="quick-card fade-in" style="--delay:.55s">
+      <a href="#aparejos" class="quick-card fade-in" style="--delay:.55s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22V12M12 12C12 7 17 4 17 4M12 12C12 7 7 4 7 4M5 20c2-2 5-3 7-3s5 1 7 3"/></svg></div>
         <div><div class="quick-label">12 · Aparejos</div><div class="quick-sub">Anzuelos · Plomadas · Clips</div></div>
       </a>
-      <a href="#montajes" class="quick-card fade-in" style="--delay:.6s">
+      <a href="#montajes" class="quick-card fade-in" style="--delay:.6s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg></div>
         <div><div class="quick-label">13 · Montajes</div><div class="quick-sub">Hair Rig · Chod · Feeder</div></div>
       </a>
-      <a href="#senluelos" class="quick-card fade-in" style="--delay:.65s">
+      <a href="#senluelos" class="quick-card fade-in" style="--delay:.65s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M21.5 12c0 .28-.1.54-.28.74l-4.5 5A1 1 0 0115 18h-3.27l-3.96 3.71A1 1 0 016 21v-3H4a2 2 0 01-2-2V8a2 2 0 012-2h2V3a1 1 0 011.77-.65L11.73 6H15a1 1 0 01.72.26l4.5 5z"/></svg></div>
         <div><div class="quick-label">14 · Señuelos</div><div class="quick-sub">Por especie objetivo</div></div>
       </a>
-      <a href="#marcas" class="quick-card fade-in" style="--delay:.7s">
+      <a href="#marcas" class="quick-card fade-in" style="--delay:.7s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg></div>
         <div><div class="quick-label">15 · Marcas y Tiendas</div><div class="quick-sub">Shimano · Daiwa · Fox · Nash</div></div>
       </a>
-      <a href="#acampada" class="quick-card fade-in" style="--delay:.75s">
+      <a href="#acampada" class="quick-card fade-in" style="--delay:.75s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3L1 21h22L12 3zm0 4l7.5 13h-15L12 7z"/></svg></div>
         <div><div class="quick-label">16 · Acampada</div><div class="quick-sub">Bivvy · Cocina · Ropa</div></div>
       </a>
@@ -1142,91 +1166,91 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="section-sub">Páginas dedicadas, con todo el detalle, sobre las pescas y zonas más buscadas de Andalucía.</p>
     </div>
     <div class="quick-grid stagger">
-      <a href="/pesca-en-cordoba.html" class="quick-card fade-in" style="--delay:0s">
+      <a href="/pesca-en-cordoba.html" class="quick-card fade-in" style="--delay:0s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div>
         <div><div class="quick-label">Pesca en Córdoba</div><div class="quick-sub">Santaella · Genil · embalses locales</div></div>
       </a>
-      <a href="/embalses-de-andalucia.html" class="quick-card fade-in" style="--delay:.05s">
+      <a href="/embalses-de-andalucia.html" class="quick-card fade-in" style="--delay:.05s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M3 10h18M3 15h18"/></svg></div>
         <div><div class="quick-label">Embalses de Andalucía</div><div class="quick-sub">Iznájar · La Breña II · Bembézar</div></div>
       </a>
-      <a href="/carpfishing-andalucia.html" class="quick-card fade-in" style="--delay:.1s">
+      <a href="/carpfishing-andalucia.html" class="quick-card fade-in" style="--delay:.1s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M2 8c0-1.1.9-2 2-2h5l2-3h6l2 3h1a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V8zm10 9a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
         <div><div class="quick-label">Carpfishing</div><div class="quick-sub">Montajes · boilies · equipo</div></div>
       </a>
-      <a href="/pesca-black-bass-andalucia.html" class="quick-card fade-in" style="--delay:.15s">
+      <a href="/pesca-black-bass-andalucia.html" class="quick-card fade-in" style="--delay:.15s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M21.5 12c0 .28-.1.54-.28.74l-4.5 5A1 1 0 0115 18h-3.27l-3.96 3.71A1 1 0 016 21v-3H4a2 2 0 01-2-2V8a2 2 0 012-2h2V3a1 1 0 011.77-.65L11.73 6H15a1 1 0 01.72.26l4.5 5c.18.2.28.46.28.74z"/></svg></div>
         <div><div class="quick-label">Black Bass</div><div class="quick-sub">Señuelos y técnica por temporada</div></div>
       </a>
-      <a href="/pesca-a-mosca-truchas-andalucia.html" class="quick-card fade-in" style="--delay:.2s">
+      <a href="/pesca-a-mosca-truchas-andalucia.html" class="quick-card fade-in" style="--delay:.2s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
         <div><div class="quick-label">Trucha a Mosca</div><div class="quick-sub">Sierra Nevada y Cazorla</div></div>
       </a>
-      <a href="/tiendas-de-pesca-en-cordoba.html" class="quick-card fade-in" style="--delay:.25s">
+      <a href="/tiendas-de-pesca-en-cordoba.html" class="quick-card fade-in" style="--delay:.25s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg></div>
         <div><div class="quick-label">Tiendas en Córdoba</div><div class="quick-sub">Dónde comprar material</div></div>
       </a>
-      <a href="/pesca-del-siluro-en-andalucia.html" class="quick-card fade-in" style="--delay:.3s">
+      <a href="/pesca-del-siluro-en-andalucia.html" class="quick-card fade-in" style="--delay:.3s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M2 12c3-5 8-7 13-7 2 0 4 .5 5.5 1.5L22 4v8l-1.5-2.5C19 10.5 17 11 15 11c-5 0-10-2-13 1zm5 1a1.2 1.2 0 100-2.4A1.2 1.2 0 007 13z"/></svg></div>
         <div><div class="quick-label">Siluro en Andalucía</div><div class="quick-sub">Especie invasora · normativa</div></div>
       </a>
-      <a href="/pesca-del-barbo-iberico.html" class="quick-card fade-in" style="--delay:.35s">
+      <a href="/pesca-del-barbo-iberico.html" class="quick-card fade-in" style="--delay:.35s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M3 12c2.5-4 6.5-6 11-6 3 0 5.5 1 7 3-1.5 2-4 3-7 3-4.5 0-8.5-2-11-3zm3.5.5a1 1 0 100-2 1 1 0 000 2z"/></svg></div>
         <div><div class="quick-label">Barbo Ibérico</div><div class="quick-sub">El rey de río · feeder y fondo</div></div>
       </a>
-      <a href="/calendario-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:.4s">
+      <a href="/calendario-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:.4s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div>
         <div><div class="quick-label">Calendario de Pesca</div><div class="quick-sub">Qué pescar cada mes</div></div>
       </a>
-      <a href="/licencia-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:.45s">
+      <a href="/licencia-de-pesca-en-andalucia.html" class="quick-card fade-in" style="--delay:.45s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h6M7 13h10M7 17h4"/></svg></div>
         <div><div class="quick-label">Licencia de Pesca</div><div class="quick-sub">Cómo sacarla paso a paso</div></div>
       </a>
-      <a href="/guia-principiantes-pesca.html" class="quick-card fade-in" style="--delay:.5s">
+      <a href="/guia-principiantes-pesca.html" class="quick-card fade-in" style="--delay:.5s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M12 3l9 4-9 4-9-4 9-4z"/><path d="M6 10v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div>
         <div><div class="quick-label">Guía para Principiantes</div><div class="quick-sub">Empezar de cero paso a paso</div></div>
       </a>
-      <a href="/pesca-a-spinning.html" class="quick-card fade-in" style="--delay:.55s">
+      <a href="/pesca-a-spinning.html" class="quick-card fade-in" style="--delay:.55s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M2 12c3-5 8-7 13-7 2 0 4 .5 5.5 1.5L22 4v8l-1.5-2.5C19 10.5 17 11 15 11c-5 0-10-2-13 1zm5 1a1.2 1.2 0 100-2.4A1.2 1.2 0 007 13z"/></svg></div>
         <div><div class="quick-label">Pesca a Spinning</div><div class="quick-sub">Técnica, señuelos y equipo</div></div>
       </a>
-      <a href="/nudos-de-pesca.html" class="quick-card fade-in" style="--delay:.6s">
+      <a href="/nudos-de-pesca.html" class="quick-card fade-in" style="--delay:.6s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M6 9c4-4 8 4 12 0M6 15c4-4 8 4 12 0"/></svg></div>
         <div><div class="quick-label">Nudos de Pesca</div><div class="quick-sub">Los 6 esenciales paso a paso</div></div>
       </a>
-      <a href="/montajes-carpfishing.html" class="quick-card fade-in" style="--delay:.65s">
+      <a href="/montajes-carpfishing.html" class="quick-card fade-in" style="--delay:.65s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M2 8c0-1.1.9-2 2-2h5l2-3h6l2 3h1a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V8zm10 9a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
         <div><div class="quick-label">Montajes de Carpfishing</div><div class="quick-sub">Hair Rig · Chod Rig · más</div></div>
       </a>
-      <a href="/cebos-y-boilies-carpa.html" class="quick-card fade-in" style="--delay:.7s">
+      <a href="/cebos-y-boilies-carpa.html" class="quick-card fade-in" style="--delay:.7s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="var(--gold)"><circle cx="8" cy="12" r="3"/><circle cx="15" cy="9" r="2.4"/><circle cx="16" cy="15" r="2"/></svg></div>
         <div><div class="quick-label">Cebos y Boilies</div><div class="quick-sub">Qué usa la carpa cada mes</div></div>
       </a>
-      <a href="/equipo-basico-para-empezar-a-pescar.html" class="quick-card fade-in" style="--delay:.72s">
+      <a href="/equipo-basico-para-empezar-a-pescar.html" class="quick-card fade-in" style="--delay:.72s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M4 8h16v11H4z"/><path d="M9 8V5h6v3"/></svg></div>
         <div><div class="quick-label">Kit para empezar</div><div class="quick-sub">Qué comprar y en qué gastar primero</div></div>
       </a>
-      <a href="/canas-y-carretes-guia.html" class="quick-card fade-in" style="--delay:.75s">
+      <a href="/canas-y-carretes-guia.html" class="quick-card fade-in" style="--delay:.75s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M4 20L18 6"/><circle cx="19" cy="5" r="2"/><path d="M7 14l3 3"/></svg></div>
         <div><div class="quick-label">Cañas y Carretes</div><div class="quick-sub">Guía para elegir equipo</div></div>
       </a>
-      <a href="/surfcasting-costa-andalucia.html" class="quick-card fade-in" style="--delay:.8s">
+      <a href="/surfcasting-costa-andalucia.html" class="quick-card fade-in" style="--delay:.8s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M2 18c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M2 13c2 0 2-2 4-2s2 2 4 2"/></svg></div>
         <div><div class="quick-label">Surfcasting</div><div class="quick-sub">Pesca desde la playa · Cádiz y Huelva</div></div>
       </a>
-      <a href="/pesca-submarina-andalucia.html" class="quick-card fade-in" style="--delay:.85s">
+      <a href="/pesca-submarina-andalucia.html" class="quick-card fade-in" style="--delay:.85s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M9 11l-2 8M15 11l2 8M12 11v8"/></svg></div>
         <div><div class="quick-label">Pesca Submarina</div><div class="quick-sub">Iniciación, equipo y normativa</div></div>
       </a>
-      <a href="/pesca-en-sevilla.html" class="quick-card fade-in" style="--delay:.9s">
+      <a href="/pesca-en-sevilla.html" class="quick-card fade-in" style="--delay:.9s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
         <div><div class="quick-label">Pesca en Sevilla</div><div class="quick-sub">Sierra Norte y Guadalquivir</div></div>
       </a>
-      <a href="/pesca-en-malaga.html" class="quick-card fade-in" style="--delay:.95s">
+      <a href="/pesca-en-malaga.html" class="quick-card fade-in" style="--delay:.95s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
         <div><div class="quick-label">Pesca en Málaga</div><div class="quick-sub">Guadalhorce, La Viñuela y refugios</div></div>
       </a>
-      <a href="/capturas/" class="quick-card fade-in" style="--delay:.9s">
+      <a href="/capturas/" class="quick-card fade-in" style="--delay:.9s"><span class="qc-glow" aria-hidden="true"></span>
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg></div>
         <div><div class="quick-label">Capturas de la comunidad</div><div class="quick-sub">Sube la tuya y mira las de otros</div></div>
       </a>
@@ -3338,18 +3362,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   let _forcedUntil = 0;
   let _lastActiveId = null;
   let _spyRaf = 0;
+  // PERF: antes se leía getBoundingClientRect() de TODAS las secciones y getComputedStyle en cada
+  // fotograma de scroll (layout forzado). Ahora las posiciones absolutas se miden una vez y solo se
+  // vuelven a medir cuando algo cambia de tamaño (ResizeObserver: imágenes, content-visibility, resize).
+  // Misma lógica y mismo resultado: top en viewport = top absoluto - scrollY.
+  let _geo = null;
+  const _hasRO = 'ResizeObserver' in window;
+  function _measureGeo() {
+    const sy = window.scrollY;
+    _geo = {
+      headerH: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80,
+      docH: document.documentElement.scrollHeight,
+      tops: Array.prototype.map.call(sections, function(s) { return s.getBoundingClientRect().top + sy; })
+    };
+  }
+  if (_hasRO) {
+    const _ro = new ResizeObserver(function() { _geo = null; });
+    _ro.observe(document.documentElement);
+    sections.forEach(function(s) { _ro.observe(s); });
+  }
+  window.addEventListener('resize', function() { _geo = null; }, { passive: true });
   function _computeActive() {
-    if ((window.innerHeight + Math.round(window.scrollY)) >= (document.documentElement.scrollHeight - 15)) {
+    if (!_geo || !_hasRO) _measureGeo();
+    if ((window.innerHeight + Math.round(window.scrollY)) >= (_geo.docH - 15)) {
       return sections.length > 0 ? sections[sections.length - 1].id : null;
     }
-    const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;
-    const threshold = headerH + 80;
+    const threshold = _geo.headerH + 80;
+    const sy = window.scrollY;
     let best = null;
     let bestDist = Infinity;
-    for (const s of sections) {
-      const rect = s.getBoundingClientRect();
-      const dist = threshold - rect.top;   // positivo si la sección ya cruzó hacia arriba
-      if (dist >= 0 && dist < bestDist) { bestDist = dist; best = s.id; }
+    for (let i = 0; i < sections.length; i++) {
+      const dist = threshold - (_geo.tops[i] - sy);   // positivo si la sección ya cruzó hacia arriba
+      if (dist >= 0 && dist < bestDist) { bestDist = dist; best = sections[i].id; }
     }
     if (!best && sections.length > 0) best = sections[0].id;
     return best;
@@ -3519,7 +3563,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // backdrop-filter) distorsiona su valor reportado. El footer SIEMPRE
     // existe y su bottom es el verdadero final visual del documento.
     var lastNode = document.querySelector('footer') || document.body.lastElementChild;
-    var tick = false, lastScrolled = null, lastVis = null;
+    var tick = false, lastScrolled = null, lastVis = null, lastBottomAbs = null;
+    if ('ResizeObserver' in window) {
+      var _pro = new ResizeObserver(function() { lastBottomAbs = null; });
+      _pro.observe(document.documentElement);
+      if (lastNode) _pro.observe(lastNode);
+    }
+    window.addEventListener('resize', function() { lastBottomAbs = null; }, { passive: true });
     function onScroll() {
       if (tick) return;
       tick = true;
@@ -3535,8 +3585,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         //   100% ⇔ el bottom del footer toca el bottom del viewport.
         var p = 0;
         if (lastNode) {
-          var rect = lastNode.getBoundingClientRect();
-          var lastBottom = rect.bottom + st;       // posición absoluta
+          // PERF: la posición absoluta del footer solo cambia si algo cambia de tamaño; se cachea y
+          // un ResizeObserver la invalida (antes: getBoundingClientRect en cada fotograma de scroll).
+          if (lastBottomAbs === null || !('ResizeObserver' in window)) lastBottomAbs = lastNode.getBoundingClientRect().bottom + st;
+          var lastBottom = lastBottomAbs;          // posición absoluta
           var travelTotal = lastBottom - vh;       // scroll necesario
           if (travelTotal < 1) travelTotal = 1;
           p = st / travelTotal;

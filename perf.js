@@ -49,6 +49,13 @@
     else setTimeout(fn, ms);
   }
 
+  /* Además, todas las secciones desde el principio: así también se pausa lo que arranca tarde
+     (p. ej. el destello de los accesos rápidos, que empieza al revelarse la tarjeta). */
+  function observeBlocks() {
+    var b = document.querySelectorAll('section,header,footer');
+    for (var i = 0; i < b.length; i++) if (!seen.has(b[i])) { seen.add(b[i]); io.observe(b[i]); }
+  }
+  observeBlocks();
   idle(scan, 1500);
   window.addEventListener('load', function () { setTimeout(function () { idle(scan, 1500); }, 1200); });
   setTimeout(function () { idle(scan, 1500); }, 6000);

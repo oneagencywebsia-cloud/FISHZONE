@@ -22,7 +22,11 @@
   var root=document.documentElement,lastY=window.pageYOffset||0,lastT=performance.now(),tm=0,fast=false;
   /* Barrido al terminar un scroll rápido: lo que quedó por encima/dentro del viewport sin revelar se muestra ya */
   function sweep(){var n=document.querySelectorAll('.fade-in:not(.visible)'),h=innerHeight;for(var i=0;i<n.length;i++){if(n[i].getBoundingClientRect().top<h)n[i].classList.add('visible');}}
-  window.addEventListener('scroll',function(){
+  /* En escritorio (ratón/trackpad) NO se usa: alternar .fz-fast/.fz-moving en <html> obliga a recalcular
+     los estilos de cientos de elementos de golpe en cada ráfaga de rueda (medido: es lo que hundía el
+     scroll rápido a ~9 fps). En pantallas táctiles se mantiene tal cual. */
+  var desk=window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(!desk)window.addEventListener('scroll',function(){
     var y=window.pageYOffset||0,t=performance.now(),dt=t-lastT;
     if(dt>0){
       var v=Math.abs(y-lastY)/dt;
