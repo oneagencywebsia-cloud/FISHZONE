@@ -48,6 +48,7 @@ COPY que-comprar-para-pesca-a-spinning.html /usr/share/nginx/html/que-comprar-pa
 COPY surfcasting-costa-andalucia.html /usr/share/nginx/html/surfcasting-costa-andalucia.html
 COPY pesca-submarina-andalucia.html /usr/share/nginx/html/pesca-submarina-andalucia.html
 COPY pesca-en-sevilla.html /usr/share/nginx/html/pesca-en-sevilla.html
+COPY pesca-en-malaga.html /usr/share/nginx/html/pesca-en-malaga.html
 COPY pesca-del-lucio-en-andalucia.html /usr/share/nginx/html/pesca-del-lucio-en-andalucia.html
 COPY pesca-dorada-andalucia.html /usr/share/nginx/html/pesca-dorada-andalucia.html
 COPY pesca-lubina-andalucia.html /usr/share/nginx/html/pesca-lubina-andalucia.html
