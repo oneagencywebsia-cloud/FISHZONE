@@ -109,7 +109,7 @@ function formHtml(token, errors, values, pioneerLeft) {
     '<label>Comentario <small>(opcional · máx. 240 caracteres · sin enlaces)</small><textarea name="comentario" rows="3" maxlength="240" placeholder="Cebo, montaje, cómo fue la pelea…">' + v('comentario') + '</textarea></label>\n' +
     '<label class="cap-check"><input type="checkbox" name="suelta" value="on"' + (values.suelta === 'on' ? ' checked' : '') + ' /><span>La devolví al agua</span></label></fieldset>\n' +
     '<label class="cap-check"><input type="checkbox" name="legal" value="on" required /><span>La foto es mía, la captura es legal (especie, talla y periodo) y no aparecen personas reconocibles sin su permiso.</span></label>\n' +
-    '<label class="cap-check"><input type="checkbox" name="consent" value="on" required /><span>Acepto que FishZone publique la foto y mi alias en esta web. He leído la <a href="/privacidad.html">política de privacidad</a>.</span></label>\n' +
+    '<label class="cap-check"><input type="checkbox" name="consent" value="on" required /><span>Tengo 14 años o más y acepto que FishZone publique la foto y mi alias en esta web. He leído la <a href="/privacidad.html">política de privacidad</a>.</span></label>\n' +
     '<div class="cap-missing" role="alert" hidden></div>\n' +
     '<div class="cap-progress" hidden><div class="cap-pbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><div class="cap-ptxt" aria-live="polite">Subiendo…</div><button type="button" class="cap-cancel">Cancelar</button></div>\n' +
     '<button type="submit" class="cap-btn cap-btn-lg cap-send">📸 Enviar mi captura</button>\n' +
