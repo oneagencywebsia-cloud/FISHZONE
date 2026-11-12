@@ -147,7 +147,8 @@ function gallery(ctx) {
       image: items.map(it => ({
         '@type': 'ImageObject', contentUrl: url('/u/' + it.pub.full), thumbnailUrl: url('/u/' + it.pub.thumb), width: it.fw, height: it.fh,
         name: altOf(it), caption: altOf(it), uploadDate: isoDate(it.approvedAt), creditText: 'Foto de ' + it.alias + ' · FishZone',
-        creator: { '@type': 'Person', name: it.alias }, contentLocation: { '@type': 'Place', name: placeOf(it) }
+        creator: { '@type': 'Person', name: it.alias }, copyrightNotice: '© ' + it.alias,
+        license: url('/aviso-legal.html#fotos-de-la-comunidad'), acquireLicensePage: url('/contacto.html'), contentLocation: { '@type': 'Place', name: placeOf(it) }
       }))
     });
   }
