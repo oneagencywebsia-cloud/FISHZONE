@@ -223,6 +223,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://fishzone.es/pesca-embalse-iznajar.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
 <url>
     <loc>https://fishzone.es/pesca-del-lucio-en-andalucia.html</loc>
