@@ -3808,14 +3808,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (!els.length || els.length > 600) return;
     var vh = window.innerHeight || 800;
 
-    els.forEach(function(el){
-      el.classList.add('fx3d', 'fx3d-armed');
-      // Lo que ya está en pantalla arranca en reposo (sin flash ni salto).
+    // PERF: antes cada vuelta escribía una clase y leía getBoundingClientRect() justo después,
+    // forzando un recálculo de layout por tarjeta (cientos seguidos: segundos de bloqueo en un móvil
+    // de gama media). Ahora: 1) se escriben todas las clases, 2) se leen todas las posiciones de
+    // una vez, 3) se escriben las que ya están en pantalla. Mismo resultado, un solo layout.
+    els.forEach(function(el){ el.classList.add('fx3d', 'fx3d-armed'); });
+    var _inView = els.map(function(el){
       try {
         var r = el.getBoundingClientRect();
-        if (r.top < vh * 0.94 && r.bottom > 0) el.classList.add('fx3d-in');
-      } catch(e){ el.classList.add('fx3d-in'); }
+        return r.top < vh * 0.94 && r.bottom > 0;
+      } catch(e){ return true; }
     });
+    els.forEach(function(el, k){ if (_inView[k]) el.classList.add('fx3d-in'); });
 
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function(ents){
