@@ -18,7 +18,19 @@ const url = p => cfg.SITE_URL + p;
 function slugify(s) {
   return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'captura';
 }
-function placeOf(it) { return (it.zone ? it.zone + ' (' + it.province + ')' : it.province); }
+/* Nombres de zona tal como los escribe la gente ("embalse de iznajar", "la breña ll"): solo se corrige la
+   presentación (tildes, mayúsculas, "II") de masas de agua conocidas; el dato guardado no se modifica. */
+const ZONES = ['Embalse de Iznájar', 'Iznájar', 'La Breña II', 'Embalse de La Breña II', 'Puente Nuevo', 'Embalse de Puente Nuevo', 'Guadalmellato', 'Embalse de Guadalmellato',
+  'Bembézar', 'Embalse de Bembézar', 'Negratín', 'Embalse de Negratín', 'Encinarejo', 'Embalse de Encinarejo', 'Yeguas', 'Embalse de Yeguas', 'Río Guadalquivir', 'Río Genil', 'Río Guadalete', 'Río Guadiato'];
+const zoneKey = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\bll\b/g, 'ii').replace(/\b2\b/g, 'ii').replace(/\s+/g, ' ').trim();
+const ZONE_MAP = Object.fromEntries(ZONES.map(z => [zoneKey(z), z]));
+function tidyZone(z) {
+  let s = String(z || '').replace(/\s+/g, ' ').trim();
+  if (!s) return s;
+  s = s.replace(/\s*\([^)]*\)\s*$/, '').trim(); /* quita un "(Provincia)" repetido al final */
+  return ZONE_MAP[zoneKey(s)] || (s.charAt(0).toUpperCase() + s.slice(1));
+}
+function placeOf(it) { return (it.zone ? tidyZone(it.zone) + ' (' + it.province + ')' : it.province); }
 /* alt generado SOLO con campos controlados (especie, peso, zona saneada): nunca con el comentario libre. */
 function nameOf(it) { return it.speciesOther || SPECIES_BY_ID[it.species].label; }
 function altOf(it) {
