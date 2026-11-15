@@ -49,6 +49,10 @@ COPY surfcasting-costa-andalucia.html /usr/share/nginx/html/surfcasting-costa-an
 COPY pesca-submarina-andalucia.html /usr/share/nginx/html/pesca-submarina-andalucia.html
 COPY pesca-en-sevilla.html /usr/share/nginx/html/pesca-en-sevilla.html
 COPY pesca-en-malaga.html /usr/share/nginx/html/pesca-en-malaga.html
+COPY pesca-en-granada.html /usr/share/nginx/html/pesca-en-granada.html
+COPY pesca-en-jaen.html /usr/share/nginx/html/pesca-en-jaen.html
+COPY pesca-en-cadiz.html /usr/share/nginx/html/pesca-en-cadiz.html
+COPY pesca-en-huelva.html /usr/share/nginx/html/pesca-en-huelva.html
 COPY pesca-del-lucio-en-andalucia.html /usr/share/nginx/html/pesca-del-lucio-en-andalucia.html
 COPY pesca-dorada-andalucia.html /usr/share/nginx/html/pesca-dorada-andalucia.html
 COPY pesca-lubina-andalucia.html /usr/share/nginx/html/pesca-lubina-andalucia.html
