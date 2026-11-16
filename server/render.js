@@ -192,6 +192,7 @@ function gallery(ctx) {
     '<main class="gz-wrap">\n' + intro + '\n' + stats + (featured && !sp && page === 1 ? featuredBlock(featured) : '') + '<span id="galeria"></span>' + speciesChips(counts, species) + '\n' + grid + '\n' + pager + '\n' +
     '<p class="cap-cta"><a class="cap-btn" href="#enviar">Subir mi captura</a></p>\n' + (sp ? '' : formHtml(token, errors, values, pioneerLeft)) + '\n' + rules + '\n' + faq + '\n' +
     (sp ? '<p class="cap-cta"><a class="cap-btn" href="/capturas/#enviar">Subir mi captura de ' + esc(sp.label.toLowerCase()) + '</a></p>' : '') +
+    '<aside class="gz-cta-cap gz-cta-wa" aria-label="Comunidad de WhatsApp"><div class="ic" aria-hidden="true">💬</div><div><div class="t">Comparte tu captura con la comunidad</div><p>Pescadores de Andalucía que se ayudan entre sí: enseña tu captura, resuelve dudas y entérate de lo que se pesca ahora. Gratis y sin spam.</p></div><div class="btns"><a class="btn" href="https://chat.whatsapp.com/Cn9MtWiwwnvDSQU1Wx3j5s" target="_blank" rel="noopener">Unirme al grupo</a></div></aside>\n' +
     '<section class="gz-related"><h2 id="sigue-leyendo">Sigue leyendo</h2><div class="gz-rel-grid">' +
     '<a href="/guia-principiantes-pesca.html"><span class="k">Cómo empezar a pescar</span><span class="d">Guía para principiantes</span></a>' +
     '<a href="/licencia-de-pesca-en-andalucia.html"><span class="k">Licencia de pesca</span><span class="d">Tasas 2026 y trámite</span></a>' +
