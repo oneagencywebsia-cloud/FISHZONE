@@ -55,6 +55,8 @@ COPY pesca-en-cadiz.html /usr/share/nginx/html/pesca-en-cadiz.html
 COPY pesca-en-huelva.html /usr/share/nginx/html/pesca-en-huelva.html
 COPY pesca-embalse-iznajar.html /usr/share/nginx/html/pesca-embalse-iznajar.html
 COPY licencia-pesca-maritima-recreo-andalucia.html /usr/share/nginx/html/licencia-pesca-maritima-recreo-andalucia.html
+COPY pesca-en-almeria.html /usr/share/nginx/html/pesca-en-almeria.html
+COPY donde-pescar-en-andalucia.html /usr/share/nginx/html/donde-pescar-en-andalucia.html
 COPY pesca-del-lucio-en-andalucia.html /usr/share/nginx/html/pesca-del-lucio-en-andalucia.html
 COPY pesca-dorada-andalucia.html /usr/share/nginx/html/pesca-dorada-andalucia.html
 COPY pesca-lubina-andalucia.html /usr/share/nginx/html/pesca-lubina-andalucia.html
