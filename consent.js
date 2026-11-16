@@ -42,7 +42,8 @@
       '#fz-consent button{flex:1 1 140px;min-height:44px;padding:10px 16px;border-radius:10px;font:600 14px system-ui,sans-serif;cursor:pointer;' +
       'background:transparent;color:#e2c97e;border:1px solid rgba(201,168,76,.7)}' +
       '#fz-consent button:hover,#fz-consent button:focus-visible{background:rgba(201,168,76,.14);outline:none}' +
-      '@media(min-width:700px){#fz-consent{bottom:20px}}';
+      '@media(min-width:700px){#fz-consent{bottom:20px}}' +
+      '@media(max-width:699px){#fz-consent{left:8px;right:8px;bottom:8px;padding:10px 12px;font-size:13px;line-height:1.4;border-radius:12px}#fz-consent p{margin:0 0 8px}#fz-consent .fz-c-btns{gap:8px;flex-wrap:nowrap}#fz-consent button{flex:1 1 0;min-height:40px;padding:8px 10px;font-size:13px}}';
     document.head.appendChild(s);
   }
 
