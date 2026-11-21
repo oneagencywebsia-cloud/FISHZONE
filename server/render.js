@@ -57,7 +57,7 @@ function layout(o) {
     (o.ld ? '<script type="application/ld+json">\n' + jsonLd(o.ld) + '\n</script>\n' : '') +
     '<link rel="stylesheet" href="/scenes.css?v=' + CSS_V.scenes + '" />\n</head>\n<body>\n' +
     '<div class="fz-scene" aria-hidden="true"><div class="sc on" data-scene="zona"></div></div>\n' +
-    '<nav class="gz-nav">\n  <img src="/logotipo-150-v3.webp" alt="FishZone" width="36" height="36" />\n  <span class="brand">Fish<span>Zone</span></span>\n  <a class="home" href="/">← Inicio</a>\n</nav>\n' +
+    '<nav class="gz-nav">\n  <a href="/" aria-label="FishZone: volver al inicio" style="display:contents;color:inherit;text-decoration:none"><img src="/logotipo-150-v3.webp" alt="FishZone" width="36" height="36" />\n  <span class="brand">Fish<span>Zone</span></span></a>\n  <a class="home" href="/">← Inicio</a>\n</nav>\n' +
     o.body + '\n' + TAIL;
 }
 
