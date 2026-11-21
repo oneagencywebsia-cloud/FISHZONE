@@ -3636,11 +3636,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   (function() {
     if (!('IntersectionObserver' in window)) return;
     var _isMobile = window.matchMedia('(max-width:768px)').matches;
+    // Cambiar la clase .anim-paused invalida el estilo de TODOS los descendientes de la seccion
+    // (selectores .anim-paused * / ::before / ::after): decenas de toggles durante un scroll rapido
+    // = miles de elementos recalculados = tirones. Por eso los cambios se acumulan y se aplican
+    // en bloque cuando el scroll se detiene (140 ms) o, como maximo, cada 700 ms. El estado
+    // inicial se aplica al instante. Mismo resultado visual, sin recalculos durante el scroll.
+    var pend = new Map(), timer = 0, lastFlush = 0, firstRun = true;
+    function flush() {
+      timer = 0; lastFlush = Date.now();
+      pend.forEach(function(paused, el) { el.classList.toggle('anim-paused', paused); });
+      pend.clear();
+    }
+    function schedule() {
+      if (!pend.size) return;
+      if (Date.now() - lastFlush > 700) { if (timer) clearTimeout(timer); flush(); return; }
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(flush, 140);
+    }
     var io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        e.target.classList.toggle('anim-paused', !e.isIntersecting);
-      });
+      entries.forEach(function(e) { pend.set(e.target, !e.isIntersecting); });
+      if (firstRun) { firstRun = false; flush(); return; }
+      schedule();
     }, { rootMargin: _isMobile ? '50px 0px' : '200px 0px' });
+    window.addEventListener('scroll', schedule, { passive: true });
     var sel = 'section:not(#quick-nav), .fish-swim, .hero-fish-left, .hero-fish-right, .hero-fish-swim, .hero-bubbles, .hero-particles, .hero-rays, .hero-caustics, .hero-orb, .water-wave, .bobber-float, .hook-drop, .line-cast, .ripple';
     if (_isMobile) {
       sel += ', .card, .tech-card, .location-card, .level-card, .gear-card, .fish-img, .quick-card, .gold-line, .section-title, .fish-badge, .sci-name, #back-top, .hero-cta';
@@ -3996,6 +4014,72 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
   setTimeout(probe,1800);
   setTimeout(function(){if((window.scrollY||0)<500&&!document.getElementById('intro-screen'))probe();},7000);
+})();
+</script>
+<style id="fz-lite-css">
+/* Modo ligero: solo se activa solo en equipos que no llegan a ~40 fps (o si la persona lo elige).
+   Pausa los bucles decorativos y quita las capas a pantalla completa que más cuestan de pintar.
+   En equipos capaces la web se ve exactamente igual que siempre. */
+html.fz-lite .fz-scene{display:none !important}
+html.fz-lite .hero-particles,html.fz-lite .hero-bubbles,html.fz-lite .hero-rays,html.fz-lite .hero-caustics{display:none !important}
+html.fz-lite *,html.fz-lite *::before,html.fz-lite *::after{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;will-change:auto !important}
+#fz-lite-toast{position:fixed;left:12px;bottom:12px;z-index:2147482000;max-width:340px;background:rgba(6,12,24,.96);color:#e8ecf3;border:1px solid rgba(201,168,76,.45);border-radius:12px;padding:10px 12px;font:13px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#fz-lite-toast button{margin-top:6px;background:transparent;color:#e2c97e;border:1px solid rgba(201,168,76,.7);border-radius:8px;padding:5px 10px;font:600 12px system-ui,sans-serif;cursor:pointer}
+.fz-lite-link{display:block;margin:.6rem auto 0;background:none;border:0;color:var(--muted,#8a94a8);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
+</style>
+<script>
+/* Modo ligero adaptativo. Auto: si la mediana de frame supera 25 ms (menos de ~40 fps) tras la intro
+   o durante el primer scroll, se pausan los bucles decorativos infinitos y se quitan las capas pesadas.
+   Manual: botón "Modo ligero" del pie, o ?lite=1 / ?lite=0 (se recuerda). Reversible siempre. */
+(function(){
+  var root=document.documentElement, KEY='fz_lite', mode=null, on=false, timer=0, paused=[];
+  try{var q=location.search.match(/[?&]lite=(0|1)/);if(q)localStorage.setItem(KEY,q[1]==='1'?'on':'off');mode=localStorage.getItem(KEY);}catch(e){}
+  function loops(){
+    if(!document.getAnimations)return;
+    var an=document.getAnimations();
+    for(var i=0;i<an.length;i++){var a=an[i];try{var ef=a.effect;if(a.playState==='running'&&ef&&ef.getComputedTiming().iterations===Infinity){a.pause();paused.push(a);}}catch(e){}}
+  }
+  function toast(){
+    if(document.getElementById('fz-lite-toast'))return;
+    var d=document.createElement('div');d.id='fz-lite-toast';d.setAttribute('role','status');
+    d.innerHTML='Hemos activado el <strong>modo ligero</strong> para que la web vaya fluida en tu equipo.<br><button type="button">Volver a efectos completos</button>';
+    d.querySelector('button').addEventListener('click',function(){set(false,true);d.remove();});
+    document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove();},9000);
+  }
+  function label(){var b=document.getElementById('fz-lite-btn');if(b)b.textContent=on?'Modo ligero: activado (pulsa para efectos completos)':'Modo ligero: desactivado (pulsa si va lenta)';}
+  function set(v,manual){
+    if(v===on)return;
+    on=v;
+    if(v){root.classList.add('fz-lite');loops();clearInterval(timer);timer=setInterval(loops,2500);}
+    else{root.classList.remove('fz-lite');clearInterval(timer);paused.forEach(function(a){try{a.play();}catch(e){}});paused=[];}
+    if(manual){try{localStorage.setItem(KEY,v?'on':'off');}catch(e){}mode=v?'on':'off';}
+    label();
+  }
+  function addBtn(){
+    var f=document.querySelector('footer .container')||document.querySelector('footer');if(!f||document.getElementById('fz-lite-btn'))return;
+    var b=document.createElement('button');b.type='button';b.id='fz-lite-btn';b.className='fz-lite-link';
+    b.addEventListener('click',function(){set(!on,true);});f.appendChild(b);label();
+  }
+  function median(a){a=a.slice().sort(function(x,y){return x-y});return a[a.length>>1]}
+  function probe(n,cb){
+    var f=[],last=0;
+    (function t(ts){
+      if(document.hidden){setTimeout(function(){requestAnimationFrame(t)},500);return;}
+      if(last)f.push(ts-last);last=ts;
+      if(f.length<n){requestAnimationFrame(t);return;}
+      cb(median(f));
+    })(performance.now());
+  }
+  if(mode==='on')set(true,false);
+  if(mode===null){
+    setTimeout(function(){if(!on&&!document.getElementById('intro-screen'))probe(50,function(m){if(m>25&&mode===null){set(true,false);toast();}});},5200);
+    var done=false;
+    window.addEventListener('scroll',function s(){
+      if(done)return;done=true;window.removeEventListener('scroll',s);
+      probe(45,function(m){if(m>28&&!on&&mode===null){set(true,false);toast();}});
+    },{passive:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addBtn);else addBtn();
 })();
 </script>
 </body>
